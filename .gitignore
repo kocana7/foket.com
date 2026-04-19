@@ -9,3 +9,6 @@ uploads/
 logs/
 foket/
 .claude/
+*.pem
+foket-deploy-key*
+foket-ed25519*
