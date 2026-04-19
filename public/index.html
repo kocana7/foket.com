@@ -2682,64 +2682,69 @@
     }
 
     /* ═══════════════════════════════════════════════
-       LIVE TICKER  –  Binance public API (no key)
+       LIVE TICKER  –  해외선물 (Yahoo Finance proxy)
     ═══════════════════════════════════════════════ */
-    const TICKER_COINS = [
-      { binSym: 'BTCUSDT', sym: 'BTC' },
-      { binSym: 'ETHUSDT', sym: 'ETH' },
-      { binSym: 'BNBUSDT', sym: 'BNB' },
-      { binSym: 'SOLUSDT', sym: 'SOL' },
-      { binSym: 'XRPUSDT', sym: 'XRP' },
-      { binSym: 'ADAUSDT', sym: 'ADA' },
-      { binSym: 'DOGEUSDT', sym: 'DOGE' },
-      { binSym: 'DOTUSDT', sym: 'DOT' },
-      { binSym: 'LINKUSDT', sym: 'LINK' },
-      { binSym: 'AVAXUSDT', sym: 'AVAX' },
-      { binSym: 'LTCUSDT', sym: 'LTC' },
-      { binSym: 'MATICUSDT', sym: 'MATIC' },
+    const TICKER_FUTURES = [
+      { sym: 'NQ', name: '나스닥100', yahoo: 'NQ=F' },
+      { sym: 'ES', name: 'S&P500', yahoo: 'ES=F' },
+      { sym: 'YM', name: '다우존스', yahoo: 'YM=F' },
+      { sym: 'CL', name: 'WTI원유', yahoo: 'CL=F' },
+      { sym: 'GC', name: '골드', yahoo: 'GC=F' },
+      { sym: 'SI', name: '실버', yahoo: 'SI=F' },
+      { sym: 'NG', name: '천연가스', yahoo: 'NG=F' },
+      { sym: 'RTY', name: '러셀2000', yahoo: 'RTY=F' },
+      { sym: '6E', name: '유로FX', yahoo: '6E=F' },
+      { sym: '6J', name: '엔화', yahoo: '6J=F' },
+      { sym: 'ZB', name: '미국채30Y', yahoo: 'ZB=F' },
+      { sym: 'HG', name: '구리', yahoo: 'HG=F' },
     ];
 
     function fmtTickerPrice(p) {
-      if (p >= 10000) return '$' + p.toLocaleString('en', { maximumFractionDigits: 0 });
-      if (p >= 1000) return '$' + p.toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      if (p >= 1) return '$' + p.toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
-      return '$' + p.toLocaleString('en', { minimumFractionDigits: 4, maximumFractionDigits: 6 });
+      if (p >= 10000) return p.toLocaleString('en', { maximumFractionDigits: 2 });
+      if (p >= 100) return p.toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return p.toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
     }
 
     async function fetchTicker() {
-      const syms = JSON.stringify(TICKER_COINS.map(c => c.binSym));
-      const url = 'https://api.binance.com/api/v3/ticker/24hr?symbols=' + encodeURIComponent(syms);
+      const wrap = document.getElementById('tickerWrap');
       try {
+        const syms = TICKER_FUTURES.map(f => f.yahoo).join(',');
+        const url = `https://query1.finance.yahoo.com/v8/finance/spark?symbols=${encodeURIComponent(syms)}&range=1d&interval=1d`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
 
+        const quotes = data?.spark?.result || [];
         const map = {};
-        data.forEach(t => { map[t.symbol] = t; });
+        quotes.forEach(q => { if (q?.symbol) map[q.symbol] = q; });
 
-        const items = TICKER_COINS.map(c => {
-          const t = map[c.binSym];
-          if (!t) return '';
-          const price = parseFloat(t.lastPrice);
-          const ch = parseFloat(t.priceChangePercent);
-          if (isNaN(price)) return '';
+        const url2 = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(syms)}`;
+        const res2 = await fetch(url2);
+        const data2 = await res2.json();
+        const quoteList = data2?.quoteResponse?.result || [];
+        const map2 = {};
+        quoteList.forEach(q => { map2[q.symbol] = q; });
+
+        const items = TICKER_FUTURES.map(f => {
+          const q = map2[f.yahoo];
+          if (!q) return '';
+          const price = q.regularMarketPrice;
+          const ch = q.regularMarketChangePercent;
+          if (price == null) return '';
           const cls = ch >= 0 ? 'up' : 'down';
           const sign = ch >= 0 ? '+' : '';
           return `<div class="ticker-item">` +
-            `<span class="sym">${c.sym}</span>` +
+            `<span class="sym">${f.sym}</span>` +
+            `<span style="font-size:0.7em;color:var(--text-muted);margin-right:4px;">${f.name}</span>` +
             `<span class="price">${fmtTickerPrice(price)}</span>` +
             `<span class="${cls}">${sign}${ch.toFixed(2)}%</span>` +
             `</div>`;
         }).filter(Boolean).join('');
 
-        if (!items) return;
+        if (!items) throw new Error('no data');
 
-        const wrap = document.getElementById('tickerWrap');
-        // 두 번 반복해야 끊김 없이 무한 스크롤됨
         wrap.innerHTML = items + items;
         wrap.classList.add('loaded');
-
-        // 콘텐츠 너비에 맞게 속도 조정 (40px/초)
         requestAnimationFrame(() => {
           const halfWidth = wrap.scrollWidth / 2;
           const dur = Math.max(20, Math.round(halfWidth / 40));
@@ -2749,17 +2754,15 @@
 
       } catch (err) {
         console.warn('[Ticker] 시세 로드 실패:', err.message);
-        // 실패 시 기존 데이터 유지 (처음 로드라면 오류 메시지 표시)
-        const wrap = document.getElementById('tickerWrap');
         if (!wrap.classList.contains('loaded')) {
           wrap.innerHTML = '<div class="ticker-item" style="color:var(--text-muted);">⚠ 시세 로드 실패 – 새로고침 해주세요</div>';
         }
       }
     }
 
-    // 즉시 실행 후 30초마다 갱신 (Binance API)
+    // 즉시 실행 후 60초마다 갱신
     fetchTicker();
-    setInterval(fetchTicker, 30000);
+    setInterval(fetchTicker, 60000);
 
     /* ═══════════════════════════════════════════════
        CRYPTO STATS PANEL – 어드민 localStorage 연동
