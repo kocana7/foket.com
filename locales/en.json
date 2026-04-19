@@ -1,12 +1,12 @@
 {
   "lang_code": "en",
   "lang_name": "English",
-  "site_title": "FoketCrypto Signals",
+  "site_title": "Foket Signals",
   "site_tagline": "Professional Cryptocurrency Trading Signals",
 
   "nav": {
     "home": "Home",
-    "signals": "Crypto Signals",
+    "signals": "Signals",
     "pricing": "Pricing",
     "news": "News",
     "contact": "Contact",
@@ -15,9 +15,9 @@
   },
 
   "hero": {
-    "badge": "Best Free Crypto Signals 2024",
+    "badge": "Best Free Signals 2024",
     "title": "Best Free",
-    "title_highlight": "Crypto Signals",
+    "title_highlight": "Signals",
     "subtitle": "High-quality cryptocurrency trading signals analyzed by our expert team using AI algorithms",
     "success_rate": "Success Rate",
     "members": "Members",
@@ -150,7 +150,7 @@
   },
 
   "signals_page": {
-    "title": "Crypto Signals",
+    "title": "Signals",
     "subtitle": "Real-time trading signals",
     "filter_all": "All",
     "filter_active": "Active",

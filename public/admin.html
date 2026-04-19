@@ -1105,7 +1105,7 @@
       </div>
       <div class="login-error" id="loginError"><i class="fas fa-times-circle"></i> <span id="loginErrMsg"></span></div>
       <div class="fg"><label class="fl">이메일 주소</label><input class="fc" type="email" id="loginEmail"
-          placeholder="admin@foketcrypto.com" value="admin@foketcrypto.com"></div>
+          placeholder="admin@foket.com" value="admin@foket.com"></div>
       <div class="fg"><label class="fl">비밀번호</label><input class="fc" type="password" id="loginPw"
           placeholder="••••••••" value="Admin@123"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
@@ -1591,7 +1591,7 @@
             <div class="ac-bd">
               <div class="fgrid">
                 <div class="fg"><label class="fl">사이트 이름</label><input class="fc" id="cfg-site_name"
-                    placeholder="FoketCrypto Signals"></div>
+                    placeholder="Foket Signals"></div>
                 <div class="fg"><label class="fl">사이트 태그라인</label><input class="fc" id="cfg-site_tagline"
                     placeholder="전문 암호화폐 시그널"></div>
               </div>
@@ -1644,7 +1644,7 @@
             <div class="ac-bd">
               <div class="fgrid">
                 <div class="fg"><label class="fl">관리자 이메일</label><input class="fc" id="cfg-admin_email"
-                    placeholder="admin@foketcrypto.com"></div>
+                    placeholder="admin@foket.com"></div>
                 <div class="fg"><label class="fl">새 비밀번호</label><input class="fc" type="password" id="cfg-admin_pw"
                     placeholder="변경하지 않으면 비워두세요"></div>
               </div>
@@ -2264,7 +2264,7 @@
           { id: 3, title: 'Altcoin Season Signals – Top 5 Coins to Watch', slug: 'altcoin-season-top5', cat: 'altcoins', lang: 'en', excerpt: 'As Bitcoin dominance drops...', content: '<p>With Bitcoin dominance falling below 50%, altcoins are showing strength.</p>', featured: true, published: false, date: new Date().toISOString() },
         ]);
         lsSave('users', [
-          { id: 1, email: 'admin@foketcrypto.com', name: 'Administrator', role: 'superadmin', plan: '', status: true, lastLogin: new Date().toISOString(), joined: new Date(Date.now() - 86400000 * 365).toISOString() },
+          { id: 1, email: 'admin@foket.com', name: 'Administrator', role: 'superadmin', plan: '', status: true, lastLogin: new Date().toISOString(), joined: new Date(Date.now() - 86400000 * 365).toISOString() },
           { id: 2, email: 'michael@example.com', name: 'Michael R.', role: 'user', plan: 'VIP Class', status: true, lastLogin: new Date(Date.now() - 86400000).toISOString(), joined: new Date(Date.now() - 86400000 * 180).toISOString() },
           { id: 3, email: 'sarah@example.com', name: 'Sarah K.', role: 'user', plan: 'Silver Class', status: true, lastLogin: new Date(Date.now() - 86400000 * 2).toISOString(), joined: new Date(Date.now() - 86400000 * 120).toISOString() },
           { id: 4, email: 'david@example.com', name: 'David L.', role: 'user', plan: 'Gold Class', status: true, lastLogin: new Date(Date.now() - 86400000 * 5).toISOString(), joined: new Date(Date.now() - 86400000 * 90).toISOString() },
@@ -2285,7 +2285,7 @@
           { id: 1, name: 'John Smith', email: 'john@example.com', subject: 'Question about VIP', message: 'Hello, I would like to know more about the VIP plan. How do I sign up?', read: false, date: new Date(Date.now() - 3600000 * 2).toISOString() },
           { id: 2, name: 'Emma Watson', email: 'emma@example.com', subject: 'Refund request', message: 'I signed up yesterday but cannot access the Telegram group. Please help.', read: false, date: new Date(Date.now() - 3600000 * 5).toISOString() },
         ]);
-        lsSave('settings', { site_name: 'FoketCrypto Signals', site_tagline: '전문 암호화폐 트레이딩 시그널', meta_description: '82% 성공률의 전문 암호화폐 시그널을 받아보세요.', telegram_free: 'https://t.me/foketsignal_Lobby', telegram_vip: 'https://t.me/foket_vip', contact_email: 'support@foket.com', contact_phone: '+82-00-0000-0000', contact_address: '서울특별시 강남구', stat_members: 50000, stat_rate: 82, stat_signals: 15000, stat_years: 10, admin_email: 'admin@foket.com', admin_name: '관리자' });
+        lsSave('settings', { site_name: 'Foket Signals', site_tagline: '전문 암호화폐 트레이딩 시그널', meta_description: '82% 성공률의 전문 암호화폐 시그널을 받아보세요.', telegram_free: 'https://t.me/foketsignal_Lobby', telegram_vip: 'https://t.me/foket_vip', contact_email: 'support@foket.com', contact_phone: '+82-00-0000-0000', contact_address: '서울특별시 강남구', stat_members: 50000, stat_rate: 82, stat_signals: 15000, stat_years: 10, admin_email: 'admin@foket.com', admin_name: '관리자' });
         lsSave('seeded', true);
       }
       /* ── 플랜명·순서 마이그레이션 ── */
@@ -2309,7 +2309,7 @@
       const email = document.getElementById('loginEmail').value.trim();
       const pw = document.getElementById('loginPw').value;
       const cfg = ls('settings', {});
-      const adminEmail = cfg.admin_email || 'admin@foketcrypto.com';
+      const adminEmail = cfg.admin_email || 'admin@foket.com';
       const adminPw = ls('adminPw', 'Admin@123');
       const adminName = cfg.admin_name || '관리자';
       if (email === adminEmail && (pw === adminPw || pw === 'Admin@123')) {
@@ -3265,7 +3265,7 @@
     }
     function resetSettings() {
       showConfirm('설정 초기화', '모든 설정이 기본값으로 초기화됩니다.', () => {
-        lsSave('settings', { site_name: 'FoketCrypto Signals', site_tagline: '전문 암호화폐 트레이딩 시그널', meta_description: '82% 성공률의 전문 암호화폐 시그널을 받아보세요.', telegram_free: 'https://t.me/foketsignal_Lobby', telegram_vip: 'https://t.me/foket_vip', contact_email: 'support@foket.com', contact_phone: '+82-00-0000-0000', contact_address: '서울특별시 강남구', stat_members: 50000, stat_rate: 82, stat_signals: 15000, stat_years: 10, admin_email: 'admin@foket.com', admin_name: '관리자' });
+        lsSave('settings', { site_name: 'Foket Signals', site_tagline: '전문 암호화폐 트레이딩 시그널', meta_description: '82% 성공률의 전문 암호화폐 시그널을 받아보세요.', telegram_free: 'https://t.me/foketsignal_Lobby', telegram_vip: 'https://t.me/foket_vip', contact_email: 'support@foket.com', contact_phone: '+82-00-0000-0000', contact_address: '서울특별시 강남구', stat_members: 50000, stat_rate: 82, stat_signals: 15000, stat_years: 10, admin_email: 'admin@foket.com', admin_name: '관리자' });
         loadSettings(); showAlert('설정이 기본값으로 초기화되었습니다');
       });
     }

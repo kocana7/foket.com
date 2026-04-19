@@ -1,14 +1,14 @@
 -- ============================================================
--- CryptoSignals Database Schema
--- Database: foketcrypto_db
+-- Signals Database Schema
+-- Database: foket_db
 -- Created: 2024
 -- ============================================================
 
-CREATE DATABASE IF NOT EXISTS `foketcrypto_db`
+CREATE DATABASE IF NOT EXISTS `foket_db`
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE `foketcrypto_db`;
+USE `foket_db`;
 
 -- ============================================================
 -- USERS TABLE
@@ -195,7 +195,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
 
 -- Admin user (password: Admin@123)
 INSERT IGNORE INTO `users` (`email`, `password`, `username`, `role`) VALUES
-('admin@foketcrypto.com', '$2a$10$rG/7rH.Jt0uL6iM8.dI8PuW.PGe0Xa9vRV.Mm1j7YpqUzTkUJTCWG', 'Administrator', 'superadmin');
+('admin@foket.com', '$2a$10$rG/7rH.Jt0uL6iM8.dI8PuW.PGe0Xa9vRV.Mm1j7YpqUzTkUJTCWG', 'Administrator', 'superadmin');
 
 -- Subscription plans
 INSERT IGNORE INTO `plans` (`name`, `slug`, `duration_days`, `price`, `currency`, `is_popular`, `sort_order`, `features`) VALUES
@@ -231,12 +231,12 @@ INSERT IGNORE INTO `stats` (`stat_key`, `stat_value`) VALUES
 
 -- Settings
 INSERT IGNORE INTO `settings` (`setting_key`, `setting_value`, `setting_group`) VALUES
-('site_name', 'FoketCrypto Signals', 'general'),
+('site_name', 'Foket Signals', 'general'),
 ('site_tagline', 'Professional Cryptocurrency Trading Signals', 'general'),
 ('telegram_free_link', 'https://t.me/your_free_channel', 'social'),
 ('telegram_vip_link', 'https://t.me/your_vip_channel', 'social'),
 ('twitter_link', 'https://twitter.com/yourhandle', 'social'),
-('contact_email', 'support@foketcrypto.com', 'contact'),
+('contact_email', 'support@foket.com', 'contact'),
 ('contact_phone', '+1-800-000-0000', 'contact'),
 ('contact_address', '123 Crypto Street, London, EC1R 5HL', 'contact'),
 ('meta_description', 'Get professional cryptocurrency trading signals with 82% success rate. Free and VIP plans available.', 'seo'),

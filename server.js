@@ -65,7 +65,7 @@ app.get('/', (req, res) => {
 
 // Session
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'foketcrypto-secret-key-2024',
+  secret: process.env.SESSION_SECRET || 'foket-secret-key-2024',
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -145,7 +145,7 @@ app.use((err, req, res, next) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`\n  CryptoSignals server running on http://localhost:${PORT}`);
+  console.log(`\n  Signals server running on http://localhost:${PORT}`);
   console.log(`  Admin panel: http://localhost:${PORT}/admin`);
   console.log(`  Environment: ${process.env.NODE_ENV || 'development'}\n`);
 });

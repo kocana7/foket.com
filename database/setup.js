@@ -10,7 +10,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 
 async function setup() {
-  console.log('\n  FoketCrypto Database Setup\n  ==========================\n');
+  console.log('\n  Foket Database Setup\n  ==========================\n');
 
   // Connect without database first
   const conn = await mysql.createConnection({
@@ -25,10 +25,10 @@ async function setup() {
   console.log('  ✓ Connected to MySQL');
 
   // Create database
-  await conn.query('CREATE DATABASE IF NOT EXISTS `foketcrypto_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;');
-  console.log('  ✓ Database "foketcrypto_db" created/verified');
+  await conn.query('CREATE DATABASE IF NOT EXISTS `foket_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;');
+  console.log('  ✓ Database "foket_db" created/verified');
 
-  await conn.query('USE `foketcrypto_db`;');
+  await conn.query('USE `foket_db`;');
 
   // Run schema
   const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
@@ -37,7 +37,7 @@ async function setup() {
 
   // Create default admin with hashed password
   const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@foketcrypto.com';
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@foket.com';
   const hash = await bcrypt.hash(adminPassword, 10);
 
   await conn.query(

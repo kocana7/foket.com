@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
     settings.forEach(s => { siteSettings[s.setting_key] = s.setting_value; });
 
     res.render('index', {
-      title: req.t ? req.t.site_title : 'CryptoSignals',
+      title: req.t ? req.t.site_title : 'Signals',
       signals,
       vipSignals,
       plans,
@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.render('index', {
-      title: 'CryptoSignals',
+      title: 'Signals',
       signals: [],
       vipSignals: [],
       plans: [],
@@ -94,7 +94,7 @@ router.get('/crypto-signals', async (req, res) => {
     );
 
     res.render('signals', {
-      title: 'Crypto Signals',
+      title: 'Signals',
       signals,
       total,
       page,
@@ -105,7 +105,7 @@ router.get('/crypto-signals', async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.render('signals', { title: 'Crypto Signals', signals: [], total: 0, page: 1, pages: 1, coin: '', status: '', currentPage: 'signals' });
+    res.render('signals', { title: 'Signals', signals: [], total: 0, page: 1, pages: 1, coin: '', status: '', currentPage: 'signals' });
   }
 });
 

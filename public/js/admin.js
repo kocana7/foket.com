@@ -1,5 +1,5 @@
 /* ============================================================
-   FoketCrypto Admin Panel JavaScript
+   Foket Admin Panel JavaScript
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', function () {

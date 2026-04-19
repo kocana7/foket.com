@@ -11,7 +11,7 @@ async function run() {
     database: process.env.DB_NAME
   });
   await conn.execute(
-    "UPDATE users SET email='admin@foketcrypto.com', password=? WHERE role IN ('admin','superadmin')",
+    "UPDATE users SET email='admin@foket.com', password=? WHERE role IN ('admin','superadmin')",
     [hash]
   );
   const [[u]] = await conn.execute("SELECT email FROM users WHERE role IN ('admin','superadmin')");

@@ -5,7 +5,7 @@ const pool = mysql.createPool({
   port: process.env.DB_PORT || 3306,
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'foketcrypto_db',
+  database: process.env.DB_NAME || 'foket_db',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -15,7 +15,7 @@ const pool = mysql.createPool({
 // Test connection
 pool.getConnection()
   .then(conn => {
-    console.log('  Database connected: foketcrypto_db');
+    console.log('  Database connected: foket_db');
     conn.release();
   })
   .catch(err => {
