@@ -43,6 +43,7 @@ app.use(helmet({
       scriptSrcAttr: ["'unsafe-inline'"],
       connectSrc: ["'self'", "https://api.binance.com", "https:"],
       imgSrc: ["'self'", "data:", "https:"],
+      formAction: ["'self'", "https://accounts.google.com"],
     }
   }
 }));
