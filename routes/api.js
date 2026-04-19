@@ -69,6 +69,65 @@ router.post('/auth/logout', (req, res) => {
   req.session.destroy(() => res.json({ success: true }));
 });
 
+// GET /auth/google
+router.get('/auth/google', (req, res) => {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  if (!clientId) return res.redirect('/signup.html?error=google_not_configured');
+  const redirect = encodeURIComponent(`${process.env.BASE_URL || 'https://www.foket.com'}/api/auth/google/callback`);
+  const scope = encodeURIComponent('openid email profile');
+  res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirect}&response_type=code&scope=${scope}`);
+});
+
+// GET /auth/google/callback
+router.get('/auth/google/callback', async (req, res) => {
+  const { code, error } = req.query;
+  if (error || !code) return res.redirect('/signup.html?error=google_cancelled');
+  try {
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    const redirectUri = `${process.env.BASE_URL || 'https://www.foket.com'}/api/auth/google/callback`;
+
+    // 토큰 교환
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ code, client_id: clientId, client_secret: clientSecret, redirect_uri: redirectUri, grant_type: 'authorization_code' })
+    });
+    const tokenData = await tokenRes.json();
+    if (!tokenData.access_token) throw new Error('Token exchange failed');
+
+    // 사용자 정보 조회
+    const userRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` }
+    });
+    const googleUser = await userRes.json();
+    if (!googleUser.email) throw new Error('No email from Google');
+
+    const email = googleUser.email.toLowerCase();
+    const username = googleUser.name || email.split('@')[0];
+
+    // 기존 회원이면 로그인, 없으면 자동 가입
+    let [rows] = await db.query('SELECT * FROM users WHERE email = ? LIMIT 1', [email]);
+    let user;
+    if (rows.length) {
+      user = rows[0];
+      await db.query('UPDATE users SET last_login=NOW(), google_id=? WHERE id=?', [googleUser.id, user.id]);
+    } else {
+      const [result] = await db.query(
+        'INSERT INTO users (email, username, password, role, is_active, google_id) VALUES (?, ?, ?, ?, 1, ?)',
+        [email, username, '', 'user', googleUser.id]
+      );
+      user = { id: result.insertId, email, username, role: 'user' };
+    }
+
+    req.session.user = { id: user.id, email: user.email, username: user.username, role: user.role };
+    res.redirect('/mypage.html');
+  } catch (err) {
+    console.error('[Google OAuth]', err.message);
+    res.redirect('/signup.html?error=google_failed');
+  }
+});
+
 // GET /api/auth/me
 router.get('/auth/me', (req, res) => {
   if (req.session && req.session.user) return res.json({ success: true, user: req.session.user });
