@@ -121,7 +121,10 @@ router.get('/auth/google/callback', async (req, res) => {
     }
 
     req.session.user = { id: user.id, email: user.email, username: user.username, role: user.role };
-    res.redirect('/mypage.html');
+    req.session.save((err) => {
+      if (err) console.error('[Google OAuth] session save error:', err);
+      res.redirect('/mypage.html');
+    });
   } catch (err) {
     console.error('[Google OAuth]', err.message);
     res.redirect('/signup.html?error=google_failed');
@@ -130,6 +133,7 @@ router.get('/auth/google/callback', async (req, res) => {
 
 // GET /api/auth/me
 router.get('/auth/me', (req, res) => {
+  res.set('Cache-Control', 'no-store');
   if (req.session && req.session.user) return res.json({ success: true, user: req.session.user });
   res.json({ success: false, user: null });
 });
