@@ -3268,9 +3268,9 @@
           if (j.success && j.value) { cfg = JSON.parse(j.value); try { localStorage.setItem('fk_settings', j.value); } catch(e) {} }
           else { const ls = localStorage.getItem('fk_settings'); if (ls) cfg = JSON.parse(ls); }
         } catch(e) { try { const ls = localStorage.getItem('fk_settings'); if (ls) cfg = JSON.parse(ls); } catch(e2) {} }
-        const freeUrl = cfg.telegram_free || 'https://t.me/foketsignal_Lobby';
-        const vipUrl  = cfg.telegram_vip  || '#';
-        const handle  = cfg.telegram_handle || '';
+        const freeUrl = cfg.telegram_free || 'https://t.me/foket-lobby';
+        const vipUrl  = cfg.telegram_vip  || 'https://t.me/foket-lobby';
+        const handle  = cfg.telegram_handle || 'foket-lobby';
         document.querySelectorAll('[data-tg="free"]').forEach(function(el) { el.href = freeUrl; });
         document.querySelectorAll('[data-tg="vip"]').forEach(function(el) { el.href = vipUrl; });
         const ht = document.getElementById('tgHandleText');
