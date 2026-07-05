@@ -1558,14 +1558,23 @@
             </div>
           </div>
 
+          <!-- 그룹 관리 -->
+          <div class="ac" style="margin-top:20px;">
+            <div class="ac-hd"><div class="ac-title"><i class="fas fa-users-cog"></i> 텔레그램 그룹 관리</div></div>
+            <div class="ac-bd">
+              <p style="color:var(--muted);font-size:13px;margin-bottom:14px;">그룹별 텔레그램 채널 주소를 설정하세요. 봇을 각 채널의 관리자로 추가해야 합니다.</p>
+              <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+                <div class="fg" style="flex:1;min-width:140px;margin:0;"><label class="fl">그룹 이름</label><input class="fc" id="new-tg-label" placeholder="예: Crude Oil"></div>
+                <div class="fg" style="flex:2;min-width:200px;margin:0;"><label class="fl">텔레그램 주소</label><input class="fc" id="new-tg-username" placeholder="@foket-crudeoil"></div>
+                <button class="btn btn-pri" onclick="addTgGroup()"><i class="fas fa-plus"></i> 그룹 추가</button>
+              </div>
+            </div>
+          </div>
+
           <!-- 메시지 전송 -->
           <div class="ac" style="margin-top:20px;">
             <div class="ac-hd">
               <div class="ac-title"><i class="fab fa-telegram-plane"></i> 그룹 메시지 전송</div>
-              <div style="display:flex;gap:6px;">
-                <button class="btn btn-out" style="font-size:11px;padding:3px 10px;" onclick="tgSelectAll(true)">전체 선택</button>
-                <button class="btn btn-out" style="font-size:11px;padding:3px 10px;" onclick="tgSelectAll(false)">전체 해제</button>
-              </div>
             </div>
             <div class="ac-bd">
               <div id="tg-group-list" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"></div>
@@ -2223,7 +2232,7 @@
     async function loadStorageFromApi() {
       const base = getApiBase();
       if (!base) return;
-      const keys = ['markets', 'markets_published', 'settings', 'seeded', 'signals', 'news', 'faq', 'users', 'plans', 'testimonials', 'messages', 'terms', 'privacy', 'risk', 'refund', 'affiliate', 'earnings'];
+      const keys = ['markets', 'markets_published', 'settings', 'seeded', 'signals', 'news', 'faq', 'users', 'plans', 'testimonials', 'messages', 'terms', 'privacy', 'risk', 'refund', 'affiliate', 'earnings', 'tg_groups'];
       for (const k of keys) {
         try {
           const r = await fetch(base + '/storage/' + k);
@@ -3005,41 +3014,50 @@
     /* ════════════════════════════════════════════════════════════
        TELEGRAM
     ═══════════════════════════════════════════════════════════════ */
-    const TG_PRESETS = [
-      {
-        label: '1그룹', color: '#4CAF50',
-        channels: [
-          { id: '@foketsignal_Lobby',      label: '🔓 Lobby' },
-          { id: '@foketsignal_CryptoSpot', label: '💎 CryptoSpot' },
-          { id: '@foketsignal_Bronze',     label: '🥉 Bronze' },
-          { id: '@foketsignal_Silver',     label: '🥈 Silver' },
-          { id: '@foketsignal_Gold',       label: '🥇 Gold' },
-          { id: '@foketsignal_VIP',        label: '👑 VIP' },
-        ]
-      },
-      {
-        label: '2그룹', color: '#2196F3',
-        channels: [
-          { id: '@foketsignal_Lobby',   label: '🔓 Lobby' },
-          { id: '@foketsignal_Futures', label: '📈 Futures' },
-          { id: '@foketsignal_Bronze',  label: '🥉 Bronze' },
-          { id: '@foketsignal_Silver',  label: '🥈 Silver' },
-          { id: '@foketsignal_Gold',    label: '🥇 Gold' },
-          { id: '@foketsignal_VIP',     label: '👑 VIP' },
-        ]
-      },
-      {
-        label: '3그룹', color: '#F0B90B',
-        channels: [
-          { id: '@foketsignal_Lobby',   label: '🔓 Lobby' },
-          { id: '@foketsignal_Binance', label: '🟡 Binance' },
-          { id: '@foketsignal_Bronze',  label: '🥉 Bronze' },
-          { id: '@foketsignal_Silver',  label: '🥈 Silver' },
-          { id: '@foketsignal_Gold',    label: '🥇 Gold' },
-          { id: '@foketsignal_VIP',     label: '👑 VIP' },
-        ]
-      },
+    const TG_GROUP_COLORS = ['#4CAF50','#2196F3','#F0B90B','#9C27B0','#FF5722','#00BCD4','#E91E63','#607D8B'];
+    const TG_DEFAULT_GROUPS = [
+      { label: '전체그룹', username: '@foket-lobby' },
+      { label: 'S&P',      username: '@foket-sp' },
+      { label: 'Gold',     username: '@foket-gold' },
+      { label: 'EuroFX',  username: '@foket-eurofx' },
     ];
+
+    function getTgGroups() {
+      try {
+        const raw = localStorage.getItem('fk_tg_groups');
+        if (raw) return JSON.parse(raw);
+      } catch(e) {}
+      return TG_DEFAULT_GROUPS;
+    }
+    function saveTgGroupsToStorage(groups) {
+      const s = JSON.stringify(groups);
+      localStorage.setItem('fk_tg_groups', s);
+      fetch(location.origin + '/api/storage', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'tg_groups', value: s })
+      }).catch(() => {});
+    }
+
+    function addTgGroup() {
+      const label = (document.getElementById('new-tg-label').value || '').trim();
+      const username = (document.getElementById('new-tg-username').value || '').trim();
+      if (!label) { showAlert('그룹 이름을 입력하세요.', 'err'); return; }
+      if (!username) { showAlert('텔레그램 주소를 입력하세요.', 'err'); return; }
+      const groups = getTgGroups();
+      groups.push({ label, username: username.startsWith('@') ? username : '@' + username });
+      saveTgGroupsToStorage(groups);
+      document.getElementById('new-tg-label').value = '';
+      document.getElementById('new-tg-username').value = '';
+      renderTelegram();
+      showAlert('그룹이 추가되었습니다.');
+    }
+    function deleteTgGroup(idx) {
+      if (!confirm('이 그룹을 삭제하시겠습니까?')) return;
+      const groups = getTgGroups();
+      groups.splice(idx, 1);
+      saveTgGroupsToStorage(groups);
+      renderTelegram();
+    }
 
     function renderTelegram() {
       const cfg = ls('settings', {});
@@ -3052,24 +3070,16 @@
 
       const list = document.getElementById('tg-group-list');
       if (list) {
-        list.innerHTML = TG_PRESETS.map((p, i) => `
+        const groups = getTgGroups();
+        list.innerHTML = groups.map((p, i) => {
+          const color = TG_GROUP_COLORS[i % TG_GROUP_COLORS.length];
+          return `
           <div style="background:var(--bg2);border:2px solid var(--brd);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;">
             <!-- 헤더 -->
-            <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--brd);background:${p.color}18;">
-              <span style="font-size:14px;font-weight:700;color:${p.color};">${p.label}</span>
-              <div style="margin-left:auto;display:flex;gap:5px;">
-                <button onclick="tgPresetSelectAll(${i},true)" style="font-size:10px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;color:var(--muted);cursor:pointer;">전체</button>
-                <button onclick="tgPresetSelectAll(${i},false)" style="font-size:10px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;color:var(--muted);cursor:pointer;">해제</button>
-              </div>
-            </div>
-            <!-- 채널 체크박스 -->
-            <div style="padding:8px 14px;">
-              ${p.channels.map((c, j) => `
-                <label style="display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer;${j < p.channels.length-1 ? 'border-bottom:1px solid var(--brd);' : ''}">
-                  <input type="checkbox" class="tg-ch-chk" data-preset="${i}" data-id="${c.id}" checked style="width:14px;height:14px;accent-color:${p.color};cursor:pointer;flex-shrink:0;">
-                  <span style="font-size:13px;flex:1;">${c.label}</span>
-                  <span style="font-size:10px;color:var(--muted);">${c.id.replace('@foketsignal_','')}</span>
-                </label>`).join('')}
+            <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--brd);background:${color}18;">
+              <span style="font-size:14px;font-weight:700;color:${color};">${p.label}</span>
+              <span style="font-size:11px;color:var(--muted);flex:1;">${p.username}</span>
+              <button onclick="deleteTgGroup(${i})" style="font-size:11px;padding:2px 8px;background:none;border:1px solid #f44336;border-radius:4px;color:#f44336;cursor:pointer;"><i class="fas fa-trash"></i></button>
             </div>
             <!-- 진입시그널 섹션 -->
             <div style="padding:10px 14px;border-top:2px solid #00b4d8;background:rgba(0,180,216,.04);">
@@ -3081,10 +3091,10 @@
                 <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;margin-left:auto;" onclick="document.getElementById('tg-msg-entry-${i}').value='';document.getElementById('tg-cc-entry-${i}').textContent='0/4096';">✕</button>
                 <span id="tg-cc-entry-${i}" style="font-size:10px;color:var(--muted);align-self:center;">0/4096</span>
               </div>
-              <textarea id="tg-msg-entry-${i}" rows="4" placeholder="진입 시그널 메시지...&#10;예: &lt;b&gt;🚀 BTC/USDT LONG&lt;/b&gt;&#10;진입가: $65,000&#10;목표가: $68,000&#10;손절가: $62,000"
+              <textarea id="tg-msg-entry-${i}" rows="4" placeholder="진입 시그널 메시지..."
                 style="width:100%;background:var(--bg-input,#0a0e1a);border:1px solid var(--brd);border-radius:6px;color:var(--text);padding:8px 10px;font-family:monospace;font-size:12px;line-height:1.6;resize:vertical;outline:none;"
                 oninput="document.getElementById('tg-cc-entry-${i}').textContent=this.value.length+'/4096'"></textarea>
-              <button class="btn btn-pri" style="width:100%;margin-top:7px;font-size:13px;" onclick="sendToPreset(${i},'진입','entry')"><i class="fas fa-sign-in-alt"></i> 진입시그널 전송</button>
+              <button class="btn btn-pri" style="width:100%;margin-top:7px;font-size:13px;" onclick="sendToGroup(${i},'진입','entry')"><i class="fas fa-sign-in-alt"></i> 진입시그널 전송</button>
             </div>
             <!-- 청산시그널 섹션 -->
             <div style="padding:10px 14px;border-top:2px solid #ff6b6b;background:rgba(255,107,107,.04);">
@@ -3096,12 +3106,13 @@
                 <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;margin-left:auto;" onclick="document.getElementById('tg-msg-exit-${i}').value='';document.getElementById('tg-cc-exit-${i}').textContent='0/4096';">✕</button>
                 <span id="tg-cc-exit-${i}" style="font-size:10px;color:var(--muted);align-self:center;">0/4096</span>
               </div>
-              <textarea id="tg-msg-exit-${i}" rows="4" placeholder="청산 시그널 메시지...&#10;예: &lt;b&gt;✅ BTC/USDT 청산&lt;/b&gt;&#10;청산가: $68,000&#10;수익률: +4.6%"
+              <textarea id="tg-msg-exit-${i}" rows="4" placeholder="청산 시그널 메시지..."
                 style="width:100%;background:var(--bg-input,#0a0e1a);border:1px solid var(--brd);border-radius:6px;color:var(--text);padding:8px 10px;font-family:monospace;font-size:12px;line-height:1.6;resize:vertical;outline:none;"
                 oninput="document.getElementById('tg-cc-exit-${i}').textContent=this.value.length+'/4096'"></textarea>
-              <button class="btn btn-dan" style="width:100%;margin-top:7px;font-size:13px;" onclick="sendToPreset(${i},'청산','exit')"><i class="fas fa-sign-out-alt"></i> 청산시그널 전송</button>
+              <button class="btn btn-dan" style="width:100%;margin-top:7px;font-size:13px;" onclick="sendToGroup(${i},'청산','exit')"><i class="fas fa-sign-out-alt"></i> 청산시그널 전송</button>
             </div>
-          </div>`).join('');
+          </div>`;
+        }).join('');
       }
 
       const msg = document.getElementById('tg-msg');
@@ -3176,12 +3187,13 @@
       } else { showAlert('저장 실패', 'err'); }
     }
 
-    async function sendToPreset(presetIdx, type, msgKey) {
-      const groups = [...document.querySelectorAll(`.tg-ch-chk[data-preset="${presetIdx}"]:checked`)].map(c => c.dataset.id);
-      if (!groups.length) { showAlert('선택된 채널이 없습니다.', 'err'); return; }
-      const msgId = 'tg-msg-' + msgKey + '-' + presetIdx;
+    async function sendToGroup(idx, type, msgKey) {
+      const groups = getTgGroups();
+      const g = groups[idx];
+      if (!g) { showAlert('그룹을 찾을 수 없습니다.', 'err'); return; }
+      const msgId = 'tg-msg-' + msgKey + '-' + idx;
       const message = (document.getElementById(msgId).value || '').trim();
-      await _tgSend(groups, type, message);
+      await _tgSend([g.username], type + ' [' + g.label + ']', message);
     }
 
     async function sendTelegramMessage() {
