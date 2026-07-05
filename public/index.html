@@ -2119,8 +2119,7 @@
   <nav class="navbar">
     <div class="navbar-inner">
       <a href="index.html" class="navbar-brand">
-        <div class="logo-icon"><span style="font-weight:900;font-size:20px;color:white;font-family:Arial,sans-serif;">F</span></div>
-        <span>FOKET</span>
+        <img id="nav-logo" src="images/logo.png" alt="Foket 로고" style="height:36px;width:auto;object-fit:contain;">
       </a>
       <div class="navbar-nav">
         <a href="index.html" class="active" data-i18n="nav.home">홈</a>
@@ -2485,8 +2484,7 @@
       <div class="foot-grid">
         <div>
           <a href="index.html" class="fbrand-name">
-            <div class="logo-icon" style="width:30px;height:30px;font-size:16px;"><span style="font-weight:900;color:white;font-family:Arial,sans-serif;">F</span></div>
-            <span style="color:var(--accent-blue);font-weight:800;">FOKET</span>
+            <img src="images/logo.png" alt="Foket 로고" style="height:36px;width:auto;object-fit:contain;mix-blend-mode:screen;">
           </a>
           <p class="ftagline" data-i18n="footer.tagline">AI Trading Signal</p>
           <div class="slinks">
@@ -3365,6 +3363,27 @@
         window.location.href = 'index.html';
       });
     }
+  </script>
+  <script>
+    (function(){
+      var img = document.getElementById('nav-logo');
+      if(!img) return;
+      function removeBg(){
+        var canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        var d = ctx.getImageData(0,0,canvas.width,canvas.height);
+        for(var i=0;i<d.data.length;i+=4){
+          if(d.data[i]<40 && d.data[i+1]<40 && d.data[i+2]<40) d.data[i+3]=0;
+        }
+        ctx.putImageData(d,0,0);
+        img.src = canvas.toDataURL('image/png');
+      }
+      if(img.complete && img.naturalWidth) removeBg();
+      else img.addEventListener('load', removeBg);
+    })();
   </script>
   <!-- ── FLOATING TELEGRAM BUTTON ── -->
   <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="tg-float">
