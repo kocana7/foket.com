@@ -3099,35 +3099,19 @@
                 <button onclick="saveTgGroupUsername(${i})" style="font-size:11px;padding:4px 10px;background:${color};border:none;border-radius:5px;color:#fff;cursor:pointer;white-space:nowrap;"><i class="fas fa-save"></i> 저장</button>
               </div>
             </div>
-            <!-- 진입시그널 섹션 -->
-            <div style="padding:10px 14px;border-top:2px solid #00b4d8;background:rgba(0,180,216,.04);">
-              <div style="font-size:12px;font-weight:700;color:#00b4d8;margin-bottom:7px;"><i class="fas fa-sign-in-alt"></i> 진입시그널</div>
-              <div style="display:flex;gap:4px;margin-bottom:5px;flex-wrap:wrap;">
-                <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;font-weight:700;" onclick="tgWrapN(${i},'entry','<b>','</b>')">B</button>
-                <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;font-style:italic;" onclick="tgWrapN(${i},'entry','<i>','</i>')">I</button>
-                <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;font-family:monospace;" onclick="tgWrapN(${i},'entry','<code>','</code>')">Code</button>
-                <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;margin-left:auto;" onclick="document.getElementById('tg-msg-entry-${i}').value='';document.getElementById('tg-cc-entry-${i}').textContent='0/4096';">✕</button>
-                <span id="tg-cc-entry-${i}" style="font-size:10px;color:var(--muted);align-self:center;">0/4096</span>
+            <!-- 메시지 전송 섹션 -->
+            <div style="padding:10px 14px;flex:1;display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
+                <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;font-weight:700;" onclick="tgWrapN(${i},'msg','<b>','</b>')">B</button>
+                <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;font-style:italic;" onclick="tgWrapN(${i},'msg','<i>','</i>')">I</button>
+                <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;font-family:monospace;" onclick="tgWrapN(${i},'msg','<code>','</code>')">Code</button>
+                <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;margin-left:auto;" onclick="document.getElementById('tg-msg-msg-${i}').value='';document.getElementById('tg-cc-msg-${i}').textContent='0/4096';">✕</button>
+                <span id="tg-cc-msg-${i}" style="font-size:10px;color:var(--muted);">0/4096</span>
               </div>
-              <textarea id="tg-msg-entry-${i}" rows="4" placeholder="진입 시그널 메시지..."
+              <textarea id="tg-msg-msg-${i}" rows="5" placeholder="메시지를 입력하세요...&#10;예: &lt;b&gt;🚀 S&P 진입&lt;/b&gt;&#10;진입가: 5,200&#10;목표: 5,350&#10;손절: 5,100"
                 style="width:100%;background:var(--bg-input,#0a0e1a);border:1px solid var(--brd);border-radius:6px;color:var(--text);padding:8px 10px;font-family:monospace;font-size:12px;line-height:1.6;resize:vertical;outline:none;"
-                oninput="document.getElementById('tg-cc-entry-${i}').textContent=this.value.length+'/4096'"></textarea>
-              <button class="btn btn-pri" style="width:100%;margin-top:7px;font-size:13px;" onclick="sendToGroup(${i},'진입','entry')"><i class="fas fa-sign-in-alt"></i> 진입시그널 전송</button>
-            </div>
-            <!-- 청산시그널 섹션 -->
-            <div style="padding:10px 14px;border-top:2px solid #ff6b6b;background:rgba(255,107,107,.04);">
-              <div style="font-size:12px;font-weight:700;color:#ff6b6b;margin-bottom:7px;"><i class="fas fa-sign-out-alt"></i> 청산시그널</div>
-              <div style="display:flex;gap:4px;margin-bottom:5px;flex-wrap:wrap;">
-                <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;font-weight:700;" onclick="tgWrapN(${i},'exit','<b>','</b>')">B</button>
-                <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;font-style:italic;" onclick="tgWrapN(${i},'exit','<i>','</i>')">I</button>
-                <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;font-family:monospace;" onclick="tgWrapN(${i},'exit','<code>','</code>')">Code</button>
-                <button style="font-size:11px;padding:2px 7px;background:none;border:1px solid var(--brd);border-radius:4px;cursor:pointer;margin-left:auto;" onclick="document.getElementById('tg-msg-exit-${i}').value='';document.getElementById('tg-cc-exit-${i}').textContent='0/4096';">✕</button>
-                <span id="tg-cc-exit-${i}" style="font-size:10px;color:var(--muted);align-self:center;">0/4096</span>
-              </div>
-              <textarea id="tg-msg-exit-${i}" rows="4" placeholder="청산 시그널 메시지..."
-                style="width:100%;background:var(--bg-input,#0a0e1a);border:1px solid var(--brd);border-radius:6px;color:var(--text);padding:8px 10px;font-family:monospace;font-size:12px;line-height:1.6;resize:vertical;outline:none;"
-                oninput="document.getElementById('tg-cc-exit-${i}').textContent=this.value.length+'/4096'"></textarea>
-              <button class="btn btn-dan" style="width:100%;margin-top:7px;font-size:13px;" onclick="sendToGroup(${i},'청산','exit')"><i class="fas fa-sign-out-alt"></i> 청산시그널 전송</button>
+                oninput="document.getElementById('tg-cc-msg-${i}').textContent=this.value.length+'/4096'"></textarea>
+              <button class="btn btn-pri" style="width:100%;font-size:13px;" onclick="sendToGroup(${i},'메시지','msg')"><i class="fab fa-telegram-plane"></i> 메시지 전송</button>
             </div>
           </div>`;
         }).join('');
