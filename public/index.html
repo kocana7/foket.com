@@ -2928,11 +2928,9 @@
       _cspRenderPair(true);
     }
 
-    function loadCryptoStats() {
+    function loadCryptoStats(markets) {
       try {
-        const raw = localStorage.getItem('fk_markets_published') || localStorage.getItem('fk_markets');
-        if (!raw) return;
-        const markets = JSON.parse(raw);
+        if (!markets) return;
         const crypto = markets.find(m => m.id === 1);
         if (!crypto || !Array.isArray(crypto.instruments)) return;
 
@@ -3052,11 +3050,9 @@
       _fspRenderGroup(true);
     }
 
-    function loadFuturesStats() {
+    function loadFuturesStats(markets) {
       try {
-        const raw = localStorage.getItem('fk_markets_published') || localStorage.getItem('fk_markets');
-        if (!raw) return;
-        const markets = JSON.parse(raw);
+        if (!markets) return;
 
         // id:2~7 카테고리 전체 종목 합산
         _fspInsts = [];
@@ -3082,11 +3078,9 @@
       }
     }
 
-    function loadBinanceStats() {
+    function loadBinanceStats(markets) {
       try {
-        const raw = localStorage.getItem('fk_markets_published') || localStorage.getItem('fk_markets');
-        if (!raw) return;
-        const markets = JSON.parse(raw);
+        if (!markets) return;
         const cat = markets.find(m => m.id === 8);
         if (!cat || !Array.isArray(cat.instruments)) return;
 
@@ -3194,28 +3188,35 @@
       }
     }
 
-    async function loadBest10() {
-      /* 1) localStorage 데이터로 즉시 렌더링 */
-      const cached = localStorage.getItem('fk_markets_published') || localStorage.getItem('fk_markets');
-      renderBest10(cached);
-      /* 2) 백그라운드에서 API 갱신 후 재렌더링 */
+    /* ── 서버에서 마켓 데이터 로드 (단일 진입점) ── */
+    let _marketsDataCache = null;
+    async function fetchMarketsFromServer() {
+      if (_marketsDataCache) return _marketsDataCache;
       try {
-        const base = (location.protocol !== 'file:') ? location.origin + '/api' : 'http://localhost:3000/api';
+        const base = location.origin + '/api';
         const r = await fetch(base + '/public/markets', { cache: 'no-store' });
         const j = await r.json();
         if (j && j.success && j.data) {
-          const raw = typeof j.data === 'string' ? j.data : JSON.stringify(j.data);
-          try { localStorage.setItem('fk_markets_published', raw); } catch(e) {}
-          renderBest10(raw);
+          _marketsDataCache = typeof j.data === 'string' ? JSON.parse(j.data) : j.data;
+          return _marketsDataCache;
         }
-      } catch(e) { /* 서버 없으면 캐시 유지 */ }
+      } catch(e) { console.warn('[Markets] 서버 로드 실패:', e); }
+      return null;
+    }
+
+    async function loadBest10() {
+      const markets = await fetchMarketsFromServer();
+      if (markets) renderBest10(JSON.stringify(markets));
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      loadBest10().then(() => {
-        loadCryptoStats();
-        loadBinanceStats();
-        loadFuturesStats();
+      fetchMarketsFromServer().then(markets => {
+        if (!markets) return;
+        const raw = JSON.stringify(markets);
+        loadBest10();
+        loadCryptoStats(markets);
+        loadBinanceStats(markets);
+        loadFuturesStats(markets);
       });
 
       // Random shuffle of 3 CSP cards periodically
