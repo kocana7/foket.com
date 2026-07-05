@@ -3016,10 +3016,10 @@
     ═══════════════════════════════════════════════════════════════ */
     const TG_GROUP_COLORS = ['#4CAF50','#2196F3','#F0B90B','#9C27B0','#FF5722','#00BCD4','#E91E63','#607D8B'];
     const TG_DEFAULT_GROUPS = [
-      { label: '전체그룹', username: '@foket-lobby' },
-      { label: 'S&P',      username: '@foket-sp' },
-      { label: 'Gold',     username: '@foket-gold' },
-      { label: 'EuroFX',  username: '@foket-eurofx' },
+      { label: '전체그룹', username: '@foket_center' },
+      { label: 'S&P',      username: '@foket_s&p' },
+      { label: 'Gold',     username: '@foket_gold' },
+      { label: 'EuroFX',  username: '@foket_eurofx' },
     ];
 
     function getTgGroups() {
@@ -3058,6 +3058,17 @@
       saveTgGroupsToStorage(groups);
       renderTelegram();
     }
+    function saveTgGroupUsername(idx) {
+      const input = document.getElementById('tg-username-' + idx);
+      if (!input) return;
+      const val = input.value.trim();
+      if (!val) { showAlert('주소를 입력하세요.', 'err'); return; }
+      const groups = getTgGroups();
+      groups[idx].username = val.startsWith('@') ? val : '@' + val;
+      saveTgGroupsToStorage(groups);
+      renderTelegram();
+      showAlert('주소가 저장되었습니다.');
+    }
 
     function renderTelegram() {
       const cfg = ls('settings', {});
@@ -3076,10 +3087,17 @@
           return `
           <div style="background:var(--bg2);border:2px solid var(--brd);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;">
             <!-- 헤더 -->
-            <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--brd);background:${color}18;">
-              <span style="font-size:14px;font-weight:700;color:${color};">${p.label}</span>
-              <span style="font-size:11px;color:var(--muted);flex:1;">${p.username}</span>
-              <button onclick="deleteTgGroup(${i})" style="font-size:11px;padding:2px 8px;background:none;border:1px solid #f44336;border-radius:4px;color:#f44336;cursor:pointer;"><i class="fas fa-trash"></i></button>
+            <div style="padding:10px 14px;border-bottom:1px solid var(--brd);background:${color}18;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <span style="font-size:14px;font-weight:700;color:${color};">${p.label}</span>
+                <button onclick="deleteTgGroup(${i})" style="margin-left:auto;font-size:11px;padding:2px 8px;background:none;border:1px solid #f44336;border-radius:4px;color:#f44336;cursor:pointer;"><i class="fas fa-trash"></i></button>
+              </div>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <input id="tg-username-${i}" type="text" value="${p.username}"
+                  style="flex:1;background:var(--bg-input,#0a0e1a);border:1px solid var(--brd);border-radius:5px;color:var(--text);padding:4px 8px;font-size:12px;outline:none;"
+                  placeholder="@username">
+                <button onclick="saveTgGroupUsername(${i})" style="font-size:11px;padding:4px 10px;background:${color};border:none;border-radius:5px;color:#fff;cursor:pointer;white-space:nowrap;"><i class="fas fa-save"></i> 저장</button>
+              </div>
             </div>
             <!-- 진입시그널 섹션 -->
             <div style="padding:10px 14px;border-top:2px solid #00b4d8;background:rgba(0,180,216,.04);">
