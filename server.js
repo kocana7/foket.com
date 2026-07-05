@@ -35,15 +35,19 @@ app.set('trust proxy', 1);
 // Security middleware
 app.use(helmet({
   contentSecurityPolicy: {
+    useDefaults: false,
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
       scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://cdn.sheetjs.com"],
       scriptSrcAttr: ["'unsafe-inline'"],
-      connectSrc: ["'self'", "https://api.binance.com", "https:"],
+      connectSrc: ["'self'", "https://api.binance.com", "https:", "http:"],
       imgSrc: ["'self'", "data:", "https:", "http:"],
       formAction: ["'self'", "https://accounts.google.com"],
+      baseUri: ["'self'"],
+      frameAncestors: ["'self'"],
+      objectSrc: ["'none'"],
     }
   }
 }));
