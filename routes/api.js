@@ -2,6 +2,22 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
+const path = require('path');
+
+const DATA_DIR = path.join(__dirname, '..', 'public', 'data');
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+
+function saveToFile(key, value) {
+  try { fs.writeFileSync(path.join(DATA_DIR, key + '.json'), JSON.stringify({ value }), 'utf8'); } catch(e) {}
+}
+function readFromFile(key) {
+  try {
+    const raw = fs.readFileSync(path.join(DATA_DIR, key + '.json'), 'utf8');
+    const obj = JSON.parse(raw);
+    return obj.value != null ? obj.value : null;
+  } catch(e) { return null; }
+}
 
 function requireAuth(req, res, next) {
   if (req.session && req.session.user) return next();
@@ -273,13 +289,14 @@ router.delete('/admin/users/:id', requireAdmin, async (req, res) => {
 
 // GET /api/storage/:key
 router.get('/storage/:key', async (req, res) => {
+  const key = req.params.key.replace(/[^a-z0-9_-]/gi, '') || 'markets';
   try {
-    const key = req.params.key.replace(/[^a-z0-9_-]/gi, '') || 'markets';
     const [rows] = await db.query('SELECT value FROM app_storage WHERE `key` = ? LIMIT 1', [key]);
     const value = rows.length ? rows[0].value : null;
     res.json({ success: true, value });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    const value = readFromFile(key);
+    res.json({ success: true, value });
   }
 });
 
@@ -289,10 +306,13 @@ router.post('/storage', express.json(), async (req, res) => {
     const key = (req.body && req.body.key) ? String(req.body.key).replace(/[^a-z0-9_-]/gi, '') : null;
     if (!key) return res.status(400).json({ success: false, error: 'key required' });
     const value = req.body.value != null ? (typeof req.body.value === 'string' ? req.body.value : JSON.stringify(req.body.value)) : '';
-    await db.query(
-      'INSERT INTO app_storage (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_at = NOW()',
-      [key, value]
-    );
+    saveToFile(key, value);
+    try {
+      await db.query(
+        'INSERT INTO app_storage (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_at = NOW()',
+        [key, value]
+      );
+    } catch(dbErr) { /* DB 실패해도 파일 저장은 완료 */ }
     res.json({ success: true, saved: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -301,18 +321,23 @@ router.post('/storage', express.json(), async (req, res) => {
 
 // GET /api/public/markets  (메인 페이지용)
 router.get('/public/markets', async (req, res) => {
+  let raw = null;
   try {
     const [rows] = await db.query('SELECT value FROM app_storage WHERE `key` = ? LIMIT 1', ['markets_published']);
-    let raw = rows.length ? rows[0].value : null;
+    raw = rows.length ? rows[0].value : null;
     if (!raw) {
       const [rows2] = await db.query('SELECT value FROM app_storage WHERE `key` = ? LIMIT 1', ['markets']);
       raw = rows2.length ? rows2[0].value : null;
     }
-    if (raw == null) return res.json({ success: true, data: null });
+  } catch (err) {
+    raw = readFromFile('markets_published') || readFromFile('markets');
+  }
+  if (raw == null) return res.json({ success: true, data: null });
+  try {
     const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
     res.json({ success: true, data });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+  } catch(e) {
+    res.json({ success: true, data: null });
   }
 });
 

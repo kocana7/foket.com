@@ -415,13 +415,13 @@
     }
 
     .hero-wrap {
-      max-width: 1280px;
+      max-width: 800px;
       margin: 0 auto;
       padding: 0 24px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
       position: relative;
       z-index: 1
     }
@@ -463,10 +463,11 @@
     }
 
     .hero-title {
-      font-size: clamp(24px, 3.2vw, 36px);
+      font-size: clamp(14px, 2.2vw, 30px);
       font-weight: 800;
       line-height: 1.15;
-      margin-bottom: 20px
+      margin-bottom: 20px;
+      white-space: nowrap
     }
 
     .hero-title .hl {
@@ -514,7 +515,8 @@
     .hero-btns {
       display: flex;
       gap: 14px;
-      flex-wrap: wrap
+      flex-wrap: wrap;
+      justify-content: center
     }
 
     .hero-stats {
@@ -837,11 +839,11 @@
     }
 
     #best10Card .csp-cols-5 {
-      grid-template-columns: 50px 1.1fr 1fr 1fr 1fr .85fr
+      grid-template-columns: 50px 1.1fr 1fr 1fr 1fr 1fr .85fr
     }
 
     #best10Card .csp-row {
-      grid-template-columns: 50px 1.1fr 1fr 1fr 1fr .85fr
+      grid-template-columns: 50px 1.1fr 1fr 1fr 1fr 1fr .85fr
     }
 
     #best10Card .csp-rank {
@@ -851,13 +853,6 @@
       line-height: 1
     }
 
-    .hero-visual {
-      position: relative
-    }
-
-    .hero-csp-wrap {
-      transition: opacity .25s ease
-    }
 
     .hero-card {
       background: var(--gradient-card);
@@ -1131,8 +1126,10 @@
 
     .fmt-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+      max-width: 1000px;
+      margin: 0 auto
     }
 
     .fmt-item {
@@ -1140,22 +1137,14 @@
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
-      padding: 28px 20px;
+      padding: 40px 32px;
       transition: var(--transition);
-      position: relative
+      position: relative;
+      display: flex;
+      flex-direction: column
     }
 
     .fmt-item::after {
-      content: '→';
-      position: absolute;
-      right: -14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      font-size: 18px
-    }
-
-    .fmt-item:last-child::after {
       display: none
     }
 
@@ -1165,29 +1154,76 @@
     }
 
     .fmt-num {
-      width: 36px;
-      height: 36px;
+      width: 48px;
+      height: 48px;
       background: var(--gradient-primary);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 16px;
+      font-size: 20px;
       color: white;
-      margin: 0 auto 14px
+      margin: 0 auto 18px
     }
 
     .fmt-title {
-      font-size: 14px;
+      font-size: 18px;
       font-weight: 700;
-      margin-bottom: 6px
+      margin-bottom: 12px
     }
 
     .fmt-desc {
-      font-size: 12px;
+      font-size: 15px;
       color: var(--text-muted);
-      white-space: pre-wrap
+      white-space: pre-wrap;
+      line-height: 1.8;
+      flex: 1;
+      display: flex;
+      flex-direction: column
+    }
+    .fmt-desc .fmt-fee {
+      margin-top: auto
+    }
+
+    /* ── FLOATING TG BUTTON ── */
+    .tg-float {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #229ed9;
+      color: white;
+      text-decoration: none;
+      padding: 14px 20px;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 4px 20px rgba(34,158,217,.5);
+      transition: transform .2s, box-shadow .2s;
+      white-space: nowrap
+    }
+
+    .tg-float:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(34,158,217,.65);
+      color: white
+    }
+
+    .tg-float i {
+      font-size: 20px
+    }
+
+    @media(max-width:480px) {
+      .tg-float {
+        bottom: 16px;
+        right: 16px;
+        padding: 12px 16px;
+        font-size: 14px
+      }
     }
 
     /* ── COINS ── */
@@ -1539,7 +1575,7 @@
       color: white
     }
 
-    /* ── TESTIMONIALS ── */
+    /* ── MARKETS ── */
     .testi {
       background: var(--bg-secondary)
     }
@@ -1550,12 +1586,56 @@
       gap: 24px
     }
 
-    .tcard {
+    .market-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
-      padding: 28px;
-      transition: var(--transition)
+      padding: 32px 24px;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center
+    }
+
+    .market-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-4px)
+    }
+
+    .market-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: white;
+      margin-bottom: 16px;
+      flex-shrink: 0
+    }
+
+    .market-cat {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 4px
+    }
+
+    .market-sub {
+      font-size: 12px;
+      color: var(--accent-blue);
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: .4px
+    }
+
+    .market-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6
     }
 
     .tcard:hover {
@@ -1863,14 +1943,6 @@
     }
 
     @media(max-width:1024px) {
-      .hero-wrap {
-        grid-template-columns: 1fr
-      }
-
-      .hero-visual {
-        display: none
-      }
-
       .feat-grid {
         grid-template-columns: repeat(2, 1fr)
       }
@@ -1878,9 +1950,14 @@
       .foot-grid {
         grid-template-columns: 1fr 1fr
       }
+
+      .testi-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
     }
 
     @media(max-width:768px) {
+      .core-grid { grid-template-columns: 1fr !important; }
       .navbar-nav {
         display: none
       }
@@ -1964,13 +2041,14 @@
 
       #best10Card .csp-cols-5,
       #best10Card .csp-row {
-        grid-template-columns: 36px 1fr .9fr .9fr .85fr .7fr;
+        grid-template-columns: 36px 1fr .9fr .9fr .9fr .9fr .7fr;
         font-size: 12px;
         padding: 8px 10px
       }
     }
 
     @media(max-width:480px) {
+      .core-grid { grid-template-columns: 1fr !important; }
       .section {
         padding: 60px 0
       }
@@ -1979,12 +2057,29 @@
         padding: 0 0 40px 0
       }
 
+      .hero-title {
+        white-space: normal;
+        font-size: clamp(16px, 4.5vw, 22px)
+      }
+
       .coins-grid {
         grid-template-columns: repeat(2, 1fr)
       }
 
       .fmt-grid {
         grid-template-columns: 1fr
+      }
+
+      .fmt-item {
+        padding: 28px 20px
+      }
+
+      .fmt-title {
+        font-size: 16px
+      }
+
+      .fmt-desc {
+        font-size: 14px
       }
 
       .stats-grid {
@@ -2009,6 +2104,8 @@
 
 <body>
 
+  <div id="page-top"></div>
+
   <!-- ── TICKER ── -->
   <div class="ticker-bar">
     <div class="ticker-inner" id="tickerWrap">
@@ -2022,16 +2119,13 @@
   <nav class="navbar">
     <div class="navbar-inner">
       <a href="index.html" class="navbar-brand">
-        <div class="logo-icon">
-          <img src="images/logo2.png" alt="FoketSignal 로고"
-            style="width:100%;height:100%;object-fit:contain;border-radius:8px;">
-        </div>
-        Foket<span>Signal</span>
+        <img src="images/logo.PNG" alt="Foket 로고"
+          style="height:36px;width:auto;object-fit:contain;">
       </a>
       <div class="navbar-nav">
         <a href="index.html" class="active" data-i18n="nav.home">홈</a>
-        <a href="#signals" data-i18n="nav.signals">FoketSignal 안내</a>
-        <a href="#pricing" data-i18n="nav.pricing">요금제</a>
+        <a href="#core-architecture" data-i18n="nav.signals">Foket 시스템 트레이딩 소개</a>
+        <a href="#services" data-i18n="nav.pricing">서비스 구성</a>
         <a href="faq.html" data-i18n="nav.faq">자주하는 질문(FAQ)</a>
         <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer"
           data-i18n="nav.contact" data-tg="free">문의</a>
@@ -2064,35 +2158,33 @@
           <button onclick="doNavLogout()" class="nav-auth-btn out" style="cursor:pointer;"><i class="fas fa-sign-out-alt"></i></button>
         </div>
         <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="btn-tg" data-tg="free"><i
-            class="fab fa-telegram-plane"></i> <span data-i18n="nav.join_free">무료 텔레그램 참여</span></a>
+            class="fab fa-telegram-plane"></i> <span data-i18n="nav.join_free">텔레그램 문의</span></a>
       </div>
       <button class="hamburger" id="hamburger">&#9776;</button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
       <a href="index.html" data-i18n="nav.home">홈</a>
-      <a href="#signals" data-i18n="nav.signals">FoketSignal 안내</a>
-      <a href="#pricing" data-i18n="nav.pricing">요금제</a>
+      <a href="#core-architecture" data-i18n="nav.signals">Foket 시스템 트레이딩 소개</a>
+      <a href="#services" data-i18n="nav.pricing">서비스 구성</a>
       <a href="faq.html" data-i18n="nav.faq">자주하는 질문(FAQ)</a>
       <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" data-i18n="nav.contact" data-tg="free">문의</a>
       <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="btn-tg" data-tg="free"
-        style="margin:12px 16px 0;"><i class="fab fa-telegram-plane"></i> <span data-i18n="nav.join_free">무료 텔레그램
-          참여</span></a>
+        style="margin:12px 16px 0;"><i class="fab fa-telegram-plane"></i> <span data-i18n="nav.join_free">텔레그램 문의</span></a>
     </div>
   </nav>
 
-  <!-- ── FoketSignal 수익율 베스트10 ── -->
+  <!-- ── FoketSignal 수익율 현황 ── -->
   <section class="best10-sec">
     <div class="best10-inner">
       <div class="csp" id="best10Card">
         <div class="csp-hd">
           <div class="csp-title">
-            <div class="csp-dot"></div><span data-i18n="best10.title">FoketSignal 수익율 베스트10</span>
+            <div class="csp-dot"></div><span data-i18n="best10.title">FoketSignal 수익율 현황</span>
           </div>
-          <div class="csp-live">TOP 10</div>
+          <div class="csp-live">LIVE</div>
         </div>
         <div class="csp-cols csp-cols-5">
-          <span data-i18n="best10.col_rank">순위</span><span data-i18n="best10.col_symbol">종목</span><span data-i18n="best10.col_monthly_return">월평균 수익률</span><span data-i18n="best10.col_max_loss">일최대 손실변동폭</span><span data-i18n="best10.col_daily_trades">일평균 왕복
-            거래횟수</span><span data-i18n="best10.col_trade_days">거래일수</span>
+          <span data-i18n="best10.col_rank">순위</span><span data-i18n="best10.col_symbol">종목</span><span data-i18n="best10.col_monthly_return">월평균 수익률</span><span data-i18n="best10.col_monthly_profit">월평균 수익액($)</span><span data-i18n="best10.col_margin">거래 증거금($)</span><span data-i18n="best10.col_max_loss">과거 일 최대 손실 기록($)</span><span data-i18n="best10.col_trade_days">딥러닝 이후 검증 거래일수</span>
         </div>
         <div id="best10Rows">
           <div class="csp-row" style="opacity:.3">
@@ -2101,12 +2193,29 @@
             <div class="csp-val dim">—</div>
             <div class="csp-val dim">—</div>
             <div class="csp-val dim">—</div>
+            <div class="csp-val dim">—</div>
+            <div class="csp-val dim">—</div>
             <div class="csp-days">—</div>
           </div>
         </div>
       </div>
+      <div style="max-width:900px;margin:16px auto 0;padding:14px 20px;background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.2);border-radius:10px;font-size:13px;color:var(--text-secondary);line-height:1.8;">
+        <strong style="color:var(--text-primary);">수익율 산정 기준 :</strong>
+        해외선물 특성상 증거금(Deposit)이 기초투자금이므로, 수익율 산정에는 증거금의 3배를 기준으로 산정됨.<br>
+        <span style="color:var(--text-muted);">
+          예: A종목의 증거금 5,000달러 &rarr; 초기 투자금 15,000달러(3배) &rarr; 월 수익이 1,000달러이면
+          월 수익율은 1,000달러 / 15,000달러 = <strong style="color:var(--accent-green);">6.67%</strong><br>
+          투자금은 전체 투자금의 1/3만 소요되며, 트레이딩 종목의 증거금 명목으로 활용됩니다.
+        </span>
+      </div>
     </div>
   </section>
+
+  <!-- ── MAIN IMAGE ── -->
+  <div style="width:100%;overflow:hidden;line-height:0;">
+    <img src="images/Main_Image3.png" alt="Foket 트레이딩 시스템"
+      style="width:100%;max-height:480px;object-fit:cover;display:block;">
+  </div>
 
   <!-- ── HERO ── -->
   <section class="hero" id="home">
@@ -2116,17 +2225,17 @@
           <div class="dot"></div><span data-i18n="hero.badge">데이터로 검증한 Signal, 결과로 증명합니다.</span>
         </div>
         <h1 class="hero-title" data-i18n="hero.title">
-          2억3천여만개 머신러닝 로직 탑재
+          최근 15년간 수치데이터 + 2억 8천만개 트레이딩 로직 딥러닝
         </h1>
         <p class="hero-sub" data-i18n="hero.subtitle">
           AI 머신러닝 최적화 트레이딩 신호
         </p>
         <div class="hero-perks">
           <div class="hero-perk">
-            <div class="chk"><i class="fas fa-check"></i></div><span data-i18n="hero.perk1">무료 시그널 제공</span>
+            <div class="chk"><i class="fas fa-check"></i></div><span data-i18n="hero.perk1">유튜브 실시간 라이브 트레이딩 방송 (주 1~3회) 진행</span>
           </div>
           <div class="hero-perk">
-            <div class="chk"><i class="fas fa-check"></i></div><span data-i18n="hero.perk2">암호화폐, 해외선물 매수매도 시그널</span>
+            <div class="chk"><i class="fas fa-check"></i></div><span data-i18n="hero.perk2">해외선물 매수매도 시그널</span>
           </div>
           <div class="hero-perk">
             <div class="chk"><i class="fas fa-check"></i></div><span data-i18n="hero.perk3">데이트레이딩</span>
@@ -2138,135 +2247,14 @@
             <div class="chk"><i class="fas fa-check"></i></div><span data-i18n="hero.perk5">자산운용사 위탁 트레이딩 신청 가능</span>
           </div>
           <div class="hero-perk">
-            <div class="chk"><i class="fas fa-check"></i></div><span data-i18n="hero.perk6">일 1개 종목을 랜덤으로 선정하여 1~5회 무료
-              시그널 제공</span>
+            <div class="chk"><i class="fas fa-check"></i></div><span data-i18n="hero.perk6">시그널 수신으로 개별 트레이딩 및 위탁 트레이딩 선택</span>
           </div>
         </div>
         <div class="hero-btns">
           <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer"
-            class="btn btn-primary btn-lg" data-tg="free"><i class="fab fa-telegram-plane"></i> <span data-i18n="hero.join_free_btn">무료
-              텔레그램 참여</span></a>
-          <a href="#pricing" class="btn btn-outline btn-lg"><span data-i18n="hero.view_vip_btn">요금제 보기</span> <i
+            class="btn btn-primary btn-lg" data-tg="free"><i class="fab fa-telegram-plane"></i> <span data-i18n="hero.join_free_btn">텔레그램 문의</span></a>
+          <a href="#services" class="btn btn-outline btn-lg"><span data-i18n="hero.view_vip_btn">서비스 구성</span> <i
               class="fas fa-arrow-right"></i></a>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <!-- CryptoCurrency Stats Panel -->
-        <div
-          style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
-          <div style="font-size:18px;font-weight:800;color:var(--text-primary);letter-spacing:-.3px;">
-            FoketSignal <span
-              style="background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">수익율</span>
-          </div>
-          <a href="signals-detail.html" class="btn btn-outline" style="padding:8px 16px;font-size:13px;">자세히보기 <i
-              class="fas fa-arrow-right"></i></a>
-        </div>
-        <div class="hero-csp-wrap" id="heroCspWrap">
-          <div class="csp" id="cryptoStatsPanel">
-            <div class="csp-hd">
-              <div class="csp-title">
-                <div class="csp-dot"></div>CryptoCurrency
-              </div>
-              <div class="csp-live">LIVE</div>
-            </div>
-            <div class="csp-cols">
-              <span>종목</span><span>월평균 수익률</span><span>일최대 손실변동폭</span><span>일평균 왕복거래횟수</span><span>거래일수</span>
-            </div>
-            <div id="cspRows">
-              <!-- 스켈레톤 (2개) -->
-              <div class="csp-row" style="opacity:.3">
-                <div class="csp-sym">BTC<small>비트코인</small></div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-days">—</div>
-              </div>
-              <div class="csp-row" style="opacity:.3">
-                <div class="csp-sym">ETH<small>이더리움</small></div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-days">—</div>
-              </div>
-            </div>
-            <div id="cspDots"
-              style="display:flex;justify-content:center;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border-color);">
-            </div>
-          </div>
-          <!-- Binance CryptoCurrency Stats Panel -->
-          <div class="csp" id="binanceStatsPanel">
-            <div class="csp-hd">
-              <div class="csp-title">
-                <div class="csp-dot" style="background:#f0b90b;box-shadow:0 0 6px #f0b90b88;"></div>Binance
-                CryptoCurrency
-              </div>
-              <div class="csp-live"
-                style="color:#f0b90b;background:rgba(240,185,11,.12);border-color:rgba(240,185,11,.3);">LIVE</div>
-            </div>
-            <div class="csp-cols">
-              <span>종목</span><span>월평균 수익률</span><span>일최대 손실변동폭</span><span>일평균 왕복거래횟수</span><span>거래일수</span>
-            </div>
-            <div id="bspRows">
-              <!-- 스켈레톤 (2개) -->
-              <div class="csp-row" style="opacity:.3">
-                <div class="csp-sym">BNB<small>바이낸스코인</small></div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-days">—</div>
-              </div>
-              <div class="csp-row" style="opacity:.3">
-                <div class="csp-sym">ADA<small>에이다</small></div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-days">—</div>
-              </div>
-            </div>
-            <div id="bspDots"
-              style="display:flex;justify-content:center;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border-color);">
-            </div>
-          </div>
-          <!-- Futures Stats Panel -->
-          <div class="csp" id="futuresStatsPanel">
-            <div class="csp-hd">
-              <div class="csp-title">
-                <div class="csp-dot" style="background:#3fb950;box-shadow:0 0 6px #3fb95088;"></div>Futures
-              </div>
-              <div class="csp-live"
-                style="color:#3fb950;background:rgba(63,185,80,.12);border-color:rgba(63,185,80,.3);">LIVE</div>
-            </div>
-            <div class="csp-cols">
-              <span>종목</span><span>증거금 대비 월평균</span><span>일최대 손실변동폭</span><span>일평균 왕복거래횟수</span><span>거래일수</span>
-            </div>
-            <div id="fspRows">
-              <!-- 스켈레톤 (3개) -->
-              <div class="csp-row" style="opacity:.3">
-                <div class="csp-sym">ES<small>S&P 선물</small></div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-days">—</div>
-              </div>
-              <div class="csp-row" style="opacity:.3">
-                <div class="csp-sym">GC<small>골드</small></div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-days">—</div>
-              </div>
-              <div class="csp-row" style="opacity:.3">
-                <div class="csp-sym">CL<small>원유</small></div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-val dim">—</div>
-                <div class="csp-days">—</div>
-              </div>
-            </div>
-            <div id="fspDots"
-              style="display:flex;justify-content:center;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border-color);">
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -2277,14 +2265,14 @@
     <div class="container">
       <div class="sec-header">
 
-        <h2 class="sec-title" data-i18n="features.title">왜 Foket Signal 일까요?</h2>
-        <p class="sec-sub" data-i18n="features.subtitle">전문 트레이더 팀과 AI 기술이 결합된 최고의 시그널 서비스</p>
+        <h2 class="sec-title" data-i18n="features.title">왜 Foket 일까요?</h2>
+        <p class="sec-sub" data-i18n="features.subtitle">전문 트레이더 팀과 AI 기술이 결합된 최고의 트레이딩 로직 서비스</p>
       </div>
       <div class="feat-grid">
         <div class="feat-card">
           <div class="feat-title" data-i18n="features.ai_title">AI 기반 분석</div>
           <div class="feat-desc" data-i18n="features.ai_desc">데이터기반 AI 시장 분석
-            2억3천여만개 중 선별된 수익로직 딥러닝</div>
+            2억 8천만개 중 선별된 수익로직 딥러닝</div>
         </div>
         <div class="feat-card">
           <div class="feat-title" data-i18n="features.expert_title">전문가 팀</div>
@@ -2304,121 +2292,214 @@
         <div class="feat-card">
           <div class="feat-title" data-i18n="features.support_title">24/7지원</div>
           <div class="feat-desc" data-i18n="features.support_desc">8개국어 지원
-            전세계 트레이더 커뮤니티 케어
+            24시간 자동 시스템 트레이딩
             24시간 고객센터 운영</div>
         </div>
         <div class="feat-card">
-          <div class="feat-title" data-i18n="features.education_title">중장기 시장전망</div>
-          <div class="feat-desc" data-i18n="features.education_desc">거시흐름 기반 전망
-            최고급 장기 시장 전망 롤오버 정보제공</div>
+          <div class="feat-title" data-i18n="features.education_title">트레이딩 위탁</div>
+          <div class="feat-desc" data-i18n="features.education_desc">제휴 자산운용사, 투자자문사로의 트레이딩 위탁 가능</div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ── HOW IT WORKS ── -->
-  <section class="section how" id="signals">
+  <section class="section how" id="services">
     <div class="container">
       <div class="sec-header">
 
-        <h2 class="sec-title" data-i18n="how_it_works.title">시그널 구성</h2>
-        <p class="sec-sub" data-i18n="how_it_works.subtitle">각 시그널에 포함된 정보</p>
+        <h2 class="sec-title" data-i18n="how_it_works.title">서비스 구성</h2>
       </div>
       <div class="fmt-grid">
         <div class="fmt-item">
           <div class="fmt-num">1</div>
-          <div class="fmt-title" data-i18n="how_it_works.entry">진입 시그널</div>
-          <div class="fmt-desc" data-i18n="how_it_works.entry_desc">현물 매수(Futures는 매도 포함)의 시장가 진행</div>
-        </div>
-        <div class="fmt-item">
-          <div class="fmt-num">2</div>
-          <div class="fmt-title" data-i18n="how_it_works.take_profit">목표가</div>
-          <div class="fmt-desc" data-i18n="how_it_works.take_profit_desc">목표가 제시를 기본으로 하지만 초과 수익 후 청산 신호가 나올 수도 있습니다.
+          <div class="fmt-title" data-i18n="how_it_works.entry">SNS 시그널 수신</div>
+          <div class="fmt-desc" style="text-align:left;">
+            <div style="display:flex;gap:8px;margin-bottom:6px;"><span style="flex-shrink:0;">1.</span><span>SNS등을 통한 1:1 트레이딩 시그널 수신(시그널은 종목별로 실시간으로 전송됩니다.)</span></div>
+            <div style="display:flex;gap:8px;margin-bottom:6px;"><span style="flex-shrink:0;">2.</span><span>신청회원의 자율적 트레이딩 진행</span></div>
+            <div style="display:flex;gap:8px;margin-bottom:6px;"><span style="flex-shrink:0;">3.</span><span>24시간 트레이딩</span></div>
+            <div class="fmt-fee" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-color);font-size:13px;color:var(--accent-blue);font-weight:600;">서비스요금 : 종목당 월 $300 또는 50만원 (정액제, 부가세 제외)</div>
           </div>
         </div>
         <div class="fmt-item">
-          <div class="fmt-num">3</div>
-          <div class="fmt-title" data-i18n="how_it_works.stop_loss">손절가</div>
-          <div class="fmt-desc" data-i18n="how_it_works.stop_loss_desc">과거 로직에서 기록했던 평균적 및 최소 기록 모두 제시해 드립니다. 즉 데이터 상
-            평가손익의 기록이며 과거 해당 수치에서 거래를 종료한 것은 아닙니다.</div>
+          <div class="fmt-num">2</div>
+          <div class="fmt-title" data-i18n="how_it_works.take_profit">위탁 또는 주문대리</div>
+          <div class="fmt-desc" style="text-align:left;">
+            <div style="display:flex;gap:8px;margin-bottom:6px;"><span style="flex-shrink:0;">1.</span><span>Foket과 직접 계약 또는 Foket의 제휴 자산운용사, 투자자문사와 계약</span></div>
+            <div style="display:flex;gap:8px;margin-bottom:6px;"><span style="flex-shrink:0;">2.</span><span>Foket의 100% 자동 트레이딩 시스템 가동</span></div>
+            <div style="display:flex;gap:8px;margin-bottom:6px;"><span style="flex-shrink:0;">3.</span><span>주단위 수익 정산(계약에 따라 상이하며 수익의 30~40% 정산)</span></div>
+            <div style="display:flex;gap:8px;margin-bottom:6px;"><span style="flex-shrink:0;">4.</span><span>계약 사항의 자율적 상시 조정 가능</span></div>
+            <div class="fmt-fee" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-color);font-size:13px;color:var(--accent-blue);font-weight:600;">서비스요금 : 별도의 요금은 없으며, 계약에 따라 수익의 30~40% 정산 방식</div>
+          </div>
         </div>
-        <div class="fmt-item">
-          <div class="fmt-num">4</div>
-          <div class="fmt-title" data-i18n="how_it_works.risk">진행 중 트레이딩 종료 시그널</div>
-          <div class="fmt-desc" data-i18n="how_it_works.risk_desc">현물의 시장가 매도, Futures의 포지션 청산 시그널 입니다.
-            현재 진행 중인 트레이딩을 종료하고 다음 진입 시그널을 기다립니다.</div>
+      </div>
+
+      <!-- 서비스 신청 방법 -->
+      <div style="max-width:700px;margin:40px auto 0;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:36px 40px;">
+        <h3 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:24px;text-align:center;">서비스 신청 방법</h3>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;align-items:flex-start;gap:16px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:white;flex-shrink:0;">1</div>
+            <div style="padding-top:5px;font-size:15px;color:var(--text-secondary);">SNS 문의 신청</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:16px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:white;flex-shrink:0;">2</div>
+            <div style="padding-top:5px;font-size:15px;color:var(--text-secondary);">위탁 및 대리 주문 신청 또는 시그널 수신 중 택 1</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:16px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:white;flex-shrink:0;">3</div>
+            <div style="padding-top:5px;font-size:15px;color:var(--text-secondary);">선택 서비스에 관련된 이용약관에 따른 서비스 진행</div>
+          </div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- ── PRICING ── -->
-  <section class="section" id="pricing">
-    <div class="container">
-      <div class="sec-header">
+    <!-- ── CORE ARCHITECTURE ── -->
+    <div id="core-architecture" style="max-width:1000px;margin:64px auto 0;">
 
-        <h2 class="sec-title" data-i18n="pricing.title">요금제 선택</h2>
-        <p class="sec-sub" data-i18n="pricing.subtitle">나에게 맞는 플랜을 선택하세요</p>
+      <!-- MAIN COPY -->
+      <div style="text-align:center;margin-bottom:56px;padding:0 16px;">
+        <p style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--accent-blue);font-weight:700;margin-bottom:16px;">FOKET ALGORITHM</p>
+        <h2 style="font-size:clamp(20px,3vw,30px);font-weight:800;color:var(--text-primary);line-height:1.4;margin-bottom:20px;">"감정을 배제한 데이터, 100% 자동화가 만드는 지속 가능한 알파 수익"</h2>
+        <p style="font-size:15px;color:var(--text-secondary);line-height:1.9;max-width:760px;margin:0 auto;">
+          FOKET의 알고리즘은 인간의 심리적 오류를 완벽히 차단하고, 오직 철저하게 검증된 통계적 확신 위에서만 움직입니다.<br>
+          글로벌 선물 시장의 방대한 역사적 데이터와 고도화된 머신러닝 기술이 결합하여, 리스크는 최소화하고 수익은 극대화하는 독보적인 자산운용 솔루션을 제시합니다.
+        </p>
       </div>
-      <div class="pricing-grid" id="pricingGrid"></div>
+
+      <!-- 6 CORE CARDS -->
+      <div class="core-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:28px 24px;transition:border-color .3s,transform .3s;" onmouseover="this.style.borderColor='var(--accent-blue)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='translateY(0)'">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--accent-blue);margin-bottom:10px;">01</div>
+          <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:6px;">15-Year Historical Big Data</div>
+          <div style="font-size:12px;color:var(--accent-blue);font-weight:600;margin-bottom:12px;">세계 선물 시장 15년 데이터의 총집약</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">글로벌 선물 시장의 지난 15개년 빅데이터를 정밀 분석하여 각 선물 자산 및 지수 고유의 가격 변동 패턴과 미시적 움직임의 특성을 정형화, 알고리즘의 기초 체력을 구축했습니다.</div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:28px 24px;transition:border-color .3s,transform .3s;" onmouseover="this.style.borderColor='var(--accent-blue)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='translateY(0)'">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--accent-blue);margin-bottom:10px;">02</div>
+          <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:6px;">280M Machine Learning Logics</div>
+          <div style="font-size:12px;color:var(--accent-blue);font-weight:600;margin-bottom:12px;">2억 8천만 개 로직 기반의 딥러닝 최적화</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">2억 8,000만여 개의 방대한 트레이딩 알고리즘 구조에 AI 머신러닝 엔진을 투입, 실제 가혹한 시장 환경에서 연속적인 수익(Pure Profit)을 창출하는 정예 로직만을 엄격하게 필터링하여 탑재했습니다.</div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:28px 24px;transition:border-color .3s,transform .3s;" onmouseover="this.style.borderColor='var(--accent-blue)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='translateY(0)'">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--accent-blue);margin-bottom:10px;">03</div>
+          <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:6px;">100% Emotionless Automation</div>
+          <div style="font-size:12px;color:var(--accent-blue);font-weight:600;margin-bottom:12px;">인간의 감정을 배제한 100% 자동 시스템 트레이딩</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">트레이딩의 가장 큰 적인 공포와 탐욕을 원천 차단하기 위해 모든 진입과 청산 프로세스를 100% 자동화 시스템으로 완벽히 통제합니다.</div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:28px 24px;transition:border-color .3s,transform .3s;" onmouseover="this.style.borderColor='var(--accent-blue)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='translateY(0)'">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--accent-blue);margin-bottom:10px;">04</div>
+          <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:6px;">Pure Day Trading &amp; No Rollover</div>
+          <div style="font-size:12px;color:var(--accent-blue);font-weight:600;margin-bottom:12px;">오버나이트 리스크 제로, 철저한 데이트레이딩 체계</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">포지션을 다음 날로 넘기는 롤오버(Rollover)를 절대 하지 않으며, 당일 진입·당일 청산의 원칙을 고수하여 예측 불가능한 갭(Gap) 리스크를 원천 봉쇄합니다.</div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:28px 24px;transition:border-color .3s,transform .3s;" onmouseover="this.style.borderColor='var(--accent-blue)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='translateY(0)'">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--accent-blue);margin-bottom:10px;">05</div>
+          <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:6px;">Rigorous Risk Control (MDD)</div>
+          <div style="font-size:12px;color:var(--accent-blue);font-weight:600;margin-bottom:12px;">미인지 위험 노출 방지를 위한 필수 손절 관리</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">필수적인 손절매 기준과 최대 낙폭 제어(MDD) 메커니즘을 상시 가동하여, 보이지 않는 잠재 위험으로부터 투자 원금을 완벽하게 방어합니다.</div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:28px 24px;transition:border-color .3s,transform .3s;" onmouseover="this.style.borderColor='var(--accent-blue)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='translateY(0)'">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--accent-blue);margin-bottom:10px;">06</div>
+          <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:6px;">24/7 Transparent Live Streaming</div>
+          <div style="font-size:12px;color:var(--accent-blue);font-weight:600;margin-bottom:12px;">유튜브 라이브를 통한 실시간 투명성 입증</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">FOKET은 알고리즘의 구동 과정과 실시간 트레이딩 퍼포먼스를 유튜브 라이브 방송을 통해 투명하게 공개합니다. 결과로 증명하는 FOKET의 압도적인 기술력을 실시간으로 직접 확인해 보십시오.</div>
+        </div>
+
+      </div>
     </div>
+
   </section>
 
-  <!-- ── TESTIMONIALS ── -->
+  <!-- ── MARKETS ── -->
   <section class="section testi" id="reviews">
     <div class="container">
       <div class="sec-header">
-
-        <h2 class="sec-title" data-i18n="testimonials.title">사용자 후기</h2>
+        <h2 class="sec-title">포트폴리오의 완성, 시장을 주도하는 6대 대표 선물 종목 트레이딩</h2>
+        <p class="sec-sub">고수익·고위험 선물 시장에서 안정적인 알파 수익을 창출하기 위해선 철저한 자산 분산이 필수적입니다.<br>
+          FOKET은 전 세계 자본이 집중되는 가장 유동성이 풍부한 대표 종목만을 타겟팅합니다.</p>
       </div>
-      <div class="testi-grid" id="testiGrid">
-        <!-- 후기는 관리자 페이지 후기 데이터에서 로드됩니다 -->
+      <div class="testi-grid">
+        <div class="market-card">
+          <div class="market-icon" style="background:linear-gradient(135deg,#1a6ed8,#58a6ff);">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <div class="market-cat">지수 (Equity Indices)</div>
+          <div class="market-sub">주식 지수 선물 · Index Futures</div>
+          <div class="market-desc">S&P 500, Nasdaq 100, 닛케이 225 등 글로벌 주요 증시 지수 선물</div>
+        </div>
+        <div class="market-card">
+          <div class="market-icon" style="background:linear-gradient(135deg,#3b82f6,#06b6d4);">
+            <i class="fas fa-exchange-alt"></i>
+          </div>
+          <div class="market-cat">외환 (FX)</div>
+          <div class="market-sub">통화/외환 · Foreign Exchange</div>
+          <div class="market-desc">유로, 엔화, 호주달러 등 전 세계 글로벌 자금 흐름의 척도</div>
+        </div>
+        <div class="market-card">
+          <div class="market-icon" style="background:linear-gradient(135deg,#f0883e,#e05c00);">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <div class="market-cat">에너지 (Energy)</div>
+          <div class="market-sub">원자재 에너지 · Energy Commodities</div>
+          <div class="market-desc">원유, 천연가스 등 공급망 변동성 속 압도적인 추세를 만드는 에너지 시장</div>
+        </div>
+        <div class="market-card">
+          <div class="market-icon" style="background:linear-gradient(135deg,#d29922,#f0c040);">
+            <i class="fas fa-gem"></i>
+          </div>
+          <div class="market-cat">금속 (Metals)</div>
+          <div class="market-sub">귀금속/원자재 · Precious Metals</div>
+          <div class="market-desc">골드, 실버 등 인플레이션 헤지 및 안전자산 역할의 귀금속 선물</div>
+        </div>
+        <div class="market-card">
+          <div class="market-icon" style="background:linear-gradient(135deg,#2ea043,#56d364);">
+            <i class="fas fa-seedling"></i>
+          </div>
+          <div class="market-cat">농산물 (Agriculture)</div>
+          <div class="market-sub">농산물 선물 · Agricultural Futures</div>
+          <div class="market-desc">밀, 옥수수, 대두 등 기후 변화와 수급 불균형이 만드는 강력한 마진 기회</div>
+        </div>
+        <div class="market-card">
+          <div class="market-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">
+            <i class="fas fa-percentage"></i>
+          </div>
+          <div class="market-cat">금리 (Interest Rates)</div>
+          <div class="market-sub">금리 선물 · Interest Rate Futures</div>
+          <div class="market-desc">미국채, T-Bond 등 거시경제 정책 변화에 따른 채권 시장의 핵심 선물</div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ── CTA ── -->
-  <section class="cta-sec" id="contact">
-    <div class="container">
-      <h2 data-i18n="cta.title">지금 시작하세요</h2>
-      <p data-i18n="cta.subtitle">무료로 텔레그램에 참여하고 고품질 시그널을 받아보세요</p>
-      <div class="cta-btns">
-        <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer"
-          class="btn btn-primary btn-lg" data-tg="free"><i class="fab fa-telegram-plane"></i> <span data-i18n="cta.btn">무료로
-            시작하기</span></a>
-        <a href="#pricing" class="btn btn-outline btn-lg" data-i18n="pricing.title">요금제 보기</a>
-      </div>
-    </div>
-  </section>
-
   <!-- ── FOOTER ── -->
   <footer>
     <div class="container">
       <div class="foot-grid">
         <div>
           <a href="index.html" class="fbrand-name">
-            <div class="logo-icon"
-              style="width:38px;height:38px;background:var(--gradient-primary);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-              <img src="images/logo2.png" alt="FoketSignal 로고"
-                style="width:100%;height:100%;object-fit:contain;border-radius:8px;">
-            </div>
-            Foket<span>Signal</span>
+            <img src="images/logo.PNG" alt="Foket 로고" style="height:36px;width:auto;object-fit:contain;">
           </a>
           <p class="ftagline" data-i18n="footer.tagline">AI Trading Signal</p>
           <div class="slinks">
             <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="slink"
               title="Telegram" data-tg="free"><i class="fab fa-telegram-plane"></i></a>
-            <a href="#" class="slink" title="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="slink" title="Instagram"><i class="fab fa-instagram"></i></a>
             <a href="#" class="slink" title="YouTube"><i class="fab fa-youtube"></i></a>
           </div>
         </div>
         <div>
           <div class="fhead" data-i18n="footer.quick_links">빠른 링크</div>
           <div class="flinks">
-            <a href="#home" data-i18n="nav.home">홈</a>
-            <a href="#signals" data-i18n="nav.signals">FoketSignal 안내</a>
-            <a href="#pricing" data-i18n="nav.pricing">요금제</a>
+            <a href="#page-top" data-i18n="nav.home">홈</a>
+            <a href="#core-architecture" data-i18n="nav.signals">Foket 시스템 트레이딩 소개</a>
+            <a href="#services" data-i18n="nav.pricing">서비스 구성</a>
             <a href="faq.html" data-i18n="nav.faq">자주하는 질문(FAQ)</a>
             <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer"
               data-i18n="nav.contact" data-tg="free">문의</a>
@@ -2428,9 +2509,7 @@
           <div class="fhead" data-i18n="footer.follow_us">소셜 미디어</div>
           <div class="flinks">
             <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" data-tg="free">Telegram (Free)</a>
-            <a href="#">Twitter / X</a>
             <a href="#">YouTube</a>
-            <a href="#">Instagram</a>
           </div>
         </div>
         <div>
@@ -2467,11 +2546,11 @@
     /* ── i18n DATA ── */
     const TRANSLATIONS = {
       ko: {
-        "nav.home": "홈", "nav.signals": "FoketSignal 안내", "nav.pricing": "요금제", "nav.faq": "자주하는 질문(FAQ)", "nav.contact": "문의", "nav.join_free": "무료 텔레그램 참여", "nav.login": "로그인", "nav.signup": "회원가입", "nav.mypage": "마이페이지",
-        "hero.badge": "데이터로 검증한 Signal, 결과로 증명합니다.", "hero.title": "2억3천여만개 머신러닝 로직 탑재", "hero.subtitle": "AI 머신러닝 최적화 트레이딩 신호", "hero.free_signals_week": "무료 시그널 주 3회", "hero.vip_signals_day": "VIP 시그널 하루 2-5회", "hero.money_back": "30일 환불 보장", "hero.join_free_btn": "무료 텔레그램 참여", "hero.view_vip_btn": "요금제 보기", "hero.perk1": "무료 시그널 제공", "hero.perk2": "암호화폐, 해외선물 매수매도 시그널", "hero.perk3": "데이트레이딩", "hero.perk4": "SNS를 통한 전송", "hero.perk5": "자산운용사 위탁 트레이딩 신청 가능", "hero.perk6": "일 1개 종목을 랜덤으로 선정하여 1~5회 무료 시그널 제공",
+        "nav.home": "홈", "nav.signals": "Foket 시스템 트레이딩 소개", "nav.pricing": "서비스 구성", "nav.faq": "자주하는 질문(FAQ)", "nav.contact": "문의", "nav.join_free": "텔레그램 문의", "nav.login": "로그인", "nav.signup": "회원가입", "nav.mypage": "마이페이지",
+        "hero.badge": "데이터로 검증한 Signal, 결과로 증명합니다.", "hero.title": "최근 15년간 수치데이터 + 2억 8천만개 트레이딩 로직 딥러닝", "hero.subtitle": "AI 머신러닝 최적화 트레이딩 신호", "hero.free_signals_week": "무료 시그널 주 3회", "hero.vip_signals_day": "VIP 시그널 하루 2-5회", "hero.money_back": "30일 환불 보장", "hero.join_free_btn": "텔레그램 문의", "hero.view_vip_btn": "서비스 구성", "hero.perk1": "유튜브 실시간 라이브 트레이딩 방송 (주 1~3회) 진행", "hero.perk2": "해외선물 매수매도 시그널", "hero.perk3": "데이트레이딩", "hero.perk4": "SNS를 통한 전송", "hero.perk5": "자산운용사 위탁 트레이딩 신청 가능", "hero.perk6": "시그널 수신으로 개별 트레이딩 및 위탁 트레이딩 선택",
         "stats.members": "회원", "stats.success_rate": "성공률", "stats.signals": "시그널 발송", "stats.years": "년 경력",
-        "features.title": "왜 Foket Signal 일까요?", "features.subtitle": "전문 트레이더 팀과 AI 기술이 결합된 최고의  시그널 서비스", "features.ai_title": "AI 기반 분석", "features.ai_desc": "데이터기반 AI 시장 분석\n2억3천여만개 중 선별된 수익로직 딥러닝", "features.expert_title": "전문가 팀", "features.expert_desc": "숙련된 트레이더 팀 및 분석팀\n검증된 전략 기반 시그널", "features.risk_title": "리스크관리", "features.risk_desc": "체계적인 리스크관리\n자본보호 중심 트레이딩", "features.instant_title": "즉시 Signal 전달", "features.instant_desc": "텔레그램을 통한 실시간 트레이딩 시그널\n모바일로 언제어디서나 정보 취득 가능", "features.support_title": "24/7지원", "features.support_desc": "8개국어 지원\n전세계 트레이더 커뮤니티 케어\n24시간 고객센터 운영", "features.education_title": "중장기 시장전망", "features.education_desc": "거시흐름 기반 전망\n최고급 장기 시장 전망 롤오버 정보제공",
-        "how_it_works.title": "시그널 구성", "how_it_works.subtitle": "각 시그널에 포함된 정보", "how_it_works.entry": "진입 시그널", "how_it_works.entry_desc": "현물 매수(Futures는 매도 포함)의 시장가 진행\n예: BTC 현재가에서 매수 의견", "how_it_works.take_profit": "목표가", "how_it_works.take_profit_desc": "목표가 제시를 기본으로 하지만 초과 수익 후 청산 신호가 나올 수도 있습니다.\n예: 진입가의 +2% 설정", "how_it_works.stop_loss": "손절가", "how_it_works.stop_loss_desc": "과거 로직에서 기록했던 평균적 및 최소 기록 모두 제시해 드립니다. 즉 데이터 상 평가손익의 기록이며 과거 해당 수치에서 거래를 종료한 것은 아닙니다.\n진입가의 -1.2%", "how_it_works.risk": "진행 중 트레이딩 종료 시그널", "how_it_works.risk_desc": "현물의 시장가 매도, Futures의 포지션 청산 시그널 입니다.\n현재 진행 중인 트레이딩을 종료하고 다음 진입 시그널을 기다립니다.\n예: 이번 트레이딩 종료",
+        "features.title": "왜 Foket 일까요?", "features.subtitle": "전문 트레이더 팀과 AI 기술이 결합된 최고의 트레이딩 로직 서비스", "features.ai_title": "AI 기반 분석", "features.ai_desc": "데이터기반 AI 시장 분석\n2억 8천만개 중 선별된 수익로직 딥러닝", "features.expert_title": "전문가 팀", "features.expert_desc": "숙련된 트레이더 팀 및 분석팀\n검증된 전략 기반 시그널", "features.risk_title": "리스크관리", "features.risk_desc": "체계적인 리스크관리\n자본보호 중심 트레이딩", "features.instant_title": "즉시 Signal 전달", "features.instant_desc": "텔레그램을 통한 실시간 트레이딩 시그널\n모바일로 언제어디서나 정보 취득 가능", "features.support_title": "24/7지원", "features.support_desc": "8개국어 지원\n24시간 자동 시스템 트레이딩\n24시간 고객센터 운영", "features.education_title": "트레이딩 위탁", "features.education_desc": "제휴 자산운용사, 투자자문사로의 트레이딩 위탁 가능",
+        "how_it_works.title": "서비스 구성", "how_it_works.entry": "SNS 시그널 수신", "how_it_works.entry_desc": "SNS등을 통한 트레이딩 시그널 수신\n신청회원의 자율적 트레이딩 진행\n24시간 트레이딩", "how_it_works.take_profit": "위탁 또는 주문대리", "how_it_works.take_profit_desc": "1. Foket과 직접 계약 또는 Foket의 제휴 자산운용사, 투자자문사와 계약\n2. Foket의 100% 자동 트레이딩 시스템 가동\n3. 주단위 수익 정산(계약에 따라 상이하며 수익의 30~40% 정산)\n4. 계약 사항의 자율적 상시 조정 가능", "how_it_works.stop_loss": "손절가", "how_it_works.stop_loss_desc": "과거 로직에서 기록했던 평균적 및 최소 기록 모두 제시해 드립니다. 즉 데이터 상 평가손익의 기록이며 과거 해당 수치에서 거래를 종료한 것은 아닙니다.\n진입가의 -1.2%", "how_it_works.risk": "진행 중 트레이딩 종료 시그널", "how_it_works.risk_desc": "현물의 시장가 매도, Futures의 포지션 청산 시그널 입니다.\n현재 진행 중인 트레이딩을 종료하고 다음 진입 시그널을 기다립니다.\n예: 이번 트레이딩 종료",
         "coins.title": "지원 코인", "coins.subtitle": "주요 암호화폐 시그널 제공",
         "free_signals.title": "무료 시그널", "free_signals.subtitle": "VIP 품질의 시그널을 무료로 경험해보세요", "free_signals.join_btn": "무료로 받기",
         "pricing.title": "요금제 선택", "pricing.subtitle": "나에게 맞는 플랜을 선택하세요", "pricing.most_popular": "인기", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1개월", "pricing.per_month": "/월", "pricing.per_3months": "/3개월", "pricing.per_6months": "/6개월", "pricing.per_year": "/년", "pricing.feat_daily_signals": "1종목당 일 1~5회 왕복 시그널", "pricing.feat_8lang": "8개언어 지원", "pricing.feat_cat1": "포켓시그널 카테고리 중 1 선택 (예: CryptoSpot, Binance, Futures 중 1 선택)", "pricing.feat_cat2": "포켓시그널 카테고리 중 2 선택 (예: CryptoSpot, Binance, Futures 중 2 선택)", "pricing.feat_cat_all": "포켓시그널 카테고리 모두 선택 (예: CryptoSpot, Binance, Futures 모두 선택)", "pricing.feat_247": "CryptoSpot, Binance는 24/7서비스, Futures는 월~금 서비스", "pricing.feat_signals": "진입/목표/손절/완료 시그널 제공", "pricing.feat_group": "각 Class 단체방참여", "pricing.feat_futures": "투자금의 포트폴리오 별로 Futures의 1~3개월 국제 시세 (국제 증시, 국제유가, 금시세, 농축산물 예측 시세) 제공", "pricing.get_started": "시작하기",
@@ -2479,7 +2558,7 @@
         "news.title": "크립토 뉴스", "news.subtitle": "최신 암호화폐 시장 소식", "news.read_more": "더 읽기", "news.view_all": "모든 뉴스 보기",
         "cta.title": "지금 시작하세요", "cta.subtitle": "무료로 텔레그램에 참여하고 고품질 시그널을 받아보세요", "cta.btn": "무료로 시작하기",
         "footer.tagline": "AI Trading Signal", "footer.quick_links": "빠른 링크", "footer.follow_us": "소셜 미디어", "footer.disclaimer": "투자 고지: 암호화폐 및 선물 거래는 높은 리스크를 수반합니다. 과거 성과가 미래 수익을 보장하지 않습니다.", "footer.copyright": "All rights reserved", "footer.terms": "이용약관", "footer.privacy": "개인정보처리방침", "footer.risk": "투자위험고지", "footer.refund": "환불정책", "footer.affiliate": "제휴링크고지", "footer.earnings": "수익면책고지", "footer.contact": "문의",
-        "best10.title": "FoketSignal 수익율 베스트10", "best10.col_rank": "순위", "best10.col_symbol": "종목", "best10.col_monthly_return": "월평균 수익률", "best10.col_max_loss": "일최대 손실변동폭", "best10.col_daily_trades": "일평균 왕복 거래횟수", "best10.col_trade_days": "거래일수",
+        "best10.title": "FoketSignal 수익율 현황", "best10.col_rank": "순위", "best10.col_symbol": "종목", "best10.col_monthly_return": "월평균 수익률", "best10.col_monthly_profit": "월평균 수익액($)", "best10.col_margin": "거래 증거금($)", "best10.col_max_loss": "과거 일 최대 손실 기록($)", "best10.col_trade_days": "딥러닝 이후 검증 거래일수",
         "best10.days_unit": "일", "best10.no_data": "저장된 종목 데이터가 없습니다", "best10.no_items": "등록된 종목이 없습니다", "best10.load_fail": "로드 실패"
       },
       en: {
@@ -2495,7 +2574,7 @@
         "news.title": "Crypto News", "news.subtitle": "Latest cryptocurrency market updates", "news.read_more": "Read More", "news.view_all": "View All News",
         "cta.title": "Start Today", "cta.subtitle": "Join our free Telegram and receive high-quality signals", "cta.btn": "Start For Free",
         "footer.tagline": "Professional cryptocurrency trading signal service", "footer.quick_links": "Quick Links", "footer.follow_us": "Follow Us", "footer.disclaimer": "Investment Disclaimer: Cryptocurrency and futures trading carries high risk. Past performance does not guarantee future results.", "footer.copyright": "All rights reserved", "footer.terms": "Terms of Service", "footer.privacy": "Privacy Policy", "footer.risk": "Investment Risk Disclosure", "footer.refund": "Refund Policy", "footer.affiliate": "Affiliate Disclosure", "footer.earnings": "Earnings Disclaimer", "footer.contact": "Contact",
-        "best10.title": "FoketSignal Top 10 Returns", "best10.col_rank": "Rank", "best10.col_symbol": "Symbol", "best10.col_monthly_return": "Avg Monthly Return", "best10.col_max_loss": "Max Daily Drawdown", "best10.col_daily_trades": "Avg Daily Round Trips", "best10.col_trade_days": "Trading Days",
+        "best10.title": "FoketSignal Return Status", "best10.col_rank": "Rank", "best10.col_symbol": "Symbol", "best10.col_monthly_return": "Avg Monthly Return", "best10.col_max_loss": "Max Daily Drawdown", "best10.col_daily_trades": "Avg Daily Round Trips", "best10.col_trade_days": "Trading Days",
         "best10.days_unit": "d", "best10.no_data": "No market data saved", "best10.no_items": "No instruments registered", "best10.load_fail": "Load failed"
       },
       de: {
@@ -2511,7 +2590,7 @@
         "news.title": "Krypto-Nachrichten", "news.subtitle": "Neueste Kryptowährungs-Marktnachrichten", "news.read_more": "Mehr lesen", "news.view_all": "Alle Nachrichten anzeigen",
         "cta.title": "Jetzt starten", "cta.subtitle": "Treten Sie unserem kostenlosen Telegram bei und erhalten Sie hochwertige Signale", "cta.btn": "Kostenlos starten",
         "footer.tagline": "Professioneller Kryptowährungs-Handelssignal-Service", "footer.quick_links": "Schnelllinks", "footer.follow_us": "Folgen Sie uns", "footer.disclaimer": "Investitionshinweis: Der Handel mit Kryptowährungen und Futures ist mit hohem Risiko verbunden.", "footer.copyright": "Alle Rechte vorbehalten", "footer.terms": "Nutzungsbedingungen", "footer.privacy": "Datenschutzrichtlinie", "footer.risk": "Risikohinweis", "footer.refund": "Rückerstattungsrichtlinie", "footer.affiliate": "Affiliate-Offenlegung", "footer.earnings": "Haftungsausschluss Einnahmen", "footer.contact": "Kontakt",
-        "best10.title": "FoketSignal Top 10 Renditen", "best10.col_rank": "Rang", "best10.col_symbol": "Symbol", "best10.col_monthly_return": "Ø Monatsrendite", "best10.col_max_loss": "Max. Tages-Drawdown", "best10.col_daily_trades": "Ø Tägliche Roundtrips", "best10.col_trade_days": "Handelstage",
+        "best10.title": "FoketSignal Rendite-Status", "best10.col_rank": "Rang", "best10.col_symbol": "Symbol", "best10.col_monthly_return": "Ø Monatsrendite", "best10.col_max_loss": "Max. Tages-Drawdown", "best10.col_daily_trades": "Ø Tägliche Roundtrips", "best10.col_trade_days": "Handelstage",
         "best10.days_unit": "T", "best10.no_data": "Keine Marktdaten gespeichert", "best10.no_items": "Keine Instrumente registriert", "best10.load_fail": "Ladefehler"
       },
       ja: {
@@ -2527,7 +2606,7 @@
         "news.title": "暗号ニュース", "news.subtitle": "最新の暗号通貨市場情報", "news.read_more": "続きを読む", "news.view_all": "すべてのニュースを見る",
         "cta.title": "今すぐ始めよう", "cta.subtitle": "無料のTelegramに参加して高品質のシグナルを受け取ろう", "cta.btn": "無料で始める",
         "footer.tagline": "プロフェッショナル暗号通貨取引シグナルサービス", "footer.quick_links": "クイックリンク", "footer.follow_us": "フォローする", "footer.disclaimer": "投資免責事項：暗号通貨および先物取引は高いリスクを伴います。過去の実績は将来の結果を保証しません。", "footer.copyright": "All rights reserved", "footer.terms": "利用規約", "footer.privacy": "プライバシーポリシー", "footer.risk": "投資リスク開示", "footer.refund": "返金ポリシー", "footer.affiliate": "アフィリエイト開示", "footer.earnings": "収益免責事項", "footer.contact": "お問い合わせ",
-        "best10.title": "FoketSignal 収益率ベスト10", "best10.col_rank": "順位", "best10.col_symbol": "銘柄", "best10.col_monthly_return": "月平均収益率", "best10.col_max_loss": "日最大損失変動幅", "best10.col_daily_trades": "日平均往復取引回数", "best10.col_trade_days": "取引日数",
+        "best10.title": "FoketSignal 収益率現況", "best10.col_rank": "順位", "best10.col_symbol": "銘柄", "best10.col_monthly_return": "月平均収益率", "best10.col_max_loss": "日最大損失変動幅", "best10.col_daily_trades": "日平均往復取引回数", "best10.col_trade_days": "取引日数",
         "best10.days_unit": "日", "best10.no_data": "保存された銘柄データがありません", "best10.no_items": "登録された銘柄がありません", "best10.load_fail": "読み込み失敗"
       },
       zh: {
@@ -2543,7 +2622,7 @@
         "news.title": "加密新闻", "news.subtitle": "最新加密货币市场资讯", "news.read_more": "阅读更多", "news.view_all": "查看所有新闻",
         "cta.title": "立即开始", "cta.subtitle": "加入我们的免费Telegram群组，接收高质量信号", "cta.btn": "免费开始",
         "footer.tagline": "专业加密货币交易信号服务", "footer.quick_links": "快速链接", "footer.follow_us": "关注我们", "footer.disclaimer": "投资免责声明：加密货币及期货交易具有高风险。过去的表现不保证未来的结果。", "footer.copyright": "版权所有", "footer.terms": "服务条款", "footer.privacy": "隐私政策", "footer.risk": "投资风险披露", "footer.refund": "退款政策", "footer.affiliate": "联盟链接披露", "footer.earnings": "收益免责声明", "footer.contact": "联系我们",
-        "best10.title": "FoketSignal 收益率前10名", "best10.col_rank": "排名", "best10.col_symbol": "标的", "best10.col_monthly_return": "月均收益率", "best10.col_max_loss": "日最大亏损幅度", "best10.col_daily_trades": "日均往返交易次数", "best10.col_trade_days": "交易天数",
+        "best10.title": "FoketSignal 收益率现况", "best10.col_rank": "排名", "best10.col_symbol": "标的", "best10.col_monthly_return": "月均收益率", "best10.col_max_loss": "日最大亏损幅度", "best10.col_daily_trades": "日均往返交易次数", "best10.col_trade_days": "交易天数",
         "best10.days_unit": "天", "best10.no_data": "暂无保存的标的数据", "best10.no_items": "暂无注册标的", "best10.load_fail": "加载失败"
       },
       fr: {
@@ -2559,7 +2638,7 @@
         "news.title": "Actualités Crypto", "news.subtitle": "Dernières nouvelles du marché des cryptomonnaies", "news.read_more": "Lire la suite", "news.view_all": "Voir toutes les actualités",
         "cta.title": "Commencez aujourd'hui", "cta.subtitle": "Rejoignez notre Telegram gratuit et recevez des signaux de haute qualité", "cta.btn": "Commencer gratuitement",
         "footer.tagline": "Service professionnel de signaux de trading de cryptomonnaies", "footer.quick_links": "Liens rapides", "footer.follow_us": "Suivez-nous", "footer.disclaimer": "Avertissement sur les investissements : Le trading de cryptomonnaies et de contrats à terme comporte des risques élevés.", "footer.copyright": "Tous droits réservés", "footer.terms": "Conditions d'utilisation", "footer.privacy": "Politique de confidentialité", "footer.risk": "Divulgation des risques", "footer.refund": "Politique de remboursement", "footer.affiliate": "Divulgation d'affiliation", "footer.earnings": "Avis de non-responsabilité sur les revenus", "footer.contact": "Contact",
-        "best10.title": "FoketSignal Top 10 Rendements", "best10.col_rank": "Rang", "best10.col_symbol": "Symbole", "best10.col_monthly_return": "Rendement mensuel moy.", "best10.col_max_loss": "Perte max journalière", "best10.col_daily_trades": "Opérations/jour moy.", "best10.col_trade_days": "Jours de trading",
+        "best10.title": "FoketSignal Rendements actuels", "best10.col_rank": "Rang", "best10.col_symbol": "Symbole", "best10.col_monthly_return": "Rendement mensuel moy.", "best10.col_max_loss": "Perte max journalière", "best10.col_daily_trades": "Opérations/jour moy.", "best10.col_trade_days": "Jours de trading",
         "best10.days_unit": "j", "best10.no_data": "Aucune donnée de marché enregistrée", "best10.no_items": "Aucun instrument enregistré", "best10.load_fail": "Échec du chargement"
       },
       es: {
@@ -2575,7 +2654,7 @@
         "news.title": "Noticias Crypto", "news.subtitle": "Últimas novedades del mercado de criptomonedas", "news.read_more": "Leer más", "news.view_all": "Ver todas las noticias",
         "cta.title": "Empieza hoy", "cta.subtitle": "Únete a nuestro Telegram gratuito y recibe señales de alta calidad", "cta.btn": "Empezar gratis",
         "footer.tagline": "Servicio profesional de señales de trading de criptomonedas", "footer.quick_links": "Enlaces rápidos", "footer.follow_us": "Síguenos", "footer.disclaimer": "Aviso de inversión: El trading de criptomonedas y futuros conlleva alto riesgo. Los resultados pasados no garantizan resultados futuros.", "footer.copyright": "Todos los derechos reservados", "footer.terms": "Términos de servicio", "footer.privacy": "Política de privacidad", "footer.risk": "Divulgación de riesgos", "footer.refund": "Política de reembolso", "footer.affiliate": "Divulgación de afiliados", "footer.earnings": "Descargo de responsabilidad de ganancias", "footer.contact": "Contacto",
-        "best10.title": "FoketSignal Top 10 Rendimientos", "best10.col_rank": "Rango", "best10.col_symbol": "Símbolo", "best10.col_monthly_return": "Rentabilidad mensual media", "best10.col_max_loss": "Pérdida máx. diaria", "best10.col_daily_trades": "Operaciones/día medias", "best10.col_trade_days": "Días de trading",
+        "best10.title": "FoketSignal Rendimientos actuales", "best10.col_rank": "Rango", "best10.col_symbol": "Símbolo", "best10.col_monthly_return": "Rentabilidad mensual media", "best10.col_max_loss": "Pérdida máx. diaria", "best10.col_daily_trades": "Operaciones/día medias", "best10.col_trade_days": "Días de trading",
         "best10.days_unit": "d", "best10.no_data": "No hay datos de mercado guardados", "best10.no_items": "No hay instrumentos registrados", "best10.load_fail": "Error de carga"
       },
       ru: {
@@ -2591,7 +2670,7 @@
         "news.title": "Крипто новости", "news.subtitle": "Последние новости рынка криптовалют", "news.read_more": "Читать далее", "news.view_all": "Все новости",
         "cta.title": "Начните сегодня", "cta.subtitle": "Присоединитесь к нашему бесплатному Telegram и получайте высококачественные сигналы", "cta.btn": "Начать бесплатно",
         "footer.tagline": "Профессиональный сервис торговых сигналов криптовалюты", "footer.quick_links": "Быстрые ссылки", "footer.follow_us": "Следите за нами", "footer.disclaimer": "Инвестиционное предупреждение: Торговля криптовалютой и фьючерсами сопряжена с высоким риском. Прошлые результаты не гарантируют будущих.", "footer.copyright": "Все права защищены", "footer.terms": "Условия использования", "footer.privacy": "Политика конфиденциальности", "footer.risk": "Раскрытие инвестиционных рисков", "footer.refund": "Политика возврата", "footer.affiliate": "Раскрытие партнёрских ссылок", "footer.earnings": "Отказ от ответственности за доходы", "footer.contact": "Контакт",
-        "best10.title": "FoketSignal Топ 10 доходности", "best10.col_rank": "Ранг", "best10.col_symbol": "Символ", "best10.col_monthly_return": "Средн. месячная доходность", "best10.col_max_loss": "Макс. дневная просадка", "best10.col_daily_trades": "Средн. дневных сделок", "best10.col_trade_days": "Торговых дней",
+        "best10.title": "FoketSignal Текущая доходность", "best10.col_rank": "Ранг", "best10.col_symbol": "Символ", "best10.col_monthly_return": "Средн. месячная доходность", "best10.col_max_loss": "Макс. дневная просадка", "best10.col_daily_trades": "Средн. дневных сделок", "best10.col_trade_days": "Торговых дней",
         "best10.days_unit": "д", "best10.no_data": "Нет сохранённых данных", "best10.no_items": "Нет зарегистрированных инструментов", "best10.load_fail": "Ошибка загрузки"
       }
     };
@@ -3019,28 +3098,17 @@
       }
     }
 
-    async function loadBest10() {
+    function renderBest10(raw) {
       const container = document.getElementById('best10Rows');
       if (!container) return;
-      /* 서버에서 최신 markets_published 데이터 fetch (캐시 무시) */
-      try {
-        const base = (location.protocol !== 'file:') ? location.origin + '/api' : 'http://localhost:3000/api';
-        const r = await fetch(base + '/public/markets', { cache: 'no-store' });
-        const j = await r.json();
-        if (j && j.success && j.data) {
-          const raw = typeof j.data === 'string' ? j.data : JSON.stringify(j.data);
-          try { localStorage.setItem('fk_markets_published', raw); } catch(e) {}
-        }
-      } catch(e) { /* 서버 없으면 localStorage 사용 */ }
       const lang = (typeof currentLang !== 'undefined') ? currentLang : 'ko';
       const t = (typeof TRANSLATIONS !== 'undefined' && TRANSLATIONS[lang]) ? TRANSLATIONS[lang] : TRANSLATIONS['ko'];
       const daysUnit  = t['best10.days_unit'] || '일';
       const noData    = t['best10.no_data']   || '저장된 종목 데이터가 없습니다';
       const noItems   = t['best10.no_items']  || '등록된 종목이 없습니다';
       const loadFail  = t['best10.load_fail'] || '로드 실패';
-      const emptyRow  = (msg) => '<div class="csp-row" style="opacity:0.7"><div class="csp-rank">—</div><div class="csp-sym">' + msg + '</div><div class="csp-val dim">—</div><div class="csp-val dim">—</div><div class="csp-val dim">—</div><div class="csp-days">—</div></div>';
+      const emptyRow  = (msg) => '<div class="csp-row" style="opacity:0.7"><div class="csp-rank">—</div><div class="csp-sym">' + msg + '</div><div class="csp-val dim">—</div><div class="csp-val dim">—</div><div class="csp-val dim">—</div><div class="csp-val dim">—</div><div class="csp-val dim">—</div><div class="csp-days">—</div></div>';
       try {
-        const raw = localStorage.getItem('fk_markets_published') || localStorage.getItem('fk_markets');
         if (!raw) { container.innerHTML = emptyRow(noData); return; }
         const markets = JSON.parse(raw);
         const list = [];
@@ -3062,22 +3130,44 @@
           if (!(key in symMap) || mr(inst) > mr(symMap[key])) symMap[key] = inst;
         });
         const deduped = Object.values(symMap);
-        deduped.sort(function (a, b) { return mr(b) - mr(a); });
-        const top10 = deduped.slice(0, 10);
+        /* 표시 종목: Euro FX, Australian Dollar, Mini S&P500, Crude Oil, Gold, Wheat, Japanese Yen */
+        const TARGET_SYMS = ['6E','EC','6A','AD','ES','MES','CL','QM','GC','MGC','ZW','W','6J','JY'];
+        const TARGET_NAMES = ['euro fx','australian dollar','mini s&p','s&p500','s&p 500','crude oil','gold','wheat','japanese'];
+        const filtered = deduped.filter(function(inst) {
+          const sym = (inst.sym || '').toUpperCase();
+          const nameEn = (inst.nameEn || '').toLowerCase();
+          const nameKo = (inst.nameKo || '').toLowerCase();
+          return TARGET_SYMS.indexOf(sym) !== -1 ||
+            TARGET_NAMES.some(function(n) { return nameEn.indexOf(n) !== -1 || nameKo.indexOf(n) !== -1; });
+        });
+        filtered.sort(function (a, b) { return mr(b) - mr(a); });
+        const top10 = filtered.slice(0, 7);
         if (top10.length === 0) { container.innerHTML = emptyRow(noItems); return; }
         const isKo = (lang === 'ko');
         const instName = (inst) => isKo ? (inst.nameKo || inst.sym) : (inst.nameEn || inst.nameKo || inst.sym);
         const catLabel = (inst) => isKo ? (inst._catName || '') : (inst._catNameEn || '');
         container.innerHTML = top10.map(function (inst, idx) {
           const rank = idx + 1;
+          const fmtAmt = (str) => {
+            if (!str) return null;
+            const s = String(str).trim();
+            const num = parseFloat(s.replace(/[^0-9.\-]/g, ''));
+            if (isNaN(num)) return s;
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+          };
           const mrVal = inst.monthlyReturn !== '' && inst.monthlyReturn != null ? parseFloat(inst.monthlyReturn) : null;
-          const dlVal = inst.maxDailyLoss !== '' && inst.maxDailyLoss != null ? parseFloat(inst.maxDailyLoss) : null;
+          const mpVal = inst.monthlyProfit !== '' && inst.monthlyProfit != null ? String(inst.monthlyProfit).trim() : null;
+          const mgVal = inst.margin !== '' && inst.margin != null ? String(inst.margin).trim() : null;
+          const dlRaw = inst.maxDailyLoss !== '' && inst.maxDailyLoss != null ? String(inst.maxDailyLoss).trim() : null;
           const days = inst.startDate ? Math.max(0, Math.floor((new Date() - new Date(inst.startDate + 'T00:00:00')) / 86400000)) : null;
-          const roundTrips = (inst.dailyRoundTrips !== '' && inst.dailyRoundTrips != null) ? (parseFloat(inst.dailyRoundTrips) + '') : null;
           const mrStr = mrVal !== null ? (mrVal >= 0 ? '+' : '') + mrVal.toFixed(2) + '%' : '—';
-          const dlStr = dlVal !== null ? (dlVal >= 0 ? '+' : '') + dlVal.toFixed(2) + '%' : '—';
+          const mpStr = fmtAmt(mpVal) || '—';
+          const mgStr = fmtAmt(mgVal) || '—';
+          const dlStr = fmtAmt(dlRaw) || '—';
           const mrCls = mrVal !== null ? (mrVal >= 0 ? 'up' : 'dn') : 'dim';
-          const dlCls = dlVal !== null ? (dlVal < 0 ? 'dn' : 'up') : 'dim';
+          const mpCls = mpVal ? 'up' : 'dim';
+          const mgCls = mgVal ? '' : 'dim';
+          const dlCls = dlRaw ? 'dn' : 'dim';
           const binancePrefix = (inst._catId === 8) ? '<span class="binance-mark" title="Binance">B</span>' : '';
           const symCell = isKo
             ? binancePrefix + instName(inst) + '<small>' + (inst.sym || '') + ' · ' + catLabel(inst) + '</small>'
@@ -3086,8 +3176,9 @@
             '<div class="csp-rank">' + rank + '</div>' +
             '<div class="csp-sym">' + symCell + '</div>' +
             '<div class="csp-val ' + mrCls + '">' + mrStr + '</div>' +
+            '<div class="csp-val ' + mpCls + '">' + mpStr + '</div>' +
+            '<div class="csp-val ' + mgCls + '">' + mgStr + '</div>' +
             '<div class="csp-val ' + dlCls + '">' + dlStr + '</div>' +
-            '<div class="csp-val dim">' + (roundTrips !== null ? roundTrips : '—') + '</div>' +
             '<div class="csp-days">' + (days !== null ? days : '—') + (days !== null ? '<small>' + daysUnit + '</small>' : '') + '</div>' +
             '</div>';
         }).join('');
@@ -3095,6 +3186,23 @@
         console.warn('[Best10] 로드 실패:', e);
         if (container) container.innerHTML = emptyRow(loadFail);
       }
+    }
+
+    async function loadBest10() {
+      /* 1) localStorage 데이터로 즉시 렌더링 */
+      const cached = localStorage.getItem('fk_markets_published') || localStorage.getItem('fk_markets');
+      renderBest10(cached);
+      /* 2) 백그라운드에서 API 갱신 후 재렌더링 */
+      try {
+        const base = (location.protocol !== 'file:') ? location.origin + '/api' : 'http://localhost:3000/api';
+        const r = await fetch(base + '/public/markets', { cache: 'no-store' });
+        const j = await r.json();
+        if (j && j.success && j.data) {
+          const raw = typeof j.data === 'string' ? j.data : JSON.stringify(j.data);
+          try { localStorage.setItem('fk_markets_published', raw); } catch(e) {}
+          renderBest10(raw);
+        }
+      } catch(e) { /* 서버 없으면 캐시 유지 */ }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -3182,31 +3290,6 @@
       applyLang(currentLang);
 
       // 사용자 후기: 관리자 페이지 후기 데이터에서 로드
-      (async function loadTestimonials() {
-        const grid = document.getElementById('testiGrid');
-        if (!grid) return;
-        let list = [];
-        try {
-          const base = (location.protocol !== 'file:') ? location.origin + '/api' : 'http://localhost:3000/api';
-          const r = await fetch(base + '/storage/testimonials', { cache: 'no-store' });
-          const j = await r.json();
-          if (j.success && j.value) { list = JSON.parse(j.value); try { localStorage.setItem('fk_testimonials', j.value); } catch(e) {} }
-          else { const ls = localStorage.getItem('fk_testimonials'); if (ls) list = JSON.parse(ls); }
-        } catch(e) { try { const ls = localStorage.getItem('fk_testimonials'); if (ls) list = JSON.parse(ls); } catch(e2) {} }
-        if (!Array.isArray(list)) list = [];
-        const esc = (s) => (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        const stars = (n) => { const v = Math.min(5, Math.max(0, parseInt(n, 10) || 5)); return '★'.repeat(v) + '☆'.repeat(5 - v); };
-        const initial = (name) => (name && String(name).trim()[0]) ? String(name).trim()[0].toUpperCase() : '?';
-        if (list.length === 0) {
-          grid.innerHTML = '<div class="tcard" style="grid-column:1/-1;text-align:center;color:var(--text-secondary);padding:48px 24px;">등록된 후기가 없습니다.</div>';
-          return;
-        }
-        grid.innerHTML = list.slice().reverse().slice(0, 3).map(t => `<div class="tcard">
-      <div class="tstars">${stars(t.rating)}</div>
-      <p class="ttext">"${esc(t.text)}"</p>
-      <div class="tauthor"><div class="tavatar">${initial(t.name)}</div><div><div class="tname">${esc(t.name)}</div><div class="tplan">${esc(t.plan)}${t.country ? ' · ' + esc(t.country) : ''}</div></div></div>
-    </div>`).join('');
-      })();
 
       // Animated counters
       const counters = document.querySelectorAll('[data-count]');
@@ -3282,6 +3365,12 @@
       });
     }
   </script>
+  <!-- ── FLOATING TELEGRAM BUTTON ── -->
+  <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="tg-float">
+    <i class="fab fa-telegram-plane"></i>
+    텔레그램 문의
+  </a>
+
 </body>
 
 </html>

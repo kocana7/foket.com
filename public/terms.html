@@ -41,12 +41,11 @@
 <nav class="navbar">
   <div class="navbar-inner">
     <a href="index.html" class="navbar-brand">
-      <div class="logo-icon"><img src="images/logo2.png" alt="FoketSignal" style="width:100%;height:100%;object-fit:contain;border-radius:8px;"></div>
-      Foket<span>Signal</span>
+      <img src="images/logo.PNG" alt="Foket 로고" style="height:36px;width:auto;object-fit:contain;">
     </a>
     <div class="navbar-nav">
       <a href="index.html" data-i18n="h">홈</a>
-      <a href="index.html#pricing" data-i18n="p">요금제</a>
+      <a href="index.html#services" data-i18n="p">서비스 구성</a>
       <a href="faq.html" data-i18n="f">자주하는 질문(FAQ)</a>
       <a href="index.html#contact" data-i18n="c">문의</a>
     </div>
@@ -81,7 +80,7 @@
 <script>
 (function(){
   var T={
-    ko:{title:'이용약관',h:'홈',p:'요금제',f:'자주하는 질문(FAQ)',c:'문의',j:'무료 텔레그램 참여',pt:'이용약관',e:'등록된 이용약관이 없습니다. 관리자 페이지에서 이용약관 내용을 입력해 주세요.'},
+    ko:{title:'이용약관',h:'홈',p:'서비스 구성',f:'자주하는 질문(FAQ)',c:'문의',j:'무료 텔레그램 참여',pt:'이용약관',e:'등록된 이용약관이 없습니다. 관리자 페이지에서 이용약관 내용을 입력해 주세요.'},
     en:{title:'Terms of Service',h:'Home',p:'Pricing',f:'FAQ',c:'Contact',j:'Join Free Telegram',pt:'Terms of Service',e:'No terms of service registered.'},
     de:{title:'Nutzungsbedingungen',h:'Startseite',p:'Preise',f:'Häufige Fragen (FAQ)',c:'Kontakt',j:'Kostenlos beitreten',pt:'Nutzungsbedingungen',e:'Keine Nutzungsbedingungen registriert.'},
     ja:{title:'利用規約',h:'ホーム',p:'料金',f:'よくある質問(FAQ)',c:'お問い合わせ',j:'無料Telegram参加',pt:'利用規約',e:'利用規約が登録されていません。'},
@@ -143,5 +142,11 @@
   });
 })();
 </script>
+  <!-- ── FLOATING TELEGRAM BUTTON ── -->
+  <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" style="position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;align-items:center;gap:10px;background:#229ed9;color:white;text-decoration:none;padding:14px 20px;border-radius:50px;font-size:15px;font-weight:700;box-shadow:0 4px 20px rgba(34,158,217,.5);transition:transform .2s,box-shadow .2s;white-space:nowrap;">
+    <i class="fab fa-telegram-plane" style="font-size:20px;"></i>
+    텔레그램 문의
+  </a>
+
 </body>
 </html>

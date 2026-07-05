@@ -1086,9 +1086,14 @@
       }
     }
 
+    #mkt-inst-head th,
+    #mkt-inst-body td {
+      font-size: 11px;
+      padding: 6px 8px;
+      white-space: nowrap
+    }
     #mkt-inst-head th:nth-child(6) {
-      white-space: nowrap;
-      min-width: 120px
+      min-width: 80px
     }
   </style>
 </head>
@@ -3455,6 +3460,19 @@
       if (isNaN(dt.getTime())) return null;
       return normalized;
     }
+    function parseAmount(str) {
+      if (str == null || str === '') return null;
+      const n = parseFloat(String(str).replace(/[^0-9.\-]/g, ''));
+      return isNaN(n) ? null : n;
+    }
+
+    function calcMonthlyReturn(inst) {
+      const profit = parseAmount(inst.monthlyProfit);
+      const margin = parseAmount(inst.margin);
+      if (profit == null || margin == null || margin === 0) return '';
+      return (profit / (margin * 3) * 100).toFixed(2);
+    }
+
     function saveCryptoField(catId, instId, field, value) {
       if (field === 'startDate') {
         const normalized = normalizeStartDate(value);
@@ -3471,6 +3489,11 @@
       const inst = (cat.instruments || []).find(i => i.id === instId);
       if (!inst) return;
       inst[field] = value;
+      if (field === 'monthlyProfit' || field === 'margin') {
+        inst.monthlyReturn = calcMonthlyReturn(inst);
+        const el = document.getElementById('mr-' + catId + '-' + instId);
+        if (el) el.textContent = inst.monthlyReturn ? inst.monthlyReturn + '%' : '—';
+      }
       lsSave('markets', cats);
     }
 
@@ -3487,6 +3510,13 @@
     function renderMarkets() {
       seedMarkets();
       const cats = ls('markets', []);
+      /* 저장된 데이터에서 monthlyReturn 자동 계산 갱신 */
+      let changed = false;
+      cats.forEach(c => (c.instruments || []).forEach(inst => {
+        const calc = calcMonthlyReturn(inst);
+        if (calc !== '' && inst.monthlyReturn !== calc) { inst.monthlyReturn = calc; changed = true; }
+      }));
+      if (changed) lsSave('markets', cats);
 
       /* ── 좌측 카테고리 패널 ── */
       document.getElementById('mkt-cat-list').innerHTML = cats.map(c => {
@@ -3502,7 +3532,7 @@
       /* ── 우측 종목 패널 ── */
       const cat = cats.find(c => c.id === selCatId);
       if (!cat) {
-        document.getElementById('mkt-inst-body').innerHTML = '<tr><td colspan="7" class="empty"><p>카테고리를 선택하세요</p></td></tr>';
+        document.getElementById('mkt-inst-body').innerHTML = '<tr><td colspan="10" class="empty"><p>카테고리를 선택하세요</p></td></tr>';
         const saveBtn = document.getElementById('mkt-save-btn');
         if (saveBtn) saveBtn.style.display = 'none';
         const addBtnHide = document.getElementById('mkt-add-btn');
@@ -3523,7 +3553,9 @@
         document.getElementById('mkt-inst-head').innerHTML = `<tr>
       <th>종목명</th><th>심볼</th>
       <th>증거금 대비 월평균 수익률 <span style="font-size:9px;color:var(--dim);font-weight:400;">(%)</span></th>
-      <th>하루 최대 손실 <span style="font-size:9px;color:var(--dim);font-weight:400;">(%)</span></th>
+      <th>월평균 수익액</th>
+      <th>거래 증거금</th>
+      <th>하루 최대 손실 <span style="font-size:9px;color:var(--dim);font-weight:400;">($)</span></th>
       <th>거래 시작일</th>
       <th>일평균 왕복 거래횟수</th>
       <th>거래일수</th>
@@ -3535,28 +3567,41 @@
           return `<tr>
         <td class="tp">${binancePrefix}${inst.nameKo}<div style="font-size:11px;color:var(--dim);font-weight:400;">${inst.nameEn}</div></td>
         <td><span class="bdg bdg-blue" style="font-size:12px;">${inst.sym}</span></td>
+        <td style="text-align:center;">
+          <span id="mr-${cat.id}-${inst.id}" style="font-size:12px;font-weight:700;color:var(--blue);">
+            ${inst.monthlyReturn ? inst.monthlyReturn + '%' : '—'}
+          </span>
+        </td>
         <td>
           <div style="display:flex;align-items:center;gap:4px;">
-            <input type="number" class="fc" step="0.01" min="-100" max="1000"
-              style="width:80px;padding:5px 8px;font-size:12px;text-align:right;"
-              value="${inst.monthlyReturn || ''}" placeholder="0.00"
-              onchange="saveCryptoField(${cat.id},${inst.id},'monthlyReturn',this.value)"
-              title="증거금 대비 월평균 수익률 직접 입력">
-            <span style="font-size:11px;color:var(--dim);">%</span>
+            <input type="text" class="fc"
+              style="width:76px;padding:4px 6px;font-size:11px;text-align:right;"
+              value="${inst.monthlyProfit || ''}" placeholder="$1,200"
+              onchange="saveCryptoField(${cat.id},${inst.id},'monthlyProfit',this.value)"
+              title="월평균 수익액 직접 입력">
           </div>
         </td>
         <td>
           <div style="display:flex;align-items:center;gap:4px;">
-            <input type="number" class="fc" step="0.01" min="-100" max="0"
-              style="width:80px;padding:5px 8px;font-size:12px;text-align:right;"
-              value="${inst.maxDailyLoss || ''}" placeholder="0.00"
+            <input type="text" class="fc"
+              style="width:76px;padding:4px 6px;font-size:11px;text-align:right;"
+              value="${inst.margin || ''}" placeholder="$5,000"
+              onchange="saveCryptoField(${cat.id},${inst.id},'margin',this.value)"
+              title="거래 증거금 직접 입력">
+          </div>
+        </td>
+        <td>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:11px;color:var(--dim);">$</span>
+            <input type="text" class="fc"
+              style="width:70px;padding:4px 6px;font-size:11px;text-align:right;"
+              value="${inst.maxDailyLoss || ''}" placeholder="$500"
               onchange="saveCryptoField(${cat.id},${inst.id},'maxDailyLoss',this.value)"
-              title="하루 최대 손실 직접 입력">
-            <span style="font-size:11px;color:var(--dim);">%</span>
+              title="일 최대 손실액 직접 입력">
           </div>
         </td>
         <td>
-          <input type="text" class="fc" style="width:140px;padding:5px 8px;font-size:12px;"
+          <input type="text" class="fc" style="width:100px;padding:4px 6px;font-size:11px;"
             value="${inst.startDate || ''}"
             placeholder="YYYY-MM-DD"
             onblur="saveCryptoField(${cat.id},${inst.id},'startDate',this.value);renderMarkets();"
@@ -3564,7 +3609,7 @@
         </td>
         <td>
           <input type="number" class="fc" step="0.1" min="0" max="100"
-            style="width:70px;padding:5px 8px;font-size:12px;text-align:right;"
+            style="width:52px;padding:4px 6px;font-size:11px;text-align:right;"
             value="${inst.dailyRoundTrips != null && inst.dailyRoundTrips !== '' ? inst.dailyRoundTrips : ''}" placeholder="0"
             onchange="saveCryptoField(${cat.id},${inst.id},'dailyRoundTrips',this.value)"
             title="일평균 왕복 거래횟수">
@@ -3580,14 +3625,16 @@
           </div>
         </td>
       </tr>`;
-        }).join('') || `<tr><td colspan="8" class="empty"><i class="fas fa-inbox"></i><p>종목이 없습니다</p></td></tr>`;
+        }).join('') || `<tr><td colspan="10" class="empty"><i class="fas fa-inbox"></i><p>종목이 없습니다</p></td></tr>`;
 
       } else {
         /* ══ 주가지수선물·귀금속·에너지·농산물·미국채·외환 – Yahoo Finance 실시간 확장 테이블 ══ */
         document.getElementById('mkt-inst-head').innerHTML = `<tr>
       <th>종목명</th><th>심볼</th>
       <th>증거금 대비 월평균 수익률 <span style="font-size:9px;color:var(--dim);font-weight:400;">(%)</span></th>
-      <th>하루 최대 손실 <span style="font-size:9px;color:var(--dim);font-weight:400;">(%)</span></th>
+      <th>월평균 수익액</th>
+      <th>거래 증거금</th>
+      <th>하루 최대 손실 <span style="font-size:9px;color:var(--dim);font-weight:400;">($)</span></th>
       <th>거래 시작일</th>
       <th>일평균 왕복 거래횟수</th>
       <th>거래일수</th>
@@ -3598,28 +3645,41 @@
           return `<tr>
         <td class="tp">${inst.nameKo}<div style="font-size:11px;color:var(--dim);font-weight:400;">${inst.nameEn}</div></td>
         <td><span class="bdg bdg-blue" style="font-size:12px;">${inst.sym}</span></td>
+        <td style="text-align:center;">
+          <span id="mr-${cat.id}-${inst.id}" style="font-size:12px;font-weight:700;color:var(--blue);">
+            ${inst.monthlyReturn ? inst.monthlyReturn + '%' : '—'}
+          </span>
+        </td>
         <td>
           <div style="display:flex;align-items:center;gap:4px;">
-            <input type="number" class="fc" step="0.01" min="-100" max="1000"
-              style="width:80px;padding:5px 8px;font-size:12px;text-align:right;"
-              value="${inst.monthlyReturn || ''}" placeholder="0.00"
-              onchange="saveCryptoField(${cat.id},${inst.id},'monthlyReturn',this.value)"
-              title="증거금 대비 월평균 수익률 직접 입력">
-            <span style="font-size:11px;color:var(--dim);">%</span>
+            <input type="text" class="fc"
+              style="width:76px;padding:4px 6px;font-size:11px;text-align:right;"
+              value="${inst.monthlyProfit || ''}" placeholder="$1,200"
+              onchange="saveCryptoField(${cat.id},${inst.id},'monthlyProfit',this.value)"
+              title="월평균 수익액 직접 입력">
           </div>
         </td>
         <td>
           <div style="display:flex;align-items:center;gap:4px;">
-            <input type="number" class="fc" step="0.01" min="-100" max="0"
-              style="width:80px;padding:5px 8px;font-size:12px;text-align:right;"
-              value="${inst.maxDailyLoss || ''}" placeholder="0.00"
+            <input type="text" class="fc"
+              style="width:76px;padding:4px 6px;font-size:11px;text-align:right;"
+              value="${inst.margin || ''}" placeholder="$5,000"
+              onchange="saveCryptoField(${cat.id},${inst.id},'margin',this.value)"
+              title="거래 증거금 직접 입력">
+          </div>
+        </td>
+        <td>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:11px;color:var(--dim);">$</span>
+            <input type="text" class="fc"
+              style="width:70px;padding:4px 6px;font-size:11px;text-align:right;"
+              value="${inst.maxDailyLoss || ''}" placeholder="$500"
               onchange="saveCryptoField(${cat.id},${inst.id},'maxDailyLoss',this.value)"
-              title="하루 최대 손실 직접 입력">
-            <span style="font-size:11px;color:var(--dim);">%</span>
+              title="일 최대 손실액 직접 입력">
           </div>
         </td>
         <td>
-          <input type="text" class="fc" style="width:140px;padding:5px 8px;font-size:12px;"
+          <input type="text" class="fc" style="width:100px;padding:4px 6px;font-size:11px;"
             value="${inst.startDate || ''}"
             placeholder="YYYY-MM-DD"
             onblur="saveCryptoField(${cat.id},${inst.id},'startDate',this.value);renderMarkets();"
@@ -3627,7 +3687,7 @@
         </td>
         <td>
           <input type="number" class="fc" step="0.1" min="0" max="100"
-            style="width:70px;padding:5px 8px;font-size:12px;text-align:right;"
+            style="width:52px;padding:4px 6px;font-size:11px;text-align:right;"
             value="${inst.dailyRoundTrips != null && inst.dailyRoundTrips !== '' ? inst.dailyRoundTrips : ''}" placeholder="0"
             onchange="saveCryptoField(${cat.id},${inst.id},'dailyRoundTrips',this.value)"
             title="일평균 왕복 거래횟수">
@@ -3643,7 +3703,7 @@
           </div>
         </td>
       </tr>`;
-        }).join('') || `<tr><td colspan="8" class="empty"><i class="fas fa-inbox"></i><p>종목이 없습니다</p></td></tr>`;
+        }).join('') || `<tr><td colspan="10" class="empty"><i class="fas fa-inbox"></i><p>종목이 없습니다</p></td></tr>`;
       }
     }
 

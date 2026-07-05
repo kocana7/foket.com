@@ -67,15 +67,14 @@
   <nav class="navbar">
     <div class="navbar-inner">
       <a href="index.html" class="navbar-brand">
-        <span style="width:32px;height:32px;background:var(--gradient-primary);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;">F</span>
-        Foket<span>Signal</span>
+        <img src="images/logo.PNG" alt="Foket 로고" style="height:36px;width:auto;object-fit:contain;">
       </a>
-      <a href="index.html#pricing" class="btn btn-outline"><i class="fas fa-arrow-left"></i> 요금제로 돌아가기</a>
+      <a href="index.html#services" class="btn btn-outline"><i class="fas fa-arrow-left"></i> 요금제로 돌아가기</a>
     </div>
   </nav>
 
   <div class="pay-wrap">
-    <a href="index.html#pricing" class="back-link"><i class="fas fa-chevron-left"></i> 요금제로 돌아가기</a>
+    <a href="index.html#services" class="back-link"><i class="fas fa-chevron-left"></i> 요금제로 돌아가기</a>
     <h1 class="pay-title">결제</h1>
     <p class="pay-sub">선택하신 플랜으로 결제를 진행합니다.</p>
 
@@ -179,5 +178,11 @@
       alert('결제 요청이 접수되었습니다.\n\n플랜: ' + plan.name + '\n금액: $' + plan.price + '/월\n이메일: ' + email + '\n이름: ' + name + (telegram ? '\n텔레그램: ' + telegram : '') + '\n\n실제 결제는 PG 연동 후 진행됩니다.');
     });
   </script>
+  <!-- ── FLOATING TELEGRAM BUTTON ── -->
+  <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" style="position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;align-items:center;gap:10px;background:#229ed9;color:white;text-decoration:none;padding:14px 20px;border-radius:50px;font-size:15px;font-weight:700;box-shadow:0 4px 20px rgba(34,158,217,.5);transition:transform .2s,box-shadow .2s;white-space:nowrap;">
+    <i class="fab fa-telegram-plane" style="font-size:20px;"></i>
+    텔레그램 문의
+  </a>
+
 </body>
 </html>
