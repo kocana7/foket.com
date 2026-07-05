@@ -20,39 +20,27 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H 34.212.176.114 >> ~/.ssh/known_hosts 2>/dev/null || true
 
-      - name: Create .env file
-        run: |
-          cat > /tmp/foket.env << 'EOF'
-          DB_HOST=localhost
-          DB_PORT=3306
-          DB_USER=foket_user
-          DB_PASSWORD=Foket@DB2024!
-          DB_NAME=foket_db
-          SESSION_SECRET=foket-super-secret-key-2024
-          PORT=3000
-          NODE_ENV=production
-          BASE_URL=http://34.212.176.114
-          ADMIN_EMAIL=admin@foket.com
-          ADMIN_PASSWORD=Admin@123
-          ADMIN_PANEL_PASSWORD=Admin@123
-          GOOGLE_CLIENT_ID=
-          GOOGLE_CLIENT_SECRET=
-          EOF
-          sed -i 's/^[[:space:]]*//' /tmp/foket.env
-
-      - name: Upload .env to EC2
-        run: |
-          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no /tmp/foket.env ubuntu@34.212.176.114:/var/www/foket/.env
-
       - name: Deploy to EC2
         run: |
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ubuntu@34.212.176.114 << 'ENDSSH'
-            set -e
-            cd /var/www/foket
-            git fetch origin main
-            git reset --hard origin/main
-            git clean -fd
-            npm install --production
-            pm2 describe foket > /dev/null 2>&1 && pm2 restart foket --update-env || pm2 start ecosystem.config.js --env production
-            pm2 save
-          ENDSSH
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ubuntu@34.212.176.114 'set -e
+          cd /var/www/foket
+          git fetch origin main
+          git reset --hard origin/main
+          git clean -fd
+          npm install --production
+          echo "DB_HOST=localhost" > .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_USER=foket_user" >> .env
+          echo "DB_PASSWORD=Foket@DB2024!" >> .env
+          echo "DB_NAME=foket_db" >> .env
+          echo "SESSION_SECRET=foket-super-secret-key-2024" >> .env
+          echo "PORT=3000" >> .env
+          echo "NODE_ENV=production" >> .env
+          echo "BASE_URL=http://34.212.176.114" >> .env
+          echo "ADMIN_EMAIL=admin@foket.com" >> .env
+          echo "ADMIN_PASSWORD=Admin@123" >> .env
+          echo "ADMIN_PANEL_PASSWORD=Admin@123" >> .env
+          echo "GOOGLE_CLIENT_ID=" >> .env
+          echo "GOOGLE_CLIENT_SECRET=" >> .env
+          pm2 describe foket > /dev/null 2>&1 && pm2 restart foket --update-env || pm2 start ecosystem.config.js --env production
+          pm2 save'
