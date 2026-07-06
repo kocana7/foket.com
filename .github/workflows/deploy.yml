@@ -43,4 +43,7 @@ jobs:
           echo "GOOGLE_CLIENT_ID=" >> .env
           echo "GOOGLE_CLIENT_SECRET=" >> .env
           pm2 describe foket > /dev/null 2>&1 && pm2 restart foket --update-env || pm2 start ecosystem.config.js --env production
-          pm2 save'
+          pm2 save
+          sudo cp /var/www/foket/scripts/nginx-foket.conf /etc/nginx/sites-enabled/foket
+          sudo rm -f /etc/nginx/sites-enabled/default
+          sudo nginx -t && sudo systemctl reload nginx'
