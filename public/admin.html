@@ -2703,7 +2703,16 @@
       document.getElementById('faq-order').value = '0';
       openModal('faqModal');
     }
-    function saveFaq() {
+    async function saveFaqToServer(faq) {
+      const base = getApiBase();
+      const s = JSON.stringify(faq);
+      _storageCache['faq'] = s;
+      try { localStorage.setItem('fk_faq', s); } catch(e) {}
+      const r = await fetch(base + '/storage', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'faq', value: s }) });
+      const j = await r.json();
+      if (!j.success) throw new Error('서버 응답 오류');
+    }
+    async function saveFaq() {
       const question = document.getElementById('faq-question').value.trim();
       const answer = document.getElementById('faq-answer').value.trim();
       if (!question || !answer) { showAlert('질문과 답변을 입력해 주세요.', 'err'); return; }
@@ -2714,7 +2723,11 @@
       const order = orderVal === '' || orderVal === null ? 999 : parseInt(orderVal, 10);
       const obj = { id: isEdit ? editId : nextId(faq), question, answer, order };
       if (isEdit) { const i = faq.findIndex(x => x.id === editId); faq[i] = obj; } else { faq.push(obj); }
-      lsSave('faq', faq);
+      try {
+        await saveFaqToServer(faq);
+      } catch(e) {
+        showAlert('서버 저장 실패: ' + e.message, 'err'); return;
+      }
       document.getElementById('faq-modal-title').textContent = '새 FAQ';
       document.getElementById('faq-edit-id').value = '';
       document.getElementById('faq-question').value = '';
@@ -2725,8 +2738,13 @@
       showAlert(isEdit ? 'FAQ가 수정되었습니다!' : 'FAQ가 등록되었습니다!');
     }
     function deleteFaq(id) {
-      showConfirm('FAQ 삭제', '이 항목이 삭제됩니다. 계속할까요?', () => {
-        lsSave('faq', ls('faq', []).filter(f => f.id !== id));
+      showConfirm('FAQ 삭제', '이 항목이 삭제됩니다. 계속할까요?', async () => {
+        const faq = ls('faq', []).filter(f => f.id !== id);
+        try {
+          await saveFaqToServer(faq);
+        } catch(e) {
+          showAlert('서버 삭제 실패: ' + e.message, 'err'); return;
+        }
         renderFaq();
         showAlert('FAQ가 삭제되었습니다');
       });
