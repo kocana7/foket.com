@@ -1246,6 +1246,58 @@
       .tg-float, .kakao-float { padding: 12px 16px; font-size: 14px }
     }
 
+    .yt-card {
+      background: rgba(255,0,0,.08);
+      border: 1px solid rgba(255,0,0,.25);
+      border-radius: 14px;
+      padding: 22px 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: background .2s;
+    }
+    .yt-card:hover { background: rgba(255,0,0,.14); }
+    .yt-icon { font-size: 52px; color: #FF0000; flex-shrink: 0; }
+    .yt-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+    .yt-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .yt-btn {
+      background: #FF0000;
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    @media(max-width:768px) {
+      .yt-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 18px 20px;
+        gap: 12px;
+      }
+      .yt-icon { font-size: 36px; }
+      .yt-title { font-size: 15px; }
+      .yt-sub { font-size: 12px; }
+      .yt-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+    }
+    @media(max-width:480px) {
+      .yt-card { padding: 14px 16px; gap: 10px; border-radius: 10px; }
+      .yt-icon { font-size: 28px; }
+      .yt-title { font-size: 14px; }
+      .yt-sub { display: none; }
+      .yt-btn { padding: 9px 14px; font-size: 13px; }
+    }
+
     /* ── COINS ── */
     .coins-grid {
       display: grid;
@@ -2250,18 +2302,16 @@
   <!-- ── YOUTUBE LIVE ── -->
   <div id="youtube-live-section" style="display:none;max-width:900px;margin:32px auto;padding:0 20px;">
     <a id="youtube-live-link" href="#" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:block;">
-      <div style="background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.25);border-radius:14px;padding:22px 28px;display:flex;align-items:center;gap:20px;transition:background .2s;" onmouseover="this.style.background='rgba(255,0,0,.14)'" onmouseout="this.style.background='rgba(255,0,0,.08)'">
-        <i class="fab fa-youtube" style="font-size:52px;color:#FF0000;flex-shrink:0;"></i>
-        <div style="flex:1;">
+      <div class="yt-card">
+        <i class="fab fa-youtube yt-icon"></i>
+        <div style="flex:1;min-width:0;">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-            <span style="background:#FF0000;color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:1px;animation:pulse 1.5s infinite;">● LIVE</span>
+            <span style="background:#FF0000;color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:1px;">● LIVE</span>
           </div>
-          <div style="font-size:18px;font-weight:700;color:var(--text-primary);">실시간 Trading Live 방송</div>
-          <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">클릭하여 YouTube 라이브 방송 참여하기</div>
+          <div class="yt-title">실시간 Trading Live 방송</div>
+          <div class="yt-sub">클릭하여 YouTube 라이브 방송 참여하기</div>
         </div>
-        <div style="background:#FF0000;color:#fff;padding:12px 22px;border-radius:8px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;flex-shrink:0;">
-          <i class="fab fa-youtube" style="font-size:20px;"></i> YouTube에서 보기
-        </div>
+        <div class="yt-btn"><i class="fab fa-youtube"></i> YouTube에서 보기</div>
       </div>
     </a>
   </div>
