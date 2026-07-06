@@ -3049,7 +3049,8 @@
       if (!label) { showAlert('그룹 이름을 입력하세요.', 'err'); return; }
       if (!username) { showAlert('텔레그램 주소를 입력하세요.', 'err'); return; }
       const groups = getTgGroups();
-      groups.push({ label, username: username.startsWith('@') ? username : '@' + username });
+      const isNum = /^-?\d+$/.test(username);
+      groups.push({ label, username: isNum ? username : (username.startsWith('@') ? username : '@' + username) });
       saveTgGroupsToStorage(groups);
       document.getElementById('new-tg-label').value = '';
       document.getElementById('new-tg-username').value = '';
@@ -3069,7 +3070,9 @@
       const val = input.value.trim();
       if (!val) { showAlert('주소를 입력하세요.', 'err'); return; }
       const groups = getTgGroups();
-      groups[idx].username = val.startsWith('@') ? val : '@' + val;
+      // 숫자(chat_id)면 그대로, @username이면 @ 붙이기
+      const isNumeric = /^-?\d+$/.test(val);
+      groups[idx].username = isNumeric ? val : (val.startsWith('@') ? val : '@' + val);
       saveTgGroupsToStorage(groups);
       renderTelegram();
       showAlert('주소가 저장되었습니다.');
