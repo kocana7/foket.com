@@ -1537,11 +1537,11 @@
                 <div class="fg"><label class="fl">VIP 텔레그램 링크</label><input class="fc" id="tg-telegram_vip" placeholder="https://t.me/foket_vip"></div>
               </div>
               <div class="fg"><label class="fl">표시용 사용자명</label><input class="fc" id="tg-display_handle" placeholder="@foketsignal_Lobby"></div>
+              <div class="fg"><label class="fl">카카오톡 상담 링크</label><input class="fc" id="tg-kakao_consult" placeholder="https://open.kakao.com/o/XXXXXXXX"></div>
             </div>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
             <button class="btn btn-pri" onclick="saveTelegramSettings()"><i class="fas fa-save"></i> 링크 설정 저장</button>
-            <button class="btn btn-out" type="button" onclick="var u=document.getElementById('tg-telegram_free').value.trim()||'https://t.me/foketsignal_Lobby';window.open(u,'_blank','noopener,noreferrer');"><i class="fab fa-telegram-plane"></i> 무료 링크 미리보기</button>
           </div>
 
           <!-- 봇 설정 -->
@@ -3086,6 +3086,8 @@
       if (freeEl) freeEl.value = cfg.telegram_free || '';
       if (vipEl) vipEl.value = cfg.telegram_vip || '';
       if (handleEl) handleEl.value = cfg.telegram_handle || '@foketsignal_Lobby';
+      const kakaoEl = document.getElementById('tg-kakao_consult');
+      if (kakaoEl) kakaoEl.value = cfg.kakao_consult || '';
 
       const list = document.getElementById('tg-group-list');
       if (list) {
@@ -3144,8 +3146,10 @@
       if (freeEl) cfg.telegram_free = freeEl.value.trim();
       if (vipEl) cfg.telegram_vip = vipEl.value.trim();
       if (handleEl) cfg.telegram_handle = handleEl.value.trim() || '@foketsignal_Lobby';
+      const kakaoEl = document.getElementById('tg-kakao_consult');
+      if (kakaoEl) cfg.kakao_consult = kakaoEl.value.trim();
       lsSave('settings', cfg);
-      showAlert('텔레그램 설정이 저장되었습니다.');
+      showAlert('설정이 저장되었습니다.');
     }
 
     function tgSelectAll(val) {

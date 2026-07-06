@@ -1185,12 +1185,18 @@
       margin-top: auto
     }
 
-    /* ── FLOATING TG BUTTON ── */
-    .tg-float {
+    /* ── FLOATING BUTTONS ── */
+    .float-btns {
       position: fixed;
       bottom: 28px;
       right: 28px;
       z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    .tg-float {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -1211,18 +1217,33 @@
       box-shadow: 0 8px 28px rgba(34,158,217,.65);
       color: white
     }
+    .tg-float i { font-size: 20px }
 
-    .tg-float i {
-      font-size: 20px
+    .kakao-float {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #FEE500;
+      color: #3A1D1D;
+      text-decoration: none;
+      padding: 14px 20px;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 4px 20px rgba(254,229,0,.5);
+      transition: transform .2s, box-shadow .2s;
+      white-space: nowrap
     }
+    .kakao-float:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(254,229,0,.65);
+      color: #3A1D1D
+    }
+    .kakao-float i { font-size: 20px }
 
     @media(max-width:480px) {
-      .tg-float {
-        bottom: 16px;
-        right: 16px;
-        padding: 12px 16px;
-        font-size: 14px
-      }
+      .float-btns { bottom: 16px; right: 16px; }
+      .tg-float, .kakao-float { padding: 12px 16px; font-size: 14px }
     }
 
     /* ── COINS ── */
@@ -2164,6 +2185,7 @@
         </div>
         <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="btn-tg" data-tg="free"><i
             class="fab fa-telegram-plane"></i> <span data-i18n="nav.join_free">텔레그램 문의</span></a>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="btn-tg" data-kakao="consult" style="background:#FEE500;color:#3A1D1D;box-shadow:0 2px 10px rgba(254,229,0,.4);"><i class="fas fa-comment-dots"></i> <span>카카오톡 문의</span></a>
       </div>
       <button class="hamburger" id="hamburger">&#9776;</button>
     </div>
@@ -2175,6 +2197,8 @@
       <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" data-i18n="nav.contact" data-tg="free">문의</a>
       <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="btn-tg" data-tg="free"
         style="margin:12px 16px 0;"><i class="fab fa-telegram-plane"></i> <span data-i18n="nav.join_free">텔레그램 문의</span></a>
+      <a href="#" target="_blank" rel="noopener noreferrer" class="btn-tg" data-kakao="consult"
+        style="margin:8px 16px 0;background:#FEE500;color:#3A1D1D;"><i class="fas fa-comment-dots"></i> <span>카카오톡 문의</span></a>
     </div>
   </nav>
 
@@ -3275,6 +3299,12 @@
         document.querySelectorAll('[data-tg="vip"]').forEach(function(el) { el.href = vipUrl; });
         const ht = document.getElementById('tgHandleText');
         if (ht && handle) ht.textContent = handle;
+        // 카카오톡 링크 연결
+        const kakaoUrl = cfg.kakao_consult || '';
+        document.querySelectorAll('[data-kakao="consult"]').forEach(function(el) {
+          if (kakaoUrl) { el.href = kakaoUrl; el.style.display = ''; }
+          else { el.style.display = 'none'; }
+        });
       })();
 
       // 구독 플랜 그리드 동적 렌더링
@@ -3371,11 +3401,15 @@
       });
     }
   </script>
-  <!-- ── FLOATING TELEGRAM BUTTON ── -->
-  <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="tg-float">
-    <i class="fab fa-telegram-plane"></i>
-    텔레그램 문의
-  </a>
+  <!-- ── FLOATING BUTTONS ── -->
+  <div class="float-btns">
+    <a href="#" target="_blank" rel="noopener noreferrer" class="kakao-float" data-kakao="consult" style="display:none;">
+      <i class="fas fa-comment-dots"></i> 카카오톡 문의
+    </a>
+    <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="tg-float" data-tg="free">
+      <i class="fab fa-telegram-plane"></i> 텔레그램 문의
+    </a>
+  </div>
 
 </body>
 
