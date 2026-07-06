@@ -417,6 +417,27 @@ router.get('/telegram/status', async (req, res) => {
   }
 });
 
+// GET /api/telegram/chats - getUpdates로 봇이 속한 채팅 목록 조회
+router.get('/telegram/chats', async (req, res) => {
+  try {
+    const token = await getTelegramToken();
+    if (!token) return res.json({ success: false, error: '봇 토큰 미설정' });
+    const r = await fetch(`https://api.telegram.org/bot${token}/getUpdates?limit=100&allowed_updates=["message","my_chat_member"]`);
+    const j = await r.json();
+    if (!j.ok) return res.json({ success: false, error: j.description });
+    const seen = new Map();
+    for (const u of j.result) {
+      const chat = u.message?.chat || u.my_chat_member?.chat;
+      if (chat && !seen.has(chat.id)) {
+        seen.set(chat.id, { id: chat.id, title: chat.title || chat.username || chat.first_name, type: chat.type, username: chat.username || '' });
+      }
+    }
+    res.json({ success: true, chats: [...seen.values()] });
+  } catch (e) {
+    res.json({ success: false, error: e.message });
+  }
+});
+
 // POST /api/telegram/send  body: { groups: [...], message: string }
 router.post('/telegram/send', express.json(), async (req, res) => {
   try {
