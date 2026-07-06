@@ -61,8 +61,8 @@ jobs:
             sudo certbot certonly --nginx -d foket.com -d www.foket.com --non-interactive --agree-tos --email kocana7@gmail.com
           fi
 
-          # 인증서 유무에 따라 nginx 설정 선택
-          if [ -f /etc/letsencrypt/live/foket.com/fullchain.pem ]; then
+          # 인증서 유무에 따라 nginx 설정 선택 (sudo로 파일 존재 확인)
+          if sudo test -f /etc/letsencrypt/live/foket.com/fullchain.pem; then
             sudo cp /var/www/foket/scripts/nginx-foket-ssl.conf /etc/nginx/sites-enabled/foket
           else
             sudo cp /var/www/foket/scripts/nginx-foket.conf /etc/nginx/sites-enabled/foket
