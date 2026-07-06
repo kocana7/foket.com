@@ -1538,6 +1538,9 @@
               </div>
               <div class="fg"><label class="fl">표시용 사용자명</label><input class="fc" id="tg-display_handle" placeholder="@foketsignal_Lobby"></div>
               <div class="fg"><label class="fl">카카오톡 상담 링크</label><input class="fc" id="tg-kakao_consult" placeholder="https://open.kakao.com/o/XXXXXXXX"></div>
+              <div class="fg" style="grid-column:1/-1;"><label class="fl"><i class="fab fa-youtube" style="color:#FF0000;"></i> YouTube Live 링크</label><input class="fc" id="tg-youtube_live" placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX" oninput="previewYoutube(this.value)">
+                <div id="yt-preview" style="margin-top:8px;display:none;font-size:12px;color:#00b4d8;"></div>
+              </div>
             </div>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
@@ -3088,6 +3091,8 @@
       if (handleEl) handleEl.value = cfg.telegram_handle || '@foketsignal_Lobby';
       const kakaoEl = document.getElementById('tg-kakao_consult');
       if (kakaoEl) kakaoEl.value = cfg.kakao_consult || '';
+      const ytEl = document.getElementById('tg-youtube_live');
+      if (ytEl) { ytEl.value = cfg.youtube_live || ''; previewYoutube(ytEl.value); }
 
       const list = document.getElementById('tg-group-list');
       if (list) {
@@ -3148,6 +3153,8 @@
       if (handleEl) cfg.telegram_handle = handleEl.value.trim() || '@foketsignal_Lobby';
       const kakaoEl = document.getElementById('tg-kakao_consult');
       if (kakaoEl) cfg.kakao_consult = kakaoEl.value.trim();
+      const ytEl = document.getElementById('tg-youtube_live');
+      if (ytEl) cfg.youtube_live = ytEl.value.trim();
       lsSave('settings', cfg);
       showAlert('설정이 저장되었습니다.');
     }
@@ -3169,6 +3176,15 @@
       ta.setSelectionRange(s + before.length, e + before.length);
       const cc = document.getElementById('tg-cc-' + msgKey + '-' + idx);
       if (cc) cc.textContent = ta.value.length + '/4096';
+    }
+
+    function previewYoutube(url) {
+      const el = document.getElementById('yt-preview');
+      if (!el) return;
+      const m = (url || '').match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      if (m) { el.style.display = 'block'; el.innerHTML = '<i class="fas fa-check-circle"></i> 영상 ID: <strong>' + m[1] + '</strong> — 메인페이지에 표시됩니다.'; }
+      else if (url) { el.style.display = 'block'; el.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#FF9800;"></i> 유효한 YouTube URL을 입력하세요.'; }
+      else { el.style.display = 'none'; }
     }
 
     async function loadTgChats() {

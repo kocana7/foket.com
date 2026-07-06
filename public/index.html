@@ -2231,6 +2231,26 @@
     </div>
   </section>
 
+  <!-- ── YOUTUBE LIVE ── -->
+  <div id="youtube-live-section" style="display:none;max-width:900px;margin:32px auto;padding:0 20px;">
+    <div style="background:rgba(255,0,0,.06);border:1px solid rgba(255,0,0,.2);border-radius:14px;overflow:hidden;">
+      <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(255,0,0,.15);">
+        <span style="background:#FF0000;color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:1px;">LIVE</span>
+        <span style="font-size:16px;font-weight:700;color:var(--text-primary);">실시간 Trading Live 방송</span>
+        <a id="youtube-live-link" href="#" target="_blank" rel="noopener noreferrer"
+          style="margin-left:auto;display:flex;align-items:center;gap:6px;background:#FF0000;color:#fff;padding:7px 16px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;">
+          <i class="fab fa-youtube"></i> YouTube에서 보기
+        </a>
+      </div>
+      <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;">
+        <iframe id="youtube-live-iframe" src="" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+      </div>
+    </div>
+  </div>
+
   <!-- ── MAIN IMAGE ── -->
   <div style="width:100%;overflow:hidden;line-height:0;">
     <img src="images/Main_Image3.png" alt="Foket 트레이딩 시스템"
@@ -3296,6 +3316,23 @@
           if (kakaoUrl) { el.href = kakaoUrl; el.style.display = ''; }
           else { el.style.display = 'none'; }
         });
+        // 유튜브 라이브 링크
+        const ytUrl = cfg.youtube_live || '';
+        const ytSection = document.getElementById('youtube-live-section');
+        const ytLink = document.getElementById('youtube-live-link');
+        const ytFrame = document.getElementById('youtube-live-iframe');
+        if (ytUrl && ytSection) {
+          ytSection.style.display = 'block';
+          if (ytLink) ytLink.href = ytUrl;
+          if (ytFrame) {
+            // youtube.com/watch?v=ID 또는 youtu.be/ID → embed URL로 변환
+            const m = ytUrl.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+            if (m) ytFrame.src = 'https://www.youtube.com/embed/' + m[1] + '?autoplay=0';
+            else ytFrame.src = ytUrl;
+          }
+        } else if (ytSection) {
+          ytSection.style.display = 'none';
+        }
       })();
 
       // 구독 플랜 그리드 동적 렌더링
