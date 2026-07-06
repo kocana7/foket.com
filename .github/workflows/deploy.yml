@@ -36,7 +36,7 @@ jobs:
           echo "SESSION_SECRET=foket-super-secret-key-2024" >> .env
           echo "PORT=3000" >> .env
           echo "NODE_ENV=production" >> .env
-          echo "BASE_URL=http://34.212.176.114" >> .env
+          echo "BASE_URL=https://foket.com" >> .env
           echo "ADMIN_EMAIL=admin@foket.com" >> .env
           echo "ADMIN_PASSWORD=Admin@123" >> .env
           echo "ADMIN_PANEL_PASSWORD=Admin@123" >> .env
@@ -44,6 +44,27 @@ jobs:
           echo "GOOGLE_CLIENT_SECRET=" >> .env
           pm2 describe foket > /dev/null 2>&1 && pm2 restart foket --update-env || pm2 start ecosystem.config.js --env production
           pm2 save
-          sudo cp /var/www/foket/scripts/nginx-foket.conf /etc/nginx/sites-enabled/foket
+
+          # ── Nginx 설정 ──────────────────────────────────────────
           sudo rm -f /etc/nginx/sites-enabled/default
+
+          # certbot 설치
+          if ! command -v certbot > /dev/null 2>&1; then
+            sudo apt-get update -q
+            sudo apt-get install -y certbot python3-certbot-nginx
+          fi
+
+          # SSL 인증서 발급 (최초 1회)
+          if [ ! -f /etc/letsencrypt/live/foket.com/fullchain.pem ]; then
+            sudo cp /var/www/foket/scripts/nginx-foket.conf /etc/nginx/sites-enabled/foket
+            sudo nginx -t && sudo systemctl reload nginx
+            sudo certbot certonly --nginx -d foket.com -d www.foket.com --non-interactive --agree-tos --email kocana7@gmail.com
+          fi
+
+          # 인증서 유무에 따라 nginx 설정 선택
+          if [ -f /etc/letsencrypt/live/foket.com/fullchain.pem ]; then
+            sudo cp /var/www/foket/scripts/nginx-foket-ssl.conf /etc/nginx/sites-enabled/foket
+          else
+            sudo cp /var/www/foket/scripts/nginx-foket.conf /etc/nginx/sites-enabled/foket
+          fi
           sudo nginx -t && sudo systemctl reload nginx'
