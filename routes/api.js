@@ -417,12 +417,14 @@ router.get('/telegram/status', async (req, res) => {
   }
 });
 
-// GET /api/telegram/chats - getUpdates로 봇이 속한 채팅 목록 조회
+// GET /api/telegram/chats - 웹훅 삭제 후 getUpdates로 채팅 목록 조회
 router.get('/telegram/chats', async (req, res) => {
   try {
     const token = await getTelegramToken();
     if (!token) return res.json({ success: false, error: '봇 토큰 미설정' });
-    const r = await fetch(`https://api.telegram.org/bot${token}/getUpdates?limit=100&allowed_updates=["message","my_chat_member"]`);
+    // 웹훅 삭제 (getUpdates와 충돌 방지)
+    await fetch(`https://api.telegram.org/bot${token}/deleteWebhook`);
+    const r = await fetch(`https://api.telegram.org/bot${token}/getUpdates?limit=100`);
     const j = await r.json();
     if (!j.ok) return res.json({ success: false, error: j.description });
     const seen = new Map();
