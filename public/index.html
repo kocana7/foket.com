@@ -2000,13 +2000,14 @@
         font-size: 16px
       }
 
-      .btn-tg span[data-i18n] {
+      .btn-tg span {
         display: none
       }
 
       .btn-tg {
-        padding: 8px 10px;
-        font-size: 16px
+        padding: 7px 9px;
+        font-size: 15px;
+        min-width: unset
       }
 
       .stats-grid {
@@ -2069,17 +2070,32 @@
 
     @media(max-width:480px) {
       .core-grid { grid-template-columns: 1fr !important; }
+
+      .navbar-actions {
+        gap: 4px
+      }
+
+      .btn-tg {
+        padding: 6px 8px;
+        font-size: 14px
+      }
+
+      .lang-btn {
+        padding: 6px 8px;
+        font-size: 14px
+      }
+
       .section {
-        padding: 60px 0
+        padding: 48px 0
       }
 
       .hero {
-        padding: 0 0 40px 0
+        padding: 0 0 32px 0
       }
 
       .hero-title {
         white-space: normal;
-        font-size: clamp(16px, 4.5vw, 22px)
+        font-size: clamp(15px, 4.5vw, 20px)
       }
 
       .coins-grid {
@@ -2176,7 +2192,7 @@
         </div>
         <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="btn-tg" data-tg="free"><i
             class="fab fa-telegram-plane"></i> <span data-i18n="nav.join_free">텔레그램 문의</span></a>
-        <a href="#" target="_blank" rel="noopener noreferrer" class="btn-tg" data-kakao="consult" style="background:#FEE500;color:#3A1D1D;box-shadow:0 2px 10px rgba(254,229,0,.4);"><i class="fas fa-comment-dots"></i> <span>카카오톡 문의</span></a>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="btn-tg" data-kakao="consult" style="background:#FEE500;color:#3A1D1D;box-shadow:0 2px 10px rgba(254,229,0,.4);"><i class="fas fa-comment-dots"></i> <span data-i18n="nav.kakao_consult">카카오톡 문의</span></a>
       </div>
       <button class="hamburger" id="hamburger">&#9776;</button>
     </div>
