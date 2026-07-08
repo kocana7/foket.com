@@ -2081,18 +2081,56 @@
 
   <!-- FAQ Modal -->
   <div class="overlay" id="faqModal">
-    <div class="modal">
+    <div class="modal" style="max-width:620px;">
       <div class="modal-hd">
         <h3 id="faq-modal-title">새 FAQ</h3><button class="modal-close" onclick="closeModal('faqModal')">✕</button>
       </div>
       <div class="modal-bd">
         <input type="hidden" id="faq-edit-id">
-        <div class="fg"><label class="fl req">질문 (한국어)</label><input class="fc" id="faq-question"
-            placeholder="자주 묻는 질문을 입력하세요"></div>
-        <div class="fg"><label class="fl req">답변</label><textarea class="fc" id="faq-answer" rows="6"
-            placeholder="답변 내용..."></textarea></div>
-        <div class="fg"><label class="fl">표시 순서</label><input class="fc" type="number" id="faq-order" placeholder="0"
-            value="0">
+        <p style="font-size:12px;color:var(--dim);margin-bottom:10px;">각 언어별 질문과 답변을 입력하세요. 미입력 시 한국어 내용이 기본으로 표시됩니다.</p>
+        <div class="legal-lang-tabs" id="faq-tabs">
+          <button class="legal-tab active" onclick="switchFaqTab('ko',this)">🇰🇷 한국어</button>
+          <button class="legal-tab" onclick="switchFaqTab('en',this)">🇺🇸 English</button>
+          <button class="legal-tab" onclick="switchFaqTab('de',this)">🇩🇪 Deutsch</button>
+          <button class="legal-tab" onclick="switchFaqTab('ja',this)">🇯🇵 日本語</button>
+          <button class="legal-tab" onclick="switchFaqTab('zh',this)">🇨🇳 中文</button>
+          <button class="legal-tab" onclick="switchFaqTab('fr',this)">🇫🇷 Français</button>
+          <button class="legal-tab" onclick="switchFaqTab('es',this)">🇪🇸 Español</button>
+          <button class="legal-tab" onclick="switchFaqTab('ru',this)">🇷🇺 Русский</button>
+        </div>
+        <div id="faq-panel-ko">
+          <div class="fg"><label class="fl req">질문</label><input class="fc" id="faq-q-ko" placeholder="자주 묻는 질문을 입력하세요"></div>
+          <div class="fg"><label class="fl req">답변</label><textarea class="fc" id="faq-a-ko" rows="5" placeholder="답변 내용..."></textarea></div>
+        </div>
+        <div id="faq-panel-en" style="display:none">
+          <div class="fg"><label class="fl">Question</label><input class="fc" id="faq-q-en" placeholder="Enter question in English"></div>
+          <div class="fg"><label class="fl">Answer</label><textarea class="fc" id="faq-a-en" rows="5" placeholder="Enter answer in English..."></textarea></div>
+        </div>
+        <div id="faq-panel-de" style="display:none">
+          <div class="fg"><label class="fl">Frage</label><input class="fc" id="faq-q-de" placeholder="Frage auf Deutsch eingeben"></div>
+          <div class="fg"><label class="fl">Antwort</label><textarea class="fc" id="faq-a-de" rows="5" placeholder="Antwort auf Deutsch eingeben..."></textarea></div>
+        </div>
+        <div id="faq-panel-ja" style="display:none">
+          <div class="fg"><label class="fl">質問</label><input class="fc" id="faq-q-ja" placeholder="日本語で質問を入力してください"></div>
+          <div class="fg"><label class="fl">回答</label><textarea class="fc" id="faq-a-ja" rows="5" placeholder="日本語で回答を入力してください..."></textarea></div>
+        </div>
+        <div id="faq-panel-zh" style="display:none">
+          <div class="fg"><label class="fl">问题</label><input class="fc" id="faq-q-zh" placeholder="请输入中文问题"></div>
+          <div class="fg"><label class="fl">答案</label><textarea class="fc" id="faq-a-zh" rows="5" placeholder="请输入中文答案..."></textarea></div>
+        </div>
+        <div id="faq-panel-fr" style="display:none">
+          <div class="fg"><label class="fl">Question</label><input class="fc" id="faq-q-fr" placeholder="Saisir la question en français"></div>
+          <div class="fg"><label class="fl">Réponse</label><textarea class="fc" id="faq-a-fr" rows="5" placeholder="Saisir la réponse en français..."></textarea></div>
+        </div>
+        <div id="faq-panel-es" style="display:none">
+          <div class="fg"><label class="fl">Pregunta</label><input class="fc" id="faq-q-es" placeholder="Ingrese la pregunta en español"></div>
+          <div class="fg"><label class="fl">Respuesta</label><textarea class="fc" id="faq-a-es" rows="5" placeholder="Ingrese la respuesta en español..."></textarea></div>
+        </div>
+        <div id="faq-panel-ru" style="display:none">
+          <div class="fg"><label class="fl">Вопрос</label><input class="fc" id="faq-q-ru" placeholder="Введите вопрос на русском"></div>
+          <div class="fg"><label class="fl">Ответ</label><textarea class="fc" id="faq-a-ru" rows="5" placeholder="Введите ответ на русском..."></textarea></div>
+        </div>
+        <div class="fg"><label class="fl">표시 순서</label><input class="fc" type="number" id="faq-order" placeholder="0" value="0">
           <div class="fhint">숫자가 작을수록 위에 표시됩니다</div>
         </div>
         <div class="faction">
@@ -2686,23 +2724,38 @@
     </div></td>
   </tr>`).join('') || '<tr><td colspan="3" class="empty"><i class="fas fa-question-circle"></i><p>등록된 FAQ가 없습니다. 새 FAQ를 추가해 주세요.</p></td></tr>';
     }
+    function switchFaqTab(lang, btn) {
+      LEGAL_LANGS.forEach(function(l) {
+        const p = document.getElementById('faq-panel-' + l);
+        if (p) p.style.display = l === lang ? 'block' : 'none';
+      });
+      document.querySelectorAll('#faq-tabs .legal-tab').forEach(function(b) {
+        b.classList.toggle('active', b === btn);
+      });
+    }
     function editFaq(id) {
       const f = ls('faq', []).find(x => x.id === id); if (!f) return;
       document.getElementById('faq-modal-title').textContent = 'FAQ 수정';
       document.getElementById('faq-edit-id').value = id;
-      const q = typeof f.question === 'object' ? (f.question.ko || Object.values(f.question)[0] || '') : (f.question || '');
-      const a = typeof f.answer === 'object' ? (f.answer.ko || Object.values(f.answer)[0] || '') : (f.answer || '');
-      document.getElementById('faq-question').value = q;
-      document.getElementById('faq-answer').value = a;
+      LEGAL_LANGS.forEach(function(l) {
+        const q = typeof f.question === 'object' ? (f.question[l] || '') : (l === 'ko' ? (f.question || '') : '');
+        const a = typeof f.answer === 'object' ? (f.answer[l] || '') : (l === 'ko' ? (f.answer || '') : '');
+        const qi = document.getElementById('faq-q-' + l); if (qi) qi.value = q;
+        const ai = document.getElementById('faq-a-' + l); if (ai) ai.value = a;
+      });
       document.getElementById('faq-order').value = f.order != null ? f.order : 0;
+      switchFaqTab('ko', document.querySelector('#faq-tabs .legal-tab'));
       openModal('faqModal');
     }
     function openFaqModal() {
       document.getElementById('faq-modal-title').textContent = '새 FAQ';
       document.getElementById('faq-edit-id').value = '';
-      document.getElementById('faq-question').value = '';
-      document.getElementById('faq-answer').value = '';
+      LEGAL_LANGS.forEach(function(l) {
+        const qi = document.getElementById('faq-q-' + l); if (qi) qi.value = '';
+        const ai = document.getElementById('faq-a-' + l); if (ai) ai.value = '';
+      });
       document.getElementById('faq-order').value = '0';
+      switchFaqTab('ko', document.querySelector('#faq-tabs .legal-tab'));
       openModal('faqModal');
     }
     async function saveFaqToServer(faq) {
@@ -2715,9 +2768,14 @@
       if (!j.success) throw new Error('서버 응답 오류');
     }
     async function saveFaq() {
-      const question = document.getElementById('faq-question').value.trim();
-      const answer = document.getElementById('faq-answer').value.trim();
-      if (!question || !answer) { showAlert('질문과 답변을 입력해 주세요.', 'err'); return; }
+      const koQ = (document.getElementById('faq-q-ko').value || '').trim();
+      const koA = (document.getElementById('faq-a-ko').value || '').trim();
+      if (!koQ || !koA) { showAlert('한국어 질문과 답변은 필수입니다.', 'err'); return; }
+      const question = {}, answer = {};
+      LEGAL_LANGS.forEach(function(l) {
+        const qi = document.getElementById('faq-q-' + l); question[l] = qi ? qi.value.trim() : '';
+        const ai = document.getElementById('faq-a-' + l); answer[l] = ai ? ai.value.trim() : '';
+      });
       const faq = ls('faq', []);
       const editId = parseInt(document.getElementById('faq-edit-id').value, 10) || 0;
       const isEdit = editId > 0;
@@ -2730,11 +2788,6 @@
       } catch(e) {
         showAlert('서버 저장 실패: ' + e.message, 'err'); return;
       }
-      document.getElementById('faq-modal-title').textContent = '새 FAQ';
-      document.getElementById('faq-edit-id').value = '';
-      document.getElementById('faq-question').value = '';
-      document.getElementById('faq-answer').value = '';
-      document.getElementById('faq-order').value = '0';
       closeModal('faqModal');
       renderFaq();
       showAlert(isEdit ? 'FAQ가 수정되었습니다!' : 'FAQ가 등록되었습니다!');
