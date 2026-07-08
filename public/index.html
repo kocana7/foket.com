@@ -2118,22 +2118,73 @@
         flex-direction: column
       }
 
-      .best10-inner {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        padding: 0 12px
-      }
+      .best10-inner { padding: 0 12px }
 
-      #best10Card {
-        min-width: 560px
-      }
+      #best10Card { min-width: 0 }
 
-      #best10Card .csp-cols-5,
+      /* 모바일: 카드형 2줄 레이아웃 */
+      #best10Card .csp-cols-5 { display: none }
+
       #best10Card .csp-row {
-        grid-template-columns: 36px 1fr .9fr .9fr .9fr .9fr .7fr;
-        font-size: 12px;
-        padding: 8px 10px
+        display: flex !important;
+        flex-wrap: wrap;
+        align-items: center;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background: var(--bg-secondary);
+        margin-bottom: 10px;
+        padding: 13px 14px !important;
+        gap: 0;
+        opacity: 1 !important;
       }
+
+      /* 순위 */
+      #best10Card .csp-rank {
+        width: 28px;
+        font-size: 16px;
+        font-weight: 900;
+        flex-shrink: 0;
+        align-self: flex-start;
+        padding-top: 2px;
+      }
+
+      /* 종목명 */
+      #best10Card .csp-sym {
+        flex: 1;
+        min-width: 0;
+        text-align: left;
+        font-size: 14px;
+      }
+
+      /* 수익률% — 1줄 오른쪽 끝 */
+      #best10Card .csp-row > .csp-val:nth-child(3) {
+        width: auto;
+        min-width: 68px;
+        text-align: right;
+        font-size: 17px !important;
+        font-weight: 800;
+        flex-shrink: 0;
+      }
+
+      /* 2줄: 수익액·증거금·최대손실·거래시작 → 2열 */
+      #best10Card .csp-row > .csp-val:nth-child(n+4),
+      #best10Card .csp-days {
+        width: 50%;
+        margin-top: 10px;
+        font-size: 12px !important;
+        text-align: left;
+        padding-left: 28px;
+        display: block;
+        border-top: none;
+      }
+
+      /* 2줄 라벨 */
+      #best10Card .csp-row > .csp-val:nth-child(4)::before { content: '월수익액  '; font-size: 10px; color: var(--text-muted); font-weight: 400; }
+      #best10Card .csp-row > .csp-val:nth-child(5)::before { content: '거래증거금 '; font-size: 10px; color: var(--text-muted); font-weight: 400; }
+      #best10Card .csp-row > .csp-val:nth-child(6)::before { content: '최대손실  '; font-size: 10px; color: var(--text-muted); font-weight: 400; }
+      #best10Card .csp-days::before                         { content: '거래시작  '; font-size: 10px; color: var(--text-muted); font-weight: 400; }
+
+      #best10Card .csp-row:hover { background: var(--bg-secondary) }
     }
 
     @media(max-width:480px) {
