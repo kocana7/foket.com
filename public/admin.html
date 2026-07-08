@@ -3754,6 +3754,13 @@
             (cat.instruments || []).forEach(function(inst) {
               const col = symColMap[(inst.sym||'').toUpperCase()];
               if (col === undefined) return;
+              /* 엑셀 심볼 행에 있는 종목은 기존 수익 데이터를 먼저 초기화 */
+              inst.monthlyProfit = '';
+              inst.margin        = '';
+              inst.maxDailyLoss  = '';
+              inst.startDate     = '';
+              inst.monthlyReturn = '';
+              inst.dailyProfits  = [];
               const v = function(r){ const x = r[col]; return (x !== '' && x !== undefined) ? String(x).trim() : ''; };
               const raw_x = function(r){ const x = r[col]; return (x !== '' && x !== undefined) ? x : null; };
               if (v(profitRow))    { inst.monthlyProfit = v(profitRow); updated++; }
