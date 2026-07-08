@@ -3603,54 +3603,69 @@
       lsSave('markets', cats);
     }
 
-    function downloadPerfTemplate() {
+    async function downloadPerfTemplate() {
       const XL = window.XLSX;
       if (!XL) { showAlert('SheetJS 로드 실패', 'err'); return; }
       const cats = ls('markets', []);
 
-      /* 비암호화폐 종목 수집 */
-      const insts = [];
+      /* 현재 관리자 데이터: 심볼 → 종목 맵 */
+      const instMap = {};
       cats.forEach(function(cat) {
-        if (cat.nameKo === '암호화폐' || cat.nameEn === 'Cryptocurrency') return;
         (cat.instruments || []).forEach(function(inst) {
-          if (inst.binSym && !inst.yahooSym) return;
-          insts.push(inst);
+          if (inst.sym) instMap[inst.sym.toUpperCase()] = inst;
         });
       });
 
-      /* 최근 30 거래일 (월~금) */
-      const dayNames = ['일','월','화','수','목','금','토'];
-      const tradingDays = [];
-      const cur = new Date();
-      while (tradingDays.length < 30) {
-        const dow = cur.getDay();
-        if (dow !== 0 && dow !== 6) tradingDays.push(new Date(cur));
-        cur.setDate(cur.getDate() - 1);
+      /* 베이스 템플릿 파일 로드 */
+      let wbBase;
+      try {
+        const resp = await fetch('/data/perf_template.xlsx', { cache: 'no-store' });
+        if (!resp.ok) throw new Error('템플릿 파일 로드 실패 (' + resp.status + ')');
+        const buf = await resp.arrayBuffer();
+        wbBase = XL.read(buf, { type: 'array' });
+      } catch(e) {
+        showAlert('템플릿 로드 오류: ' + e.message, 'err'); return;
       }
-      const toSerial = function(d) { return Math.floor(d.getTime() / 86400000) + 25569 + 1; };
 
-      /* 행 구성 (샘플 구조 일치) */
-      const pad = ['', '', ''];
-      const nameKoRow  = pad.concat(insts.map(function(i){ return i.nameKo || ''; }));
-      const nameEnRow  = pad.concat(insts.map(function(i){ return i.nameEn || ''; }));
-      const symRow     = pad.concat(insts.map(function(i){ return i.sym    || ''; }));
-      const profitRow  = ['','','월평균 수익액'].concat(insts.map(function(i){ return i.monthlyProfit || ''; }));
-      const marginRow  = ['','','거래증거금'].concat(insts.map(function(i){ return i.margin         || ''; }));
-      const lossRow    = ['','','과거 일최대 손실 기록'].concat(insts.map(function(i){ return i.maxDailyLoss || ''; }));
-      const vdRow      = ['','','거래시작일'].concat(insts.map(function(i){ return i.startDate || ''; }));
-      const emptyRow   = pad.concat(insts.map(function(){ return ''; }));
-      const hdrRow     = ['','최근 30일 월평균 수익액 변동 현황',''].concat(insts.map(function(){ return ''; }));
+      const ws = wbBase.Sheets[wbBase.SheetNames[0]];
+      const rows = XL.utils.sheet_to_json(ws, { header: 1, defval: '', raw: true });
 
-      const rows = [nameKoRow, nameEnRow, symRow, profitRow, marginRow, lossRow, vdRow, emptyRow, hdrRow];
-      tradingDays.forEach(function(d, idx) {
-        rows.push([idx + 1, toSerial(d), dayNames[d.getDay()]].concat(insts.map(function(){ return ''; })));
+      /* 심볼 행(Row2)에서 컬럼 인덱스 맵 구성 */
+      const symRow = rows[2] || [];
+      const symColMap = {};
+      symRow.forEach(function(sym, col) {
+        if (sym && col >= 3) symColMap[String(sym).trim().toUpperCase()] = col;
       });
 
-      const ws = XL.utils.aoa_to_sheet(rows);
-      ws['!cols'] = [{wch:6},{wch:12},{wch:22}].concat(insts.map(function(){ return {wch:14}; }));
-      const wb = XL.utils.book_new();
-      XL.utils.book_append_sheet(wb, ws, '수익현황');
-      XL.writeFile(wb, 'foket_performance.xlsx');
+      /* Row3~6에 현재 데이터 기입 (라벨 포함) */
+      const TOTAL_COLS = symRow.length;
+      const ensureRow = function(idx, label) {
+        while (rows.length <= idx) rows.push([]);
+        while (rows[idx].length < TOTAL_COLS) rows[idx].push('');
+        rows[idx][2] = label;
+      };
+      ensureRow(3, '월평균 수익액');
+      ensureRow(4, '거래증거금');
+      ensureRow(5, '과거 일최대 손실 기록');
+      ensureRow(6, '거래시작일');
+
+      Object.keys(symColMap).forEach(function(sym) {
+        const col = symColMap[sym];
+        const inst = instMap[sym];
+        if (!inst) return;
+        if (inst.monthlyProfit) rows[3][col] = inst.monthlyProfit;
+        if (inst.margin)        rows[4][col] = inst.margin;
+        if (inst.maxDailyLoss)  rows[5][col] = inst.maxDailyLoss;
+        if (inst.startDate)     rows[6][col] = inst.startDate;
+      });
+
+      /* 수정된 데이터로 새 워크북 생성 */
+      const wsNew = XL.utils.aoa_to_sheet(rows);
+      /* 원본 열 너비 복사 */
+      if (ws['!cols']) wsNew['!cols'] = ws['!cols'];
+      const wbNew = XL.utils.book_new();
+      XL.utils.book_append_sheet(wbNew, wsNew, '수익현황');
+      XL.writeFile(wbNew, 'foket_performance.xlsx');
     }
 
     function uploadPerfExcel(input) {
