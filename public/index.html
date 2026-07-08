@@ -3257,8 +3257,11 @@
           const key = (inst.sym || '').toUpperCase() || ('__' + Math.random());
           if (!(key in symMap) || mr(inst) > mr(symMap[key])) symMap[key] = inst;
         });
-        /* 데이터 있는 종목만, monthlyReturn 내림차순, 상위 6개 */
-        const withData = Object.values(symMap).filter(function(inst) { return mr(inst) !== -Infinity; });
+        /* monthlyProfit 있고 monthlyReturn 계산된 종목만, 내림차순, 상위 6개 */
+        const withData = Object.values(symMap).filter(function(inst) {
+          const hasProfit = inst.monthlyProfit !== '' && inst.monthlyProfit != null && String(inst.monthlyProfit).trim() !== '';
+          return hasProfit && mr(inst) !== -Infinity;
+        });
         withData.sort(function (a, b) { return mr(b) - mr(a); });
         const top10 = withData.slice(0, 6);
         if (top10.length === 0) { container.innerHTML = emptyRow(noItems); return; }
