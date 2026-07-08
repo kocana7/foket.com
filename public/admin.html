@@ -3691,16 +3691,31 @@
             if (String(rows[i][1]||'').includes('최근 30일')) { dayStart = i + 1; break; }
           }
 
+          /* Excel date serial → YYYY-MM-DD */
+          const excelDateToStr = function(x) {
+            const n = parseFloat(x);
+            if (!isNaN(n) && n > 1000) {
+              const d = new Date(Math.round((n - 25569) * 86400000));
+              return d.getUTCFullYear() + '-' +
+                String(d.getUTCMonth() + 1).padStart(2, '0') + '-' +
+                String(d.getUTCDate()).padStart(2, '0');
+            }
+            return String(x).trim();
+          };
+
           cats.forEach(function(cat) {
             if (cat.nameKo === '암호화폐' || cat.nameEn === 'Cryptocurrency') return;
             (cat.instruments || []).forEach(function(inst) {
               const col = symColMap[(inst.sym||'').toUpperCase()];
               if (col === undefined) return;
               const v = function(r){ const x = r[col]; return (x !== '' && x !== undefined) ? String(x).trim() : ''; };
+              const raw_x = function(r){ const x = r[col]; return (x !== '' && x !== undefined) ? x : null; };
               if (v(profitRow))    { inst.monthlyProfit = v(profitRow); updated++; }
               if (v(marginRow))    inst.margin       = v(marginRow);
               if (v(lossRow))      inst.maxDailyLoss = v(lossRow);
-              if (v(startDateRow)) inst.startDate    = v(startDateRow);
+              if (raw_x(startDateRow) !== null) inst.startDate = excelDateToStr(raw_x(startDateRow));
+              /* monthlyReturn 즉시 계산 */
+              inst.monthlyReturn = calcMonthlyReturn(inst);
               /* 30일 일별 데이터 */
               if (dayStart >= 0) {
                 const daily = [];

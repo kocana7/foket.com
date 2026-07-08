@@ -2965,9 +2965,8 @@
     function _cspBuildRow(inst, delay, opts) {
       const mr = inst.monthlyReturn !== '' && inst.monthlyReturn != null ? parseFloat(inst.monthlyReturn) : null;
       const dl = inst.maxDailyLoss !== '' && inst.maxDailyLoss != null ? parseFloat(inst.maxDailyLoss) : null;
-      const days = inst.startDate
-        ? Math.max(0, Math.floor((new Date() - new Date(inst.startDate + 'T00:00:00')) / 86400000))
-        : null;
+      const _sd = inst.startDate && /^\d{4}-\d{2}-\d{2}$/.test(String(inst.startDate).trim()) ? String(inst.startDate).trim() : null;
+      const days = _sd ? Math.max(0, Math.floor((new Date() - new Date(_sd + 'T00:00:00')) / 86400000)) : null;
       const roundTrips = (inst.dailyRoundTrips !== '' && inst.dailyRoundTrips != null) ? (parseFloat(inst.dailyRoundTrips) + '') : '—';
       const mrStr = mr !== null ? (mr >= 0 ? '+' : '') + mr.toFixed(2) + '%' : '—';
       const dlStr = dl !== null ? (dl >= 0 ? '+' : '') + dl.toFixed(2) + '%' : '—';
@@ -3234,45 +3233,39 @@
           const key = (inst.sym || '').toUpperCase() || ('__' + Math.random());
           if (!(key in symMap) || mr(inst) > mr(symMap[key])) symMap[key] = inst;
         });
-        const deduped = Object.values(symMap);
-        /* 표시 종목: Euro FX, Australian Dollar, Mini S&P500, Crude Oil, Gold, Wheat, Japanese Yen */
-        const TARGET_SYMS = ['6E','EC','6A','AD','ES','MES','CL','QM','GC','MGC','ZW','W','6J','JY'];
-        const TARGET_NAMES = ['euro fx','australian dollar','mini s&p','s&p500','s&p 500','crude oil','gold','wheat','japanese'];
-        const filtered = deduped.filter(function(inst) {
-          const sym = (inst.sym || '').toUpperCase();
-          const nameEn = (inst.nameEn || '').toLowerCase();
-          const nameKo = (inst.nameKo || '').toLowerCase();
-          return TARGET_SYMS.indexOf(sym) !== -1 ||
-            TARGET_NAMES.some(function(n) { return nameEn.indexOf(n) !== -1 || nameKo.indexOf(n) !== -1; });
-        });
-        filtered.sort(function (a, b) { return mr(b) - mr(a); });
-        const top10 = filtered.slice(0, 7);
+        /* 데이터 있는 종목만, monthlyReturn 내림차순 */
+        const withData = Object.values(symMap).filter(function(inst) { return mr(inst) !== -Infinity; });
+        withData.sort(function (a, b) { return mr(b) - mr(a); });
+        const top10 = withData.length ? withData : Object.values(symMap).slice(0, 10);
         if (top10.length === 0) { container.innerHTML = emptyRow(noItems); return; }
+
         const isKo = (lang === 'ko');
         const instName = (inst) => isKo ? (inst.nameKo || inst.sym) : (inst.nameEn || inst.nameKo || inst.sym);
         const catLabel = (inst) => isKo ? (inst._catName || '') : (inst._catNameEn || '');
+        const fmtAmt = (str) => {
+          if (!str) return null;
+          const s = String(str).trim();
+          const num = parseFloat(s.replace(/[^0-9.\-]/g, ''));
+          if (isNaN(num)) return s;
+          return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+        };
+        const parseDateStr = (sd) => {
+          if (!sd) return null;
+          /* YYYY-MM-DD 형식만 허용, 숫자(Excel serial) 이면 null */
+          if (/^\d{4}-\d{2}-\d{2}$/.test(String(sd).trim())) return String(sd).trim();
+          return null;
+        };
+
         container.innerHTML = top10.map(function (inst, idx) {
           const rank = idx + 1;
-          const fmtAmt = (str) => {
-            if (!str) return null;
-            const s = String(str).trim();
-            const num = parseFloat(s.replace(/[^0-9.\-]/g, ''));
-            if (isNaN(num)) return s;
-            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-          };
-          const mrVal = inst.monthlyReturn !== '' && inst.monthlyReturn != null ? parseFloat(inst.monthlyReturn) : null;
+          const mrVal = mr(inst) !== -Infinity ? mr(inst) : null;
           const mpVal = inst.monthlyProfit !== '' && inst.monthlyProfit != null ? String(inst.monthlyProfit).trim() : null;
           const mgVal = inst.margin !== '' && inst.margin != null ? String(inst.margin).trim() : null;
           const dlRaw = inst.maxDailyLoss !== '' && inst.maxDailyLoss != null ? String(inst.maxDailyLoss).trim() : null;
-          const days = inst.startDate ? Math.max(0, Math.floor((new Date() - new Date(inst.startDate + 'T00:00:00')) / 86400000)) : null;
-          const mrStr = mrVal !== null ? (mrVal >= 0 ? '+' : '') + mrVal.toFixed(2) + '%' : '—';
-          const mpStr = fmtAmt(mpVal) || '—';
-          const mgStr = fmtAmt(mgVal) || '—';
-          const dlStr = fmtAmt(dlRaw) || '—';
+          const sd = parseDateStr(inst.startDate);
+          const days = sd ? Math.max(0, Math.floor((new Date() - new Date(sd + 'T00:00:00')) / 86400000)) : null;
+          const mrStr = mrVal !== null ? (mrVal >= 0 ? '+' : '') + parseFloat(mrVal).toFixed(2) + '%' : '—';
           const mrCls = mrVal !== null ? (mrVal >= 0 ? 'up' : 'dn') : 'dim';
-          const mpCls = mpVal ? 'up' : 'dim';
-          const mgCls = mgVal ? '' : 'dim';
-          const dlCls = dlRaw ? 'dn' : 'dim';
           const binancePrefix = (inst._catId === 8) ? '<span class="binance-mark" title="Binance">B</span>' : '';
           const symCell = isKo
             ? binancePrefix + instName(inst) + '<small>' + (inst.sym || '') + ' · ' + catLabel(inst) + '</small>'
@@ -3281,10 +3274,10 @@
             '<div class="csp-rank">' + rank + '</div>' +
             '<div class="csp-sym">' + symCell + '</div>' +
             '<div class="csp-val ' + mrCls + '">' + mrStr + '</div>' +
-            '<div class="csp-val ' + mpCls + '">' + mpStr + '</div>' +
-            '<div class="csp-val ' + mgCls + '">' + mgStr + '</div>' +
-            '<div class="csp-val ' + dlCls + '">' + dlStr + '</div>' +
-            '<div class="csp-days">' + (days !== null ? days : '—') + (days !== null ? '<small>' + daysUnit + '</small>' : '') + '</div>' +
+            '<div class="csp-val ' + (mpVal ? 'up' : 'dim') + '">' + (fmtAmt(mpVal) || '—') + '</div>' +
+            '<div class="csp-val ' + (mgVal ? '' : 'dim') + '">' + (fmtAmt(mgVal) || '—') + '</div>' +
+            '<div class="csp-val ' + (dlRaw ? 'dn' : 'dim') + '">' + (fmtAmt(dlRaw) || '—') + '</div>' +
+            '<div class="csp-days">' + (days !== null ? days + '<small>' + daysUnit + '</small>' : '—') + '</div>' +
             '</div>';
         }).join('');
       } catch (e) {
