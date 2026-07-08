@@ -853,6 +853,22 @@
     }
 
 
+    /* ── 30일 수익 차트 카드 ── */
+    .profit-charts-sec { max-width:1280px; margin:28px auto 0; padding:0 24px; }
+    .profit-charts-title { font-size:15px; font-weight:700; color:var(--text-primary); margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+    .profit-charts-title::before { content:''; width:4px; height:18px; background:var(--gradient-primary); border-radius:2px; display:inline-block; }
+    .chart-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .chart-card { background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:12px; padding:14px 16px; }
+    .chart-card-hd { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+    .chart-card-name { font-size:13px; font-weight:700; color:var(--text-primary); }
+    .chart-card-sym { font-size:11px; color:var(--text-muted); margin-top:2px; }
+    .chart-card-ret { font-size:15px; font-weight:800; }
+    .chart-card-ret.up { color:var(--accent-green); }
+    .chart-card-ret.dn { color:#f85149; }
+    .chart-svg { display:block; width:100%; }
+    @media(max-width:900px){ .chart-grid { grid-template-columns:repeat(2,1fr); } .profit-charts-sec { padding:0 16px; } }
+    @media(max-width:560px){ .chart-grid { grid-template-columns:1fr; } }
+
     .hero-card {
       background: var(--gradient-card);
       border: 1px solid var(--border-color);
@@ -2299,6 +2315,14 @@
     </div>
   </section>
 
+  <!-- ── 30일 수익 변동 차트 ── -->
+  <div id="profitChartsWrap" style="display:none; padding-bottom:28px; background:var(--bg-primary); border-bottom:1px solid var(--border-color);">
+    <div class="profit-charts-sec">
+      <div class="profit-charts-title">종목별 30일 수익 변동 현황</div>
+      <div class="chart-grid" id="profitChartGrid"></div>
+    </div>
+  </div>
+
   <!-- ── YOUTUBE LIVE ── -->
   <div id="youtube-live-section" style="display:none;max-width:900px;margin:32px auto;padding:0 20px;">
     <a id="youtube-live-link" href="#" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:block;">
@@ -3233,10 +3257,10 @@
           const key = (inst.sym || '').toUpperCase() || ('__' + Math.random());
           if (!(key in symMap) || mr(inst) > mr(symMap[key])) symMap[key] = inst;
         });
-        /* 데이터 있는 종목만, monthlyReturn 내림차순 */
+        /* 데이터 있는 종목만, monthlyReturn 내림차순, 상위 6개 */
         const withData = Object.values(symMap).filter(function(inst) { return mr(inst) !== -Infinity; });
         withData.sort(function (a, b) { return mr(b) - mr(a); });
-        const top10 = withData.length ? withData : Object.values(symMap).slice(0, 10);
+        const top10 = withData.slice(0, 6);
         if (top10.length === 0) { container.innerHTML = emptyRow(noItems); return; }
 
         const isKo = (lang === 'ko');
@@ -3304,7 +3328,103 @@
 
     async function loadBest10() {
       const markets = await fetchMarketsFromServer();
-      if (markets) renderBest10(JSON.stringify(markets));
+      if (!markets) return;
+      renderBest10(JSON.stringify(markets));
+      renderProfitCharts(markets);
+    }
+
+    function renderProfitCharts(markets) {
+      const wrap = document.getElementById('profitChartsWrap');
+      const grid = document.getElementById('profitChartGrid');
+      if (!wrap || !grid) return;
+
+      /* 심볼 기준 중복 제거 + dailyProfits 있는 종목 수집 */
+      const symMap = {};
+      markets.forEach(function(m) {
+        (m.instruments || []).forEach(function(inst) {
+          if (!inst.dailyProfits || !inst.dailyProfits.length) return;
+          const key = (inst.sym || '').toUpperCase();
+          const cur = parseFloat(inst.monthlyReturn) || -Infinity;
+          const prev = symMap[key] ? (parseFloat(symMap[key].monthlyReturn) || -Infinity) : -Infinity;
+          if (!(key in symMap) || cur > prev) symMap[key] = Object.assign({}, inst, { _catName: m.nameKo });
+        });
+      });
+
+      const sorted = Object.values(symMap).sort(function(a, b) {
+        return (parseFloat(b.monthlyReturn) || -Infinity) - (parseFloat(a.monthlyReturn) || -Infinity);
+      });
+      const top6 = sorted.slice(0, 6);
+      if (!top6.length) { wrap.style.display = 'none'; return; }
+
+      grid.innerHTML = top6.map(function(inst) {
+        const mr = parseFloat(inst.monthlyReturn) || 0;
+        const cls = mr >= 0 ? 'up' : 'dn';
+        const mrStr = (mr >= 0 ? '+' : '') + mr.toFixed(2) + '%';
+        /* dailyProfits: index 0=최근일, 역순 정렬해서 왼쪽=과거 오른쪽=최근 */
+        const profits = inst.dailyProfits.slice().reverse();
+        return '<div class="chart-card">' +
+          '<div class="chart-card-hd">' +
+            '<div><div class="chart-card-name">' + (inst.nameKo || inst.sym) + '</div>' +
+            '<div class="chart-card-sym">' + (inst.sym || '') + '</div></div>' +
+            '<div class="chart-card-ret ' + cls + '">' + mrStr + '</div>' +
+          '</div>' +
+          makeProfitSVG(profits) +
+          '</div>';
+      }).join('');
+
+      wrap.style.display = 'block';
+    }
+
+    function makeProfitSVG(data) {
+      const W = 320, H = 110;
+      const PL = 46, PR = 8, PT = 8, PB = 22;
+      const cW = W - PL - PR, cH = H - PT - PB;
+
+      const vals = data.map(Number).filter(function(n) { return !isNaN(n); });
+      if (!vals.length) return '<div style="text-align:center;color:var(--text-muted);font-size:11px;padding:20px 0;">데이터 없음</div>';
+
+      const maxV = Math.max.apply(null, vals.concat([0]));
+      const minV = Math.min.apply(null, vals.concat([0]));
+      const range = maxV - minV || 1;
+      const n = vals.length;
+
+      const px = function(i) { return PL + (n > 1 ? (i / (n - 1)) * cW : cW / 2); };
+      const py = function(v) { return PT + (1 - (v - minV) / range) * cH; };
+      const zy = py(0);
+
+      /* 라인 포인트 */
+      const pts = vals.map(function(v, i) { return px(i).toFixed(1) + ',' + py(v).toFixed(1); }).join(' ');
+
+      /* fill polygon (zero baseline) */
+      const fillPts = PL.toFixed(1) + ',' + zy.toFixed(1) + ' ' + pts + ' ' + (PL + cW).toFixed(1) + ',' + zy.toFixed(1);
+
+      /* 양/음 색상 */
+      const lineClr = maxV >= Math.abs(minV) ? '#3fb950' : '#f85149';
+
+      /* Y 라벨 포맷 */
+      const fmt = function(v) {
+        if (Math.abs(v) >= 1000) return (v / 1000).toFixed(1) + 'k';
+        return v.toFixed(0);
+      };
+
+      return '<svg class="chart-svg" viewBox="0 0 ' + W + ' ' + H + '">' +
+        /* zero line */
+        '<line x1="' + PL + '" y1="' + zy.toFixed(1) + '" x2="' + (W - PR) + '" y2="' + zy.toFixed(1) + '" stroke="rgba(255,255,255,.18)" stroke-width="1" stroke-dasharray="3,3"/>' +
+        /* fill */
+        '<polygon points="' + fillPts + '" fill="' + (maxV >= Math.abs(minV) ? 'rgba(63,185,80,.12)' : 'rgba(248,81,73,.12)') + '"/>' +
+        /* line */
+        '<polyline points="' + pts + '" fill="none" stroke="' + lineClr + '" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>' +
+        /* dots at first/last */
+        '<circle cx="' + px(0).toFixed(1) + '" cy="' + py(vals[0]).toFixed(1) + '" r="2.5" fill="' + lineClr + '" opacity=".7"/>' +
+        '<circle cx="' + px(n - 1).toFixed(1) + '" cy="' + py(vals[n - 1]).toFixed(1) + '" r="3" fill="' + lineClr + '"/>' +
+        /* Y labels */
+        '<text x="' + (PL - 4) + '" y="' + (PT + 4) + '" text-anchor="end" font-size="9" fill="rgba(255,255,255,.45)">' + fmt(maxV) + '</text>' +
+        '<text x="' + (PL - 4) + '" y="' + (zy + 3.5).toFixed(1) + '" text-anchor="end" font-size="9" fill="rgba(255,255,255,.3)">0</text>' +
+        (minV < 0 ? '<text x="' + (PL - 4) + '" y="' + (PT + cH + 4) + '" text-anchor="end" font-size="9" fill="rgba(255,255,255,.45)">' + fmt(minV) + '</text>' : '') +
+        /* X labels */
+        '<text x="' + PL + '" y="' + (H - 4) + '" text-anchor="middle" font-size="9" fill="rgba(255,255,255,.3)">30일전</text>' +
+        '<text x="' + (W - PR) + '" y="' + (H - 4) + '" text-anchor="end" font-size="9" fill="rgba(255,255,255,.3)">최근</text>' +
+        '</svg>';
     }
 
     document.addEventListener('DOMContentLoaded', () => {
