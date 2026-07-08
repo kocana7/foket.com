@@ -1500,6 +1500,8 @@
                     <div id="mkt-cat-en" style="font-size:11px;color:var(--dim);margin-top:2px;"></div>
                   </div>
                   <div style="display:flex;gap:8px;align-items:center;">
+                    <button type="button" class="tb-btn" onclick="downloadPerfTemplate()"><i class="fas fa-file-excel"></i> 엑셀 템플릿</button>
+                    <label class="tb-btn" style="cursor:pointer;"><i class="fas fa-upload"></i> 엑셀 업로드<input type="file" accept=".xlsx,.xls,.csv" style="display:none;" onchange="uploadPerfExcel(this)"></label>
                     <button type="button" class="tb-btn" id="mkt-add-btn" onclick="openInstModal(selCatId)"
                       style="display:none;"><i class="fas fa-plus"></i> 종목 추가</button>
                     <button type="button" class="tb-btn pri" id="mkt-save-btn" onclick="publishMarkets()"
@@ -3434,61 +3436,88 @@
       {
         id: 2, nameKo: '주가지수선물', nameEn: 'Index Futures', icon: 'fas fa-chart-line', clr: '#3fb950',
         instruments: [
-          { id: 1, nameKo: 'S&P 선물', nameEn: 'S&P 500 Futures', sym: 'ES', yahooSym: 'ES=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
-          { id: 2, nameKo: '나스닥 선물', nameEn: 'Nasdaq 100 Futures', sym: 'NQ', yahooSym: 'NQ=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
-          { id: 3, nameKo: '니케이달러선물', nameEn: 'Nikkei Dollar Futures', sym: 'NKD', yahooSym: 'NKD=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
+          { id: 1, nameKo: 'S&P 선물', nameEn: 'S&P 500 Futures', sym: 'ES', yahooSym: 'ES=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 2, nameKo: '나스닥 선물', nameEn: 'Nasdaq 100 Futures', sym: 'NQ', yahooSym: 'NQ=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 3, nameKo: '니케이달러선물', nameEn: 'Nikkei Dollar Futures', sym: 'NKD', yahooSym: 'NKD=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 4, nameKo: '코스피200', nameEn: 'KOSPI 200 Futures', sym: 'K200', yahooSym: 'K200=F', exch: 'KRX', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 5, nameKo: '항셍선물', nameEn: 'Hang Seng Futures', sym: 'HSI', yahooSym: 'HSI=F', exch: 'HKEX', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 6, nameKo: '유로 스톡스50', nameEn: 'Euro Stoxx 50', sym: 'FESX', yahooSym: 'ESTX50=F', exch: 'EUREX', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 7, nameKo: 'VIX 선물', nameEn: 'VIX Futures', sym: 'VX', yahooSym: 'VX=F', exch: 'CBOE', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
         ]
       },
       {
         id: 3, nameKo: '귀금속', nameEn: 'Metals', icon: 'fas fa-gem', clr: '#d29922',
         instruments: [
-          { id: 1, nameKo: '골드', nameEn: 'Gold', sym: 'GC', yahooSym: 'GC=F', exch: 'COMEX', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
-          { id: 2, nameKo: '실버', nameEn: 'Silver', sym: 'SI', yahooSym: 'SI=F', exch: 'COMEX', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
+          { id: 1, nameKo: '골드', nameEn: 'Gold', sym: 'GC', yahooSym: 'GC=F', exch: 'COMEX', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 2, nameKo: '실버', nameEn: 'Silver', sym: 'SI', yahooSym: 'SI=F', exch: 'COMEX', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 3, nameKo: '마이크로 실버', nameEn: 'Micro Silver', sym: 'SIL', yahooSym: 'SIL=F', exch: 'COMEX', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
         ]
       },
       {
         id: 4, nameKo: '에너지', nameEn: 'Energy', icon: 'fas fa-fire', clr: '#f0883e',
         instruments: [
-          { id: 1, nameKo: '원유', nameEn: 'Crude Oil', sym: 'CL', yahooSym: 'CL=F', exch: 'NYMEX', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
+          { id: 1, nameKo: '원유', nameEn: 'Crude Oil', sym: 'CL', yahooSym: 'CL=F', exch: 'NYMEX', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 2, nameKo: '천연가스', nameEn: 'Natural Gas', sym: 'NG', yahooSym: 'NG=F', exch: 'NYMEX', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
         ]
       },
       {
         id: 5, nameKo: '농산물', nameEn: 'Agriculture', icon: 'fas fa-leaf', clr: '#56d364',
         instruments: [
-          { id: 1, nameKo: '옥수수', nameEn: 'Corn', sym: 'ZC', yahooSym: 'ZC=F', exch: 'CBOT', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
-          { id: 2, nameKo: '밀', nameEn: 'Wheat', sym: 'ZW', yahooSym: 'ZW=F', exch: 'CBOT', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
-          { id: 3, nameKo: '대두', nameEn: 'Soybeans', sym: 'ZS', yahooSym: 'ZS=F', exch: 'CBOT', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
+          { id: 1, nameKo: '옥수수', nameEn: 'Corn', sym: 'ZC', yahooSym: 'ZC=F', exch: 'CBOT', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 2, nameKo: '밀', nameEn: 'Wheat', sym: 'ZW', yahooSym: 'ZW=F', exch: 'CBOT', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 3, nameKo: '대두', nameEn: 'Soybeans', sym: 'ZS', yahooSym: 'ZS=F', exch: 'CBOT', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
         ]
       },
       {
         id: 6, nameKo: '미국채', nameEn: 'U.S. Treasury', icon: 'fas fa-landmark', clr: '#bc8cff',
         instruments: [
-          { id: 1, nameKo: '울트라 T본드', nameEn: 'Ultra T-Bond', sym: 'UB', yahooSym: 'UB=F', exch: 'CBOT', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
-          { id: 2, nameKo: '30년물 국채', nameEn: '30 Year Bond', sym: 'ZB', yahooSym: 'ZB=F', exch: 'CBOT', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
+          { id: 1, nameKo: '울트라 T본드', nameEn: 'Ultra T-Bond', sym: 'UB', yahooSym: 'UB=F', exch: 'CBOT', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 2, nameKo: '30년물 국채', nameEn: '30 Year Bond', sym: 'ZB', yahooSym: 'ZB=F', exch: 'CBOT', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
         ]
       },
       {
         id: 7, nameKo: '외환', nameEn: 'Forex', icon: 'fas fa-dollar-sign', clr: '#79c0ff',
         instruments: [
-          { id: 1, nameKo: '유로 FX', nameEn: 'Euro FX', sym: '6E', yahooSym: '6E=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
+          { id: 1, nameKo: '유로 FX', nameEn: 'Euro FX', sym: '6E', yahooSym: '6E=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 2, nameKo: '일본 엔화', nameEn: 'Japanese Yen', sym: '6J', yahooSym: '6J=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 3, nameKo: '호주 달러', nameEn: 'Australian Dollar', sym: '6A', yahooSym: '6A=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 4, nameKo: '영국 파운드', nameEn: 'British Pound', sym: '6B', yahooSym: '6B=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 5, nameKo: '멕시코 페소', nameEn: 'Mexican Peso', sym: '6M', yahooSym: '6M=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 6, nameKo: '뉴질랜드 달러', nameEn: 'New Zealand Dollar', sym: '6N', yahooSym: '6N=F', exch: 'CME', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
         ]
       },
       {
         id: 8, nameKo: '바이낸스 암호화폐', nameEn: 'Binance Crypto', icon: 'fab fa-btc', clr: '#f0b90b',
         instruments: [
-          { id: 1, nameKo: '비트코인', nameEn: 'Bitcoin', sym: 'BTC', binSym: 'BTCUSDT', exch: 'Binance', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
-          { id: 2, nameKo: '이더리움', nameEn: 'Ethereum', sym: 'ETH', binSym: 'ETHUSDT', exch: 'Binance', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
-          { id: 3, nameKo: '솔라나', nameEn: 'Solana', sym: 'SOL', binSym: 'SOLUSDT', exch: 'Binance', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
-          { id: 4, nameKo: '리플', nameEn: 'Ripple', sym: 'XRP', binSym: 'XRPUSDT', exch: 'Binance', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '' },
+          { id: 1, nameKo: '비트코인', nameEn: 'Bitcoin', sym: 'BTC', binSym: 'BTCUSDT', exch: 'Binance', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 2, nameKo: '이더리움', nameEn: 'Ethereum', sym: 'ETH', binSym: 'ETHUSDT', exch: 'Binance', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 3, nameKo: '솔라나', nameEn: 'Solana', sym: 'SOL', binSym: 'SOLUSDT', exch: 'Binance', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
+          { id: 4, nameKo: '리플', nameEn: 'Ripple', sym: 'XRP', binSym: 'XRPUSDT', exch: 'Binance', active: true, startDate: '', monthlyReturn: '', maxDailyLoss: '', monthlyAvgProfit: '', tradingMargin: '', verifiedDays: '' },
         ]
       },
     ];
 
     function seedMarkets() {
-      if (ls('mkts-seeded-v9', false)) return;
+      if (ls('mkts-seeded-v10', false)) return;
       lsSave('markets', JSON.parse(JSON.stringify(MKT_DEFAULT)));
-      lsSave('mkts-seeded-v9', true);
+      lsSave('mkts-seeded-v10', true);
     }
+
+    /* v10 마이그레이션: 기존 종목에 새 필드 추가 */
+    (function migrateFieldsV10() {
+      if (ls('mig-fields-v10', false)) return;
+      var cats = ls('markets', []);
+      var changed = false;
+      cats.forEach(function(cat) {
+        (cat.instruments || []).forEach(function(inst) {
+          if (inst.monthlyAvgProfit === undefined) { inst.monthlyAvgProfit = ''; changed = true; }
+          if (inst.tradingMargin === undefined) { inst.tradingMargin = ''; changed = true; }
+          if (inst.verifiedDays === undefined) { inst.verifiedDays = ''; changed = true; }
+        });
+      });
+      if (changed) lsSave('markets', cats);
+      lsSave('mig-fields-v10', true);
+    })();
 
     /* HIS(항셍) 종목 일괄 제거 마이그레이션 */
     (function removeHIS() {
@@ -3572,6 +3601,72 @@
         if (el) el.textContent = inst.monthlyReturn ? inst.monthlyReturn + '%' : '—';
       }
       lsSave('markets', cats);
+    }
+
+    function downloadPerfTemplate() {
+      const XL = window.XLSX;
+      if (!XL) { showAlert('SheetJS 로드 실패', 'err'); return; }
+      const cats = ls('markets', []);
+      const rows = [['심볼', '종목명(한글)', '종목명(영문)', '월평균 수익액($)', '거래증거금($)', '과거 일최대손실기록($)', '딥러닝 이후 검증 거래일수']];
+      cats.forEach(function(cat) {
+        (cat.instruments || []).forEach(function(inst) {
+          rows.push([
+            inst.sym,
+            inst.nameKo || '',
+            inst.nameEn || '',
+            inst.monthlyAvgProfit || '',
+            inst.tradingMargin || '',
+            inst.maxDailyLoss || '',
+            inst.verifiedDays || ''
+          ]);
+        });
+      });
+      const ws = XL.utils.aoa_to_sheet(rows);
+      ws['!cols'] = [12,18,22,18,16,22,22].map(function(w){return{wch:w};});
+      const wb = XL.utils.book_new();
+      XL.utils.book_append_sheet(wb, ws, '수익현황');
+      XL.writeFile(wb, 'foket_performance.xlsx');
+    }
+
+    function uploadPerfExcel(input) {
+      const file = input.files[0];
+      if (!file) return;
+      input.value = '';
+      const XL = window.XLSX;
+      if (!XL) { showAlert('SheetJS 로드 실패', 'err'); return; }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const wb = XL.read(e.target.result, { type: 'binary' });
+          const ws = wb.Sheets[wb.SheetNames[0]];
+          const rows = XL.utils.sheet_to_json(ws, { header: 1, defval: '' });
+          if (rows.length < 2) { showAlert('데이터가 없습니다.', 'err'); return; }
+          const cats = ls('markets', []);
+          let updated = 0;
+          rows.slice(1).forEach(function(row) {
+            const sym = String(row[0] || '').trim();
+            if (!sym) return;
+            cats.forEach(function(cat) {
+              (cat.instruments || []).forEach(function(inst) {
+                if (inst.sym === sym) {
+                  if (row[3] !== '') inst.monthlyAvgProfit = row[3];
+                  if (row[4] !== '') inst.tradingMargin = row[4];
+                  if (row[5] !== '') inst.maxDailyLoss = row[5];
+                  if (row[6] !== '') inst.verifiedDays = row[6];
+                  updated++;
+                }
+              });
+            });
+          });
+          lsSave('markets', cats);
+          publishMarkets(true);
+          renderMarkets();
+          showAlert(updated + '개 종목 수익 데이터가 업데이트되었습니다!');
+        } catch(err) {
+          showAlert('엑셀 읽기 실패: ' + err.message, 'err');
+        }
+      };
+      reader.readAsBinaryString(file);
     }
 
     function publishMarkets(silent) {
