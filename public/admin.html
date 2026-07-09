@@ -2771,11 +2771,45 @@
       const koQ = (document.getElementById('faq-q-ko').value || '').trim();
       const koA = (document.getElementById('faq-a-ko').value || '').trim();
       if (!koQ || !koA) { showAlert('한국어 질문과 답변은 필수입니다.', 'err'); return; }
+
+      // 번역이 필요한 언어 확인 (빈 필드만 자동번역)
+      const otherLangs = LEGAL_LANGS.filter(l => l !== 'ko');
+      const needsTranslation = otherLangs.some(l => {
+        const qi = document.getElementById('faq-q-' + l);
+        const ai = document.getElementById('faq-a-' + l);
+        return !(qi && qi.value.trim()) || !(ai && ai.value.trim());
+      });
+
+      const saveBtn = document.querySelector('#faqModal .btn-pri');
+      const origBtnHtml = saveBtn ? saveBtn.innerHTML : '';
+
+      if (needsTranslation) {
+        if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 번역 중...'; }
+        try {
+          await Promise.all(otherLangs.map(async l => {
+            const qi = document.getElementById('faq-q-' + l);
+            const ai = document.getElementById('faq-a-' + l);
+            const qEmpty = !qi || !qi.value.trim();
+            const aEmpty = !ai || !ai.value.trim();
+            const [tQ, tA] = await Promise.all([
+              qEmpty ? translateText(koQ, l) : Promise.resolve(qi.value.trim()),
+              aEmpty ? translateText(koA, l) : Promise.resolve(ai.value.trim())
+            ]);
+            if (qi && qEmpty) qi.value = tQ;
+            if (ai && aEmpty) ai.value = tA;
+          }));
+        } catch(e) {
+          // 번역 실패해도 계속 진행 (원문으로 저장)
+        }
+        if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = origBtnHtml; }
+      }
+
       const question = {}, answer = {};
       LEGAL_LANGS.forEach(function(l) {
         const qi = document.getElementById('faq-q-' + l); question[l] = qi ? qi.value.trim() : '';
         const ai = document.getElementById('faq-a-' + l); answer[l] = ai ? ai.value.trim() : '';
       });
+
       const faq = ls('faq', []);
       const editId = parseInt(document.getElementById('faq-edit-id').value, 10) || 0;
       const isEdit = editId > 0;
@@ -3411,6 +3445,15 @@
        법적 페이지 공통 유틸 – 언어 탭 전환
     ═══════════════════════════════════════════════════════════════ */
     const LEGAL_LANGS = ['ko','en','de','ja','zh','fr','es','ru'];
+    const MM_LANG = {ko:'ko',en:'en-GB',de:'de-DE',ja:'ja-JP',zh:'zh-CN',fr:'fr-FR',es:'es-ES',ru:'ru-RU'};
+    function translateText(text, toLang) {
+      if (!text || !text.trim() || toLang === 'ko') return Promise.resolve(text);
+      const mlTo = MM_LANG[toLang] || toLang;
+      return fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text.substring(0, 500)) + '&langpair=ko|' + mlTo)
+        .then(r => r.json())
+        .then(d => (d.responseStatus === 200 && d.responseData && d.responseData.translatedText) ? d.responseData.translatedText : text)
+        .catch(() => text);
+    }
     function switchLegalTab(page, lang, btn) {
       LEGAL_LANGS.forEach(function(l) {
         const ta = document.getElementById(page + '-text-' + l);
