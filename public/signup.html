@@ -111,7 +111,7 @@
       </div>
       <button class="btn-submit" type="submit" id="submitBtn" data-i18n="submit">가입하기</button>
     </form>
-    <div class="oauth-divider"><span>또는</span></div>
+    <div class="oauth-divider"><span data-i18n="or">또는</span></div>
     <form method="GET" action="/api/auth/google" style="margin:0">
       <button type="submit" class="btn-google">
         <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -132,41 +132,49 @@
     ko:{title:'회원가입',h:'홈',p:'요금제',f:'자주하는 질문(FAQ)',c:'문의',j:'무료 텔레그램 참여',
       form_title:'회원가입',form_sub:'FoketSignal에 오신 것을 환영합니다',username:'이름',email:'이메일',pw:'비밀번호',pw2:'비밀번호 확인',telegram:'텔레그램 아이디',optional:'(선택)',
       submit:'가입하기',submitting:'처리 중...',have_account:'이미 계정이 있으신가요?',login_link:'로그인',
+      or:'또는',google_signup:'Google로 가입하기',
       err_pw_match:'비밀번호가 일치하지 않습니다.',err_pw_len:'비밀번호는 6자 이상이어야 합니다.',
       success:'가입 완료! 로그인 페이지로 이동합니다.'},
     en:{title:'Sign Up',h:'Home',p:'Pricing',f:'FAQ',c:'Contact',j:'Join Free Telegram',
       form_title:'Create Account',form_sub:'Welcome to FoketSignal',username:'Name',email:'Email',pw:'Password',pw2:'Confirm Password',telegram:'Telegram ID',optional:'(optional)',
       submit:'Sign Up',submitting:'Processing...',have_account:'Already have an account?',login_link:'Log In',
+      or:'or',google_signup:'Sign up with Google',
       err_pw_match:'Passwords do not match.',err_pw_len:'Password must be at least 6 characters.',
       success:'Account created! Redirecting to login...'},
     de:{title:'Registrieren',h:'Startseite',p:'Preise',f:'Häufige Fragen (FAQ)',c:'Kontakt',j:'Kostenlos beitreten',
       form_title:'Konto erstellen',form_sub:'Willkommen bei FoketSignal',username:'Name',email:'E-Mail',pw:'Passwort',pw2:'Passwort bestätigen',telegram:'Telegram-ID',optional:'(optional)',
       submit:'Registrieren',submitting:'Verarbeitung...',have_account:'Bereits ein Konto?',login_link:'Anmelden',
+      or:'oder',google_signup:'Mit Google registrieren',
       err_pw_match:'Passwörter stimmen nicht überein.',err_pw_len:'Passwort muss mindestens 6 Zeichen lang sein.',
       success:'Konto erstellt! Weiterleitung zum Login...'},
     ja:{title:'会員登録',h:'ホーム',p:'料金',f:'よくある質問(FAQ)',c:'お問い合わせ',j:'無料Telegram参加',
       form_title:'アカウント作成',form_sub:'FoketSignalへようこそ',username:'名前',email:'メールアドレス',pw:'パスワード',pw2:'パスワード確認',telegram:'Telegram ID',optional:'(任意)',
       submit:'登録する',submitting:'処理中...',have_account:'すでにアカウントをお持ちですか?',login_link:'ログイン',
+      or:'または',google_signup:'Googleで登録',
       err_pw_match:'パスワードが一致しません。',err_pw_len:'パスワードは6文字以上必要です。',
       success:'登録完了！ログインページに移動します。'},
     zh:{title:'注册',h:'首页',p:'定价',f:'常见问题(FAQ)',c:'联系我们',j:'免费加入Telegram',
       form_title:'创建账户',form_sub:'欢迎来到 FoketSignal',username:'姓名',email:'电子邮箱',pw:'密码',pw2:'确认密码',telegram:'Telegram ID',optional:'(可选)',
       submit:'注册',submitting:'处理中...',have_account:'已有账户？',login_link:'登录',
+      or:'或',google_signup:'使用 Google 注册',
       err_pw_match:'密码不匹配。',err_pw_len:'密码至少需要6个字符。',
       success:'注册成功！正在跳转到登录页面...'},
     fr:{title:'S\'inscrire',h:'Accueil',p:'Tarifs',f:'FAQ',c:'Contact',j:'Rejoindre Telegram gratuitement',
       form_title:'Créer un compte',form_sub:'Bienvenue sur FoketSignal',username:'Nom',email:'E-mail',pw:'Mot de passe',pw2:'Confirmer le mot de passe',telegram:'ID Telegram',optional:'(facultatif)',
       submit:'S\'inscrire',submitting:'Traitement...',have_account:'Vous avez déjà un compte ?',login_link:'Se connecter',
+      or:'ou',google_signup:"S'inscrire avec Google",
       err_pw_match:'Les mots de passe ne correspondent pas.',err_pw_len:'Le mot de passe doit comporter au moins 6 caractères.',
       success:'Compte créé ! Redirection vers la connexion...'},
     es:{title:'Registrarse',h:'Inicio',p:'Precios',f:'Preguntas frecuentes (FAQ)',c:'Contacto',j:'Unirse gratis a Telegram',
       form_title:'Crear cuenta',form_sub:'Bienvenido a FoketSignal',username:'Nombre',email:'Correo electrónico',pw:'Contraseña',pw2:'Confirmar contraseña',telegram:'ID de Telegram',optional:'(opcional)',
       submit:'Registrarse',submitting:'Procesando...',have_account:'¿Ya tienes una cuenta?',login_link:'Iniciar sesión',
+      or:'o',google_signup:'Registrarse con Google',
       err_pw_match:'Las contraseñas no coinciden.',err_pw_len:'La contraseña debe tener al menos 6 caracteres.',
       success:'¡Cuenta creada! Redirigiendo al inicio de sesión...'},
     ru:{title:'Регистрация',h:'Главная',p:'Тарифы',f:'Часто задаваемые вопросы (FAQ)',c:'Контакт',j:'Присоединиться к Telegram бесплатно',
       form_title:'Создать аккаунт',form_sub:'Добро пожаловать в FoketSignal',username:'Имя',email:'Эл. почта',pw:'Пароль',pw2:'Подтвердите пароль',telegram:'ID Telegram',optional:'(необязательно)',
       submit:'Зарегистрироваться',submitting:'Обработка...',have_account:'Уже есть аккаунт?',login_link:'Войти',
+      or:'или',google_signup:'Зарегистрироваться через Google',
       err_pw_match:'Пароли не совпадают.',err_pw_len:'Пароль должен содержать не менее 6 символов.',
       success:'Аккаунт создан! Переход к входу...'}
   };
@@ -238,7 +246,7 @@
   <!-- ── FLOATING TELEGRAM BUTTON ── -->
   <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" style="position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;align-items:center;gap:10px;background:#229ed9;color:white;text-decoration:none;padding:14px 20px;border-radius:50px;font-size:15px;font-weight:700;box-shadow:0 4px 20px rgba(34,158,217,.5);transition:transform .2s,box-shadow .2s;white-space:nowrap;">
     <i class="fab fa-telegram-plane" style="font-size:20px;"></i>
-    텔레그램 문의
+    <span data-i18n="j">텔레그램 문의</span>
   </a>
 
 </body>

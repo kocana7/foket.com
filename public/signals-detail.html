@@ -37,6 +37,15 @@
     .back-link{display:inline-flex;align-items:center;gap:8px;color:var(--text-secondary);font-size:14px;font-weight:500}
     .back-link:hover{color:var(--accent-blue)}
     .page-title{font-size:20px;font-weight:800;background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .header-right{display:flex;align-items:center;gap:10px}
+    .lang-dropdown{position:relative}
+    .lang-btn{display:flex;align-items:center;gap:6px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:7px 12px;font-size:12px;color:var(--text-secondary);cursor:pointer;font-family:inherit}
+    .lang-btn:hover{border-color:var(--accent-blue);color:var(--accent-blue)}
+    .lang-menu{position:absolute;top:calc(100% + 6px);right:0;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:6px;min-width:155px;display:none;z-index:200;box-shadow:var(--shadow-card)}
+    .lang-menu.open{display:block}
+    .lang-opt{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-sm);font-size:13px;color:var(--text-secondary);cursor:pointer;text-decoration:none}
+    .lang-opt:hover{background:var(--bg-card-hover);color:var(--text-primary)}
+    .lang-opt.cur{color:var(--accent-blue)}
     .container{max-width:1280px;margin:0 auto;padding:24px}
     .sec-title{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px;display:flex;align-items:center;gap:8px}
     .sec-title .icon{width:32px;height:32px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:14px}
@@ -58,97 +67,175 @@
 <body>
   <header class="page-header">
     <div class="page-inner">
-      <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> 메인으로</a>
-      <h1 class="page-title">FoketSignal 수익율 상세</h1>
+      <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> <span data-i18n="back">메인으로</span></a>
+      <h1 class="page-title" data-i18n="page_title">FoketSignal 수익율 상세</h1>
+      <div class="header-right">
+        <div class="lang-dropdown">
+          <button class="lang-btn" id="langToggle"><span id="curFlag">🇰🇷</span><span id="curLang">한국어</span><span>▾</span></button>
+          <div class="lang-menu" id="langMenu">
+            <a class="lang-opt" data-lang="ko" href="#">🇰🇷 한국어</a>
+            <a class="lang-opt" data-lang="en" href="#">🇺🇸 English</a>
+            <a class="lang-opt" data-lang="de" href="#">🇩🇪 Deutsch</a>
+            <a class="lang-opt" data-lang="ja" href="#">🇯🇵 日本語</a>
+            <a class="lang-opt" data-lang="zh" href="#">🇨🇳 中文</a>
+            <a class="lang-opt" data-lang="fr" href="#">🇫🇷 Français</a>
+            <a class="lang-opt" data-lang="es" href="#">🇪🇸 Español</a>
+            <a class="lang-opt" data-lang="ru" href="#">🇷🇺 Русский</a>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
   <main class="container">
     <div id="content"></div>
     <div id="empty" class="empty-msg" style="display:none;">
-      등록된 종목 데이터가 없습니다. 관리자 페이지에서 종목을 설정한 후 다시 확인해 주세요.
-      <a href="index.html" class="back-link">메인으로 돌아가기</a>
+      <p data-i18n="no_data">등록된 종목 데이터가 없습니다. 관리자 페이지에서 종목을 설정한 후 다시 확인해 주세요.</p>
+      <a href="index.html" class="back-link" style="margin-top:16px;"><i class="fas fa-arrow-left"></i> <span data-i18n="back_main">메인으로 돌아가기</span></a>
     </div>
   </main>
+
+  <!-- ── FLOATING TELEGRAM BUTTON ── -->
+  <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" style="position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;align-items:center;gap:10px;background:#229ed9;color:white;text-decoration:none;padding:14px 20px;border-radius:50px;font-size:15px;font-weight:700;box-shadow:0 4px 20px rgba(34,158,217,.5);transition:transform .2s,box-shadow .2s;white-space:nowrap;">
+    <i class="fab fa-telegram-plane" style="font-size:20px;"></i>
+    <span data-i18n="j">텔레그램 문의</span>
+  </a>
+
   <script>
+  (function(){
+    var T = {
+      ko:{title:'수익율 상세 | FoketSignal',page_title:'FoketSignal 수익율 상세',back:'메인으로',back_main:'메인으로 돌아가기',
+        no_data:'등록된 종목 데이터가 없습니다. 관리자 페이지에서 종목을 설정한 후 다시 확인해 주세요.',
+        j:'무료 텔레그램 참여',
+        col_sym:'종목',col_monthly:'월평균 수익률',col_maxloss:'일최대 손실변동폭',col_roundtrips:'일평균 왕복 거래횟수',col_days:'거래일수',col_exch:'거래소',
+        days_unit:'일',fallback_name:'종목'},
+      en:{title:'Return Detail | FoketSignal',page_title:'FoketSignal Return Detail',back:'Back to Main',back_main:'Back to Main',
+        no_data:'No instrument data registered. Please set up instruments in the admin page.',
+        j:'Join Free Telegram',
+        col_sym:'Symbol',col_monthly:'Avg Monthly Return',col_maxloss:'Max Daily Loss Range',col_roundtrips:'Avg Daily Round Trips',col_days:'Trading Days',col_exch:'Exchange',
+        days_unit:'d',fallback_name:'Symbol'},
+      de:{title:'Rendite Details | FoketSignal',page_title:'FoketSignal Rendite Details',back:'Zur Hauptseite',back_main:'Zurück zur Hauptseite',
+        no_data:'Keine Instrumentendaten registriert. Bitte Instrumente im Admin-Bereich einrichten.',
+        j:'Kostenlos beitreten',
+        col_sym:'Symbol',col_monthly:'Ø Monatsrendite',col_maxloss:'Max. Tagesschwankung',col_roundtrips:'Ø tägl. Hin-/Rückfahrten',col_days:'Handelstage',col_exch:'Börse',
+        days_unit:'T',fallback_name:'Symbol'},
+      ja:{title:'収益率詳細 | FoketSignal',page_title:'FoketSignal 収益率詳細',back:'メインへ',back_main:'メインに戻る',
+        no_data:'登録された銘柄データがありません。管理ページで銘柄を設定してください。',
+        j:'無料Telegram参加',
+        col_sym:'銘柄',col_monthly:'月平均収益率',col_maxloss:'日最大損失変動幅',col_roundtrips:'日平均往復取引回数',col_days:'取引日数',col_exch:'取引所',
+        days_unit:'日',fallback_name:'銘柄'},
+      zh:{title:'收益率详情 | FoketSignal',page_title:'FoketSignal 收益率详情',back:'返回主页',back_main:'返回主页',
+        no_data:'未注册品种数据，请在管理页面设置品种后再查看。',
+        j:'免费加入Telegram',
+        col_sym:'品种',col_monthly:'月均收益率',col_maxloss:'日最大亏损幅度',col_roundtrips:'日均往返交易次数',col_days:'交易天数',col_exch:'交易所',
+        days_unit:'天',fallback_name:'品种'},
+      fr:{title:'Détail des rendements | FoketSignal',page_title:'FoketSignal Détail des rendements',back:'Retour à l\'accueil',back_main:'Retour à l\'accueil',
+        no_data:'Aucune donnée d\'instrument enregistrée. Veuillez configurer les instruments dans l\'admin.',
+        j:'Rejoindre Telegram gratuitement',
+        col_sym:'Symbole',col_monthly:'Rendement mensuel moy.',col_maxloss:'Perte journalière max.',col_roundtrips:'Allers-retours jours moy.',col_days:'Jours de trading',col_exch:'Bourse',
+        days_unit:'j',fallback_name:'Symbole'},
+      es:{title:'Detalle de rendimientos | FoketSignal',page_title:'FoketSignal Detalle de rendimientos',back:'Volver al inicio',back_main:'Volver al inicio',
+        no_data:'No hay datos de instrumentos registrados. Por favor, configure los instrumentos en el panel de administración.',
+        j:'Unirse gratis a Telegram',
+        col_sym:'Símbolo',col_monthly:'Rendimiento mensual prom.',col_maxloss:'Pérdida diaria máx.',col_roundtrips:'Operaciones ida y vuelta diarias',col_days:'Días de trading',col_exch:'Bolsa',
+        days_unit:'d',fallback_name:'Símbolo'},
+      ru:{title:'Детали доходности | FoketSignal',page_title:'FoketSignal Детали доходности',back:'На главную',back_main:'Вернуться на главную',
+        no_data:'Данные об инструментах не зарегистрированы. Пожалуйста, настройте инструменты в панели администратора.',
+        j:'Присоединиться к Telegram бесплатно',
+        col_sym:'Символ',col_monthly:'Средн. месячная доходность',col_maxloss:'Макс. дневной убыток',col_roundtrips:'Средн. ежедн. сделок',col_days:'Торговых дней',col_exch:'Биржа',
+        days_unit:'д',fallback_name:'Символ'}
+    };
+    var LANG_META = {ko:{flag:'🇰🇷',name:'한국어'},en:{flag:'🇺🇸',name:'English'},de:{flag:'🇩🇪',name:'Deutsch'},ja:{flag:'🇯🇵',name:'日本語'},zh:{flag:'🇨🇳',name:'中文'},fr:{flag:'🇫🇷',name:'Français'},es:{flag:'🇪🇸',name:'Español'},ru:{flag:'🇷🇺',name:'Русский'}};
+    var currentLang = localStorage.getItem('lang') || 'ko';
+
+    function applyLang(lang) {
+      if (!T[lang]) lang = 'ko';
+      currentLang = lang;
+      var t = T[lang];
+      document.documentElement.lang = lang;
+      document.title = t.title;
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var k = el.getAttribute('data-i18n');
+        if (t[k] !== undefined) el.textContent = t[k];
+      });
+      var meta = LANG_META[lang];
+      document.getElementById('curFlag').textContent = meta.flag;
+      document.getElementById('curLang').textContent = meta.name;
+      document.querySelectorAll('.lang-opt').forEach(function(opt){ opt.classList.toggle('cur', opt.dataset.lang === lang); });
+      render();
+    }
+
+    document.getElementById('langToggle').addEventListener('click', function(e){ e.stopPropagation(); document.getElementById('langMenu').classList.toggle('open'); });
+    document.addEventListener('click', function(){ document.getElementById('langMenu').classList.remove('open'); });
+    document.querySelectorAll('.lang-opt').forEach(function(opt){
+      opt.addEventListener('click', function(e){
+        e.preventDefault();
+        currentLang = opt.dataset.lang;
+        localStorage.setItem('lang', currentLang);
+        document.getElementById('langMenu').classList.remove('open');
+        applyLang(currentLang);
+      });
+    });
+
     function calcTradingDays(startDateStr) {
       if (!startDateStr || startDateStr === '') return null;
-      const start = new Date(startDateStr + 'T00:00:00');
-      const today = new Date();
+      var start = new Date(startDateStr + 'T00:00:00');
+      var today = new Date();
       today.setHours(0, 0, 0, 0);
-      const diff = Math.floor((today - start) / 86400000);
+      var diff = Math.floor((today - start) / 86400000);
       return diff >= 0 ? diff : null;
     }
     function formatReturn(val) {
-      if (val === '' || val == null) return { text: '—', cls: 'val-dim' };
-      const n = parseFloat(val);
-      if (isNaN(n)) return { text: '—', cls: 'val-dim' };
-      const text = (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
-      const cls = n >= 0 ? 'val-up' : 'val-dn';
-      return { text, cls };
+      if (val === '' || val == null) return {text:'—', cls:'val-dim'};
+      var n = parseFloat(val);
+      if (isNaN(n)) return {text:'—', cls:'val-dim'};
+      return {text:(n >= 0 ? '+' : '') + n.toFixed(2) + '%', cls: n >= 0 ? 'val-up' : 'val-dn'};
     }
     function formatMaxLoss(val) {
-      if (val === '' || val == null) return { text: '—', cls: 'val-dim' };
-      const n = parseFloat(val);
-      if (isNaN(n)) return { text: '—', cls: 'val-dim' };
-      const text = (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
-      const cls = n < 0 ? 'val-dn' : 'val-up';
-      return { text, cls };
+      if (val === '' || val == null) return {text:'—', cls:'val-dim'};
+      var n = parseFloat(val);
+      if (isNaN(n)) return {text:'—', cls:'val-dim'};
+      return {text:(n >= 0 ? '+' : '') + n.toFixed(2) + '%', cls: n < 0 ? 'val-dn' : 'val-up'};
     }
+
     function render() {
-      const raw = localStorage.getItem('fk_markets_published') || localStorage.getItem('fk_markets');
-      const content = document.getElementById('content');
-      const empty = document.getElementById('empty');
-      if (!raw) {
-        content.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-      }
-      let markets;
-      try {
-        markets = JSON.parse(raw);
-      } catch (e) {
-        content.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-      }
-      if (!Array.isArray(markets) || markets.length === 0) {
-        content.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-      }
-      const hasAny = markets.some(m => Array.isArray(m.instruments) && m.instruments.length > 0);
-      if (!hasAny) {
-        content.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-      }
+      var t = T[currentLang] || T['ko'];
+      var raw = localStorage.getItem('fk_markets_published') || localStorage.getItem('fk_markets');
+      var content = document.getElementById('content');
+      var empty = document.getElementById('empty');
+      if (!raw) { content.innerHTML = ''; empty.style.display = 'block'; return; }
+      var markets;
+      try { markets = JSON.parse(raw); } catch(e) { content.innerHTML = ''; empty.style.display = 'block'; return; }
+      if (!Array.isArray(markets) || markets.length === 0) { content.innerHTML = ''; empty.style.display = 'block'; return; }
+      var hasAny = markets.some(function(m){ return Array.isArray(m.instruments) && m.instruments.length > 0; });
+      if (!hasAny) { content.innerHTML = ''; empty.style.display = 'block'; return; }
       empty.style.display = 'none';
-      let html = '';
+      var html = '';
       markets.forEach(function(m) {
-        const insts = (m.instruments || []).filter(function(i) { return i.active !== false; });
+        var insts = (m.instruments || []).filter(function(i){ return i.active !== false; });
         if (insts.length === 0) return;
-        const nameKo = m.nameKo || m.nameEn || '종목';
-        const clr = m.clr || 'var(--accent-blue)';
-        const isBinanceCrypto = (m.id === 8);
-        const hasExch = insts.some(function(i) { return i.exch; });
+        var marketName = (currentLang === 'ko') ? (m.nameKo || m.nameEn || t.fallback_name) : (m.nameEn || m.nameKo || t.fallback_name);
+        var clr = m.clr || 'var(--accent-blue)';
+        var isBinanceCrypto = (m.id === 8);
+        var hasExch = insts.some(function(i){ return i.exch; });
         html += '<div class="table-wrap">';
-        html += '<div class="sec-title"><span class="icon" style="background:' + clr + '22;color:' + clr + ';">' + (m.icon ? '<i class="' + m.icon + '"></i>' : '') + '</span>' + nameKo + '</div>';
+        html += '<div class="sec-title"><span class="icon" style="background:' + clr + '22;color:' + clr + ';">' + (m.icon ? '<i class="' + m.icon + '"></i>' : '') + '</span>' + marketName + '</div>';
         html += '<table class="detail-table"><thead><tr>';
-        html += '<th>종목</th><th>월평균 수익률</th><th>일최대 손실변동폭</th><th>일평균 왕복 거래횟수</th><th>거래일수</th>';
-        if (hasExch) html += '<th>거래소</th>';
+        html += '<th>' + t.col_sym + '</th><th>' + t.col_monthly + '</th><th>' + t.col_maxloss + '</th><th>' + t.col_roundtrips + '</th><th>' + t.col_days + '</th>';
+        if (hasExch) html += '<th>' + t.col_exch + '</th>';
         html += '</tr></thead><tbody>';
         insts.forEach(function(inst) {
-          const mr = formatReturn(inst.monthlyReturn);
-          const dl = formatMaxLoss(inst.maxDailyLoss);
-          const days = calcTradingDays(inst.startDate);
-          const rt = (inst.dailyRoundTrips !== '' && inst.dailyRoundTrips != null) ? parseFloat(inst.dailyRoundTrips) : null;
-          const symPrefix = isBinanceCrypto ? '<span class="binance-mark" title="Binance">B</span>' : '';
+          var mr = formatReturn(inst.monthlyReturn);
+          var dl = formatMaxLoss(inst.maxDailyLoss);
+          var days = calcTradingDays(inst.startDate);
+          var rt = (inst.dailyRoundTrips !== '' && inst.dailyRoundTrips != null) ? parseFloat(inst.dailyRoundTrips) : null;
+          var symPrefix = isBinanceCrypto ? '<span class="binance-mark" title="Binance">B</span>' : '';
+          var instName = (currentLang === 'ko') ? (inst.nameKo || inst.nameEn || '') : (inst.nameEn || inst.nameKo || '');
           html += '<tr>';
-          html += '<td>' + symPrefix + '<span class="sym">' + (inst.sym || '—') + '</span><span class="name-ko">' + (inst.nameKo || inst.nameEn || '') + '</span></td>';
+          html += '<td>' + symPrefix + '<span class="sym">' + (inst.sym || '—') + '</span><span class="name-ko">' + instName + '</span></td>';
           html += '<td class="' + mr.cls + '">' + mr.text + '</td>';
           html += '<td class="' + dl.cls + '">' + dl.text + '</td>';
           html += '<td class="val-dim">' + (rt !== null && !isNaN(rt) ? rt : '—') + '</td>';
-          html += '<td>' + (days !== null ? days + '일' : '—') + '</td>';
+          html += '<td>' + (days !== null ? days + t.days_unit : '—') + '</td>';
           if (hasExch) html += '<td>' + (inst.exch || '—') + '</td>';
           html += '</tr>';
         });
@@ -156,24 +243,23 @@
       });
       content.innerHTML = html;
     }
+
+    applyLang(currentLang);
+
     (async function init() {
       try {
-        const base = (typeof location !== 'undefined' && location.origin && location.protocol !== 'file:') ? location.origin + '/api' : 'http://localhost:3000/api';
-        const r = await fetch(base + '/public/markets');
-        const j = await r.json();
+        var base = (typeof location !== 'undefined' && location.origin && location.protocol !== 'file:') ? location.origin + '/api' : 'http://localhost:3000/api';
+        var res = await fetch(base + '/public/markets');
+        var j = await res.json();
         if (j && j.success && j.data) {
-          const raw = typeof j.data === 'string' ? j.data : JSON.stringify(j.data);
-          try { localStorage.setItem('fk_markets_published', raw); } catch (e) {}
+          var raw = typeof j.data === 'string' ? j.data : JSON.stringify(j.data);
+          try { localStorage.setItem('fk_markets_published', raw); } catch(e){}
         }
-      } catch (e) {}
+      } catch(e){}
       render();
     })();
+  })();
   </script>
-  <!-- ── FLOATING TELEGRAM BUTTON ── -->
-  <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" style="position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;align-items:center;gap:10px;background:#229ed9;color:white;text-decoration:none;padding:14px 20px;border-radius:50px;font-size:15px;font-weight:700;box-shadow:0 4px 20px rgba(34,158,217,.5);transition:transform .2s,box-shadow .2s;white-space:nowrap;">
-    <i class="fab fa-telegram-plane" style="font-size:20px;"></i>
-    텔레그램 문의
-  </a>
 
 </body>
 </html>

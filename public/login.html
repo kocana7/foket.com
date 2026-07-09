@@ -99,7 +99,7 @@
       </div>
       <button class="btn-submit" type="submit" id="submitBtn" data-i18n="submit">로그인</button>
     </form>
-    <div class="oauth-divider"><span>또는</span></div>
+    <div class="oauth-divider"><span data-i18n="or">또는</span></div>
     <form method="GET" action="/api/auth/google" style="margin:0">
       <button type="submit" class="btn-google">
         <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -120,34 +120,42 @@
     ko:{title:'로그인',h:'홈',p:'요금제',f:'자주하는 질문(FAQ)',c:'문의',j:'무료 텔레그램 참여',
       form_title:'로그인',form_sub:'계정에 로그인하세요',email:'이메일',pw:'비밀번호',
       submit:'로그인',submitting:'처리 중...',no_account:'계정이 없으신가요?',signup_link:'회원가입',
+      or:'또는',google_login:'Google로 로그인',
       err_invalid:'이메일 또는 비밀번호가 올바르지 않습니다.',success:'로그인 성공! 이동 중...'},
     en:{title:'Login',h:'Home',p:'Pricing',f:'FAQ',c:'Contact',j:'Join Free Telegram',
       form_title:'Log In',form_sub:'Sign in to your account',email:'Email',pw:'Password',
       submit:'Log In',submitting:'Processing...',no_account:'Don\'t have an account?',signup_link:'Sign Up',
+      or:'or',google_login:'Sign in with Google',
       err_invalid:'Invalid email or password.',success:'Login successful! Redirecting...'},
     de:{title:'Anmelden',h:'Startseite',p:'Preise',f:'Häufige Fragen (FAQ)',c:'Kontakt',j:'Kostenlos beitreten',
       form_title:'Anmelden',form_sub:'Bei Ihrem Konto anmelden',email:'E-Mail',pw:'Passwort',
       submit:'Anmelden',submitting:'Verarbeitung...',no_account:'Noch kein Konto?',signup_link:'Registrieren',
+      or:'oder',google_login:'Mit Google anmelden',
       err_invalid:'Ungültige E-Mail oder Passwort.',success:'Anmeldung erfolgreich! Weiterleitung...'},
     ja:{title:'ログイン',h:'ホーム',p:'料金',f:'よくある質問(FAQ)',c:'お問い合わせ',j:'無料Telegram参加',
       form_title:'ログイン',form_sub:'アカウントにサインイン',email:'メールアドレス',pw:'パスワード',
       submit:'ログイン',submitting:'処理中...',no_account:'アカウントをお持ちでない方は',signup_link:'会員登録',
+      or:'または',google_login:'Googleでログイン',
       err_invalid:'メールアドレスまたはパスワードが正しくありません。',success:'ログイン成功！移動中...'},
     zh:{title:'登录',h:'首页',p:'定价',f:'常见问题(FAQ)',c:'联系我们',j:'免费加入Telegram',
       form_title:'登录',form_sub:'登录您的账户',email:'电子邮箱',pw:'密码',
       submit:'登录',submitting:'处理中...',no_account:'还没有账户？',signup_link:'注册',
+      or:'或',google_login:'使用 Google 登录',
       err_invalid:'邮箱或密码不正确。',success:'登录成功！正在跳转...'},
     fr:{title:'Connexion',h:'Accueil',p:'Tarifs',f:'FAQ',c:'Contact',j:'Rejoindre Telegram gratuitement',
       form_title:'Se connecter',form_sub:'Connectez-vous à votre compte',email:'E-mail',pw:'Mot de passe',
       submit:'Se connecter',submitting:'Traitement...',no_account:'Pas encore de compte ?',signup_link:"S'inscrire",
+      or:'ou',google_login:'Se connecter avec Google',
       err_invalid:'E-mail ou mot de passe invalide.',success:'Connexion réussie ! Redirection...'},
     es:{title:'Iniciar sesión',h:'Inicio',p:'Precios',f:'Preguntas frecuentes (FAQ)',c:'Contacto',j:'Unirse gratis a Telegram',
       form_title:'Iniciar sesión',form_sub:'Inicia sesión en tu cuenta',email:'Correo electrónico',pw:'Contraseña',
       submit:'Iniciar sesión',submitting:'Procesando...',no_account:'¿No tienes una cuenta?',signup_link:'Registrarse',
+      or:'o',google_login:'Iniciar sesión con Google',
       err_invalid:'Correo electrónico o contraseña inválidos.',success:'¡Inicio de sesión exitoso! Redirigiendo...'},
     ru:{title:'Войти',h:'Главная',p:'Тарифы',f:'Часто задаваемые вопросы (FAQ)',c:'Контакт',j:'Присоединиться к Telegram бесплатно',
       form_title:'Войти',form_sub:'Войдите в свой аккаунт',email:'Эл. почта',pw:'Пароль',
       submit:'Войти',submitting:'Обработка...',no_account:'Нет аккаунта?',signup_link:'Регистрация',
+      or:'или',google_login:'Войти через Google',
       err_invalid:'Неверный адрес почты или пароль.',success:'Вход выполнен! Перенаправление...'}
   };
   var LANG_META={ko:{flag:'🇰🇷',name:'한국어'},en:{flag:'🇺🇸',name:'English'},de:{flag:'🇩🇪',name:'Deutsch'},ja:{flag:'🇯🇵',name:'日本語'},zh:{flag:'🇨🇳',name:'中文'},fr:{flag:'🇫🇷',name:'Français'},es:{flag:'🇪🇸',name:'Español'},ru:{flag:'🇷🇺',name:'Русский'}};
@@ -220,7 +228,7 @@
   <!-- ── FLOATING TELEGRAM BUTTON ── -->
   <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" style="position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;align-items:center;gap:10px;background:#229ed9;color:white;text-decoration:none;padding:14px 20px;border-radius:50px;font-size:15px;font-weight:700;box-shadow:0 4px 20px rgba(34,158,217,.5);transition:transform .2s,box-shadow .2s;white-space:nowrap;">
     <i class="fab fa-telegram-plane" style="font-size:20px;"></i>
-    텔레그램 문의
+    <span data-i18n="j">텔레그램 문의</span>
   </a>
 
 </body>
