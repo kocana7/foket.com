@@ -103,14 +103,14 @@
 <script>
 (function(){
   var T = {
-    ko: { title:'자주하는 질문', subtitle:'서비스 이용에 대해 자주 묻는 질문과 답변입니다.', h:'홈', p:'서비스 구성', f:'자주하는 질문(FAQ)', c:'문의', j:'무료 텔레그램 참여', loading:'불러오는 중...', translating:'번역 중...', empty:'등록된 FAQ가 없습니다.' },
-    en: { title:'FAQ', subtitle:'Frequently asked questions about our service.', h:'Home', p:'Pricing', f:'FAQ', c:'Contact', j:'Join Free Telegram', loading:'Loading...', translating:'Translating...', empty:'No FAQ entries found.' },
-    de: { title:'Häufige Fragen', subtitle:'Häufig gestellte Fragen zu unserem Service.', h:'Startseite', p:'Preise', f:'Häufige Fragen (FAQ)', c:'Kontakt', j:'Kostenlos beitreten', loading:'Wird geladen...', translating:'Übersetzen...', empty:'Keine FAQ-Einträge gefunden.' },
-    ja: { title:'よくある質問', subtitle:'サービスについてよくある質問と回答です。', h:'ホーム', p:'料金', f:'よくある質問(FAQ)', c:'お問い合わせ', j:'無料Telegram参加', loading:'読み込み中...', translating:'翻訳中...', empty:'FAQが登録されていません。' },
-    zh: { title:'常见问题', subtitle:'关于我们服务的常见问题解答。', h:'首页', p:'定价', f:'常见问题(FAQ)', c:'联系我们', j:'免费加入Telegram', loading:'加载中...', translating:'翻译中...', empty:'暂无常见问题。' },
-    fr: { title:'Questions fréquentes', subtitle:'Questions fréquemment posées sur notre service.', h:'Accueil', p:'Tarifs', f:'FAQ', c:'Contact', j:'Rejoindre Telegram gratuitement', loading:'Chargement...', translating:'Traduction...', empty:'Aucune question enregistrée.' },
-    es: { title:'Preguntas frecuentes', subtitle:'Preguntas frecuentes sobre nuestro servicio.', h:'Inicio', p:'Precios', f:'Preguntas frecuentes (FAQ)', c:'Contacto', j:'Unirse gratis a Telegram', loading:'Cargando...', translating:'Traduciendo...', empty:'No hay preguntas registradas.' },
-    ru: { title:'Часто задаваемые вопросы', subtitle:'Часто задаваемые вопросы о нашем сервисе.', h:'Главная', p:'Тарифы', f:'Часто задаваемые вопросы (FAQ)', c:'Контакт', j:'Присоединиться к Telegram бесплатно', loading:'Загрузка...', translating:'Перевод...', empty:'Вопросы не зарегистрированы.' }
+    ko: { title:'자주하는 질문', subtitle:'서비스 이용에 대해 자주 묻는 질문과 답변입니다.', h:'홈', p:'서비스', f:'자주하는 질문(FAQ)', c:'문의', j:'무료 텔레그램 참여', loading:'불러오는 중...', translating:'번역 중...', empty:'등록된 FAQ가 없습니다.' },
+    en: { title:'FAQ', subtitle:'Frequently asked questions about our service.', h:'Home', p:'Service', f:'FAQ', c:'Contact', j:'Join Free Telegram', loading:'Loading...', translating:'Translating...', empty:'No FAQ entries found.' },
+    de: { title:'Häufige Fragen', subtitle:'Häufig gestellte Fragen zu unserem Service.', h:'Startseite', p:'Service', f:'Häufige Fragen (FAQ)', c:'Kontakt', j:'Kostenlos beitreten', loading:'Wird geladen...', translating:'Übersetzen...', empty:'Keine FAQ-Einträge gefunden.' },
+    ja: { title:'よくある質問', subtitle:'サービスについてよくある質問と回答です。', h:'ホーム', p:'サービス', f:'よくある質問(FAQ)', c:'お問い合わせ', j:'無料Telegram参加', loading:'読み込み中...', translating:'翻訳中...', empty:'FAQが登録されていません。' },
+    zh: { title:'常见问题', subtitle:'关于我们服务的常见问题解答。', h:'首页', p:'服务', f:'常见问题(FAQ)', c:'联系我们', j:'免费加入Telegram', loading:'加载中...', translating:'翻译中...', empty:'暂无常见问题。' },
+    fr: { title:'Questions fréquentes', subtitle:'Questions fréquemment posées sur notre service.', h:'Accueil', p:'Service', f:'FAQ', c:'Contact', j:'Rejoindre Telegram gratuitement', loading:'Chargement...', translating:'Traduction...', empty:'Aucune question enregistrée.' },
+    es: { title:'Preguntas frecuentes', subtitle:'Preguntas frecuentes sobre nuestro servicio.', h:'Inicio', p:'Servicio', f:'Preguntas frecuentes (FAQ)', c:'Contacto', j:'Unirse gratis a Telegram', loading:'Cargando...', translating:'Traduciendo...', empty:'No hay preguntas registradas.' },
+    ru: { title:'Часто задаваемые вопросы', subtitle:'Часто задаваемые вопросы о нашем сервисе.', h:'Главная', p:'Сервис', f:'Часто задаваемые вопросы (FAQ)', c:'Контакт', j:'Присоединиться к Telegram бесплатно', loading:'Загрузка...', translating:'Перевод...', empty:'Вопросы не зарегистрированы.' }
   };
   var LANG_META = {ko:{flag:'🇰🇷',name:'한국어'},en:{flag:'🇺🇸',name:'English'},de:{flag:'🇩🇪',name:'Deutsch'},ja:{flag:'🇯🇵',name:'日本語'},zh:{flag:'🇨🇳',name:'中文'},fr:{flag:'🇫🇷',name:'Français'},es:{flag:'🇪🇸',name:'Español'},ru:{flag:'🇷🇺',name:'Русский'}};
   // MyMemory API language codes
