@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FoketSignal 수익율 상세 | Foket</title>
+  <title>수익율 상세 | Foket</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -69,7 +69,7 @@
   <header class="page-header">
     <div class="page-inner">
       <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> <span data-i18n="back">메인으로</span></a>
-      <h1 class="page-title" data-i18n="page_title">FoketSignal 수익율 상세</h1>
+      <h1 class="page-title" data-i18n="page_title">Foket 수익율 상세</h1>
       <div class="header-right">
         <div class="lang-dropdown">
           <button class="lang-btn" id="langToggle"><span id="curFlag" class="fi fi-kr"></span><span id="curLang">한국어</span><span>▾</span></button>
@@ -104,42 +104,42 @@
   <script>
   (function(){
     var T = {
-      ko:{title:'수익율 상세 | FoketSignal',page_title:'FoketSignal 수익율 상세',back:'메인으로',back_main:'메인으로 돌아가기',
+      ko:{title:'수익율 상세 | Foket',page_title:'Foket 수익율 상세',back:'메인으로',back_main:'메인으로 돌아가기',
         no_data:'등록된 종목 데이터가 없습니다. 관리자 페이지에서 종목을 설정한 후 다시 확인해 주세요.',
         j:'무료 텔레그램 참여',
         col_sym:'종목',col_monthly:'월평균 수익률',col_maxloss:'일최대 손실변동폭',col_roundtrips:'일평균 왕복 거래횟수',col_days:'거래일수',col_exch:'거래소',
         days_unit:'일',fallback_name:'종목'},
-      en:{title:'Return Detail | FoketSignal',page_title:'FoketSignal Return Detail',back:'Back to Main',back_main:'Back to Main',
+      en:{title:'Return Detail | Foket',page_title:'Foket Return Detail',back:'Back to Main',back_main:'Back to Main',
         no_data:'No instrument data registered. Please set up instruments in the admin page.',
         j:'Join Free Telegram',
         col_sym:'Symbol',col_monthly:'Avg Monthly Return',col_maxloss:'Max Daily Loss Range',col_roundtrips:'Avg Daily Round Trips',col_days:'Trading Days',col_exch:'Exchange',
         days_unit:'d',fallback_name:'Symbol'},
-      de:{title:'Rendite Details | FoketSignal',page_title:'FoketSignal Rendite Details',back:'Zur Hauptseite',back_main:'Zurück zur Hauptseite',
+      de:{title:'Rendite Details | Foket',page_title:'Foket Rendite Details',back:'Zur Hauptseite',back_main:'Zurück zur Hauptseite',
         no_data:'Keine Instrumentendaten registriert. Bitte Instrumente im Admin-Bereich einrichten.',
         j:'Kostenlos beitreten',
         col_sym:'Symbol',col_monthly:'Ø Monatsrendite',col_maxloss:'Max. Tagesschwankung',col_roundtrips:'Ø tägl. Hin-/Rückfahrten',col_days:'Handelstage',col_exch:'Börse',
         days_unit:'T',fallback_name:'Symbol'},
-      ja:{title:'収益率詳細 | FoketSignal',page_title:'FoketSignal 収益率詳細',back:'メインへ',back_main:'メインに戻る',
+      ja:{title:'収益率詳細 | Foket',page_title:'Foket 収益率詳細',back:'メインへ',back_main:'メインに戻る',
         no_data:'登録された銘柄データがありません。管理ページで銘柄を設定してください。',
         j:'無料Telegram参加',
         col_sym:'銘柄',col_monthly:'月平均収益率',col_maxloss:'日最大損失変動幅',col_roundtrips:'日平均往復取引回数',col_days:'取引日数',col_exch:'取引所',
         days_unit:'日',fallback_name:'銘柄'},
-      zh:{title:'收益率详情 | FoketSignal',page_title:'FoketSignal 收益率详情',back:'返回主页',back_main:'返回主页',
+      zh:{title:'收益率详情 | Foket',page_title:'Foket 收益率详情',back:'返回主页',back_main:'返回主页',
         no_data:'未注册品种数据，请在管理页面设置品种后再查看。',
         j:'免费加入Telegram',
         col_sym:'品种',col_monthly:'月均收益率',col_maxloss:'日最大亏损幅度',col_roundtrips:'日均往返交易次数',col_days:'交易天数',col_exch:'交易所',
         days_unit:'天',fallback_name:'品种'},
-      fr:{title:'Détail des rendements | FoketSignal',page_title:'FoketSignal Détail des rendements',back:'Retour à l\'accueil',back_main:'Retour à l\'accueil',
+      fr:{title:'Détail des rendements | Foket',page_title:'Foket Détail des rendements',back:'Retour à l\'accueil',back_main:'Retour à l\'accueil',
         no_data:'Aucune donnée d\'instrument enregistrée. Veuillez configurer les instruments dans l\'admin.',
         j:'Rejoindre Telegram gratuitement',
         col_sym:'Symbole',col_monthly:'Rendement mensuel moy.',col_maxloss:'Perte journalière max.',col_roundtrips:'Allers-retours jours moy.',col_days:'Jours de trading',col_exch:'Bourse',
         days_unit:'j',fallback_name:'Symbole'},
-      es:{title:'Detalle de rendimientos | FoketSignal',page_title:'FoketSignal Detalle de rendimientos',back:'Volver al inicio',back_main:'Volver al inicio',
+      es:{title:'Detalle de rendimientos | Foket',page_title:'Foket Detalle de rendimientos',back:'Volver al inicio',back_main:'Volver al inicio',
         no_data:'No hay datos de instrumentos registrados. Por favor, configure los instrumentos en el panel de administración.',
         j:'Unirse gratis a Telegram',
         col_sym:'Símbolo',col_monthly:'Rendimiento mensual prom.',col_maxloss:'Pérdida diaria máx.',col_roundtrips:'Operaciones ida y vuelta diarias',col_days:'Días de trading',col_exch:'Bolsa',
         days_unit:'d',fallback_name:'Símbolo'},
-      ru:{title:'Детали доходности | FoketSignal',page_title:'FoketSignal Детали доходности',back:'На главную',back_main:'Вернуться на главную',
+      ru:{title:'Детали доходности | Foket',page_title:'Foket Детали доходности',back:'На главную',back_main:'Вернуться на главную',
         no_data:'Данные об инструментах не зарегистрированы. Пожалуйста, настройте инструменты в панели администратора.',
         j:'Присоединиться к Telegram бесплатно',
         col_sym:'Символ',col_monthly:'Средн. месячная доходность',col_maxloss:'Макс. дневной убыток',col_roundtrips:'Средн. ежедн. сделок',col_days:'Торговых дней',col_exch:'Биржа',

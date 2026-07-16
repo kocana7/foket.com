@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>결제 - Foket Signals</title>
+  <title>결제 - Foket</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -223,7 +223,7 @@
       currentLang = lang;
       var t = T[lang];
       document.documentElement.lang = lang;
-      document.title = t.title + ' - Foket Signals';
+      document.title = t.title + ' - Foket';
       document.querySelectorAll('[data-i18n]').forEach(function(el) {
         var k = el.getAttribute('data-i18n');
         if (t[k] !== undefined) el.textContent = t[k];
@@ -243,7 +243,7 @@
         document.getElementById('payPlanName').textContent = plan.name;
         document.getElementById('payAmount').textContent = '$' + plan.price;
         document.getElementById('payPlanMeta').textContent = t.period + (plan.days || 30) + t.days;
-        document.title = plan.name + ' - ' + t.title + ' - Foket Signals';
+        document.title = plan.name + ' - ' + t.title + ' - Foket';
         payError.classList.remove('show');
       } else {
         document.getElementById('payPlanName').textContent = t.no_plan;
