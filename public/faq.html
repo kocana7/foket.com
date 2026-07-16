@@ -6,6 +6,7 @@
   <title>자주하는 질문(FAQ) | FoketSignal</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/7.2.3/css/flag-icons.min.css">
   <style>
     :root{--bg-primary:#0a0e1a;--bg-secondary:#0f1629;--bg-card:#131c31;--bg-card-hover:#1a2540;--border-color:#1e2d4a;--text-primary:#e8edf5;--text-secondary:#8fa3c0;--text-muted:#566a85;--accent-blue:#00b4d8;--gradient-primary:linear-gradient(135deg,#00b4d8 0%,#0077a8 100%);--radius-md:12px;--radius-sm:8px;--shadow-card:0 8px 32px rgba(0,0,0,0.4)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -50,7 +51,7 @@
       .navbar-nav{display:none}
       .hamburger{display:block;background:none;border:1px solid var(--border-color);padding:8px;color:var(--text-primary);cursor:pointer;border-radius:var(--radius-sm)}
     }
-  </style>
+  .fi{width:18px;height:13px;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.15);vertical-align:-2px}</style>
 </head>
 <body>
 <nav class="navbar">
@@ -66,16 +67,16 @@
     </div>
     <div class="navbar-actions">
       <div class="lang-dropdown">
-        <button class="lang-btn" id="langToggle"><span id="curFlag">🇰🇷</span><span id="curLang">한국어</span><span>▾</span></button>
+        <button class="lang-btn" id="langToggle"><span id="curFlag" class="fi fi-kr"></span><span id="curLang">한국어</span><span>▾</span></button>
         <div class="lang-menu" id="langMenu">
-          <a class="lang-opt" data-lang="ko" href="#">🇰🇷 한국어</a>
-          <a class="lang-opt" data-lang="en" href="#">🇺🇸 English</a>
-          <a class="lang-opt" data-lang="de" href="#">🇩🇪 Deutsch</a>
-          <a class="lang-opt" data-lang="ja" href="#">🇯🇵 日本語</a>
-          <a class="lang-opt" data-lang="zh" href="#">🇨🇳 中文</a>
-          <a class="lang-opt" data-lang="fr" href="#">🇫🇷 Français</a>
-          <a class="lang-opt" data-lang="es" href="#">🇪🇸 Español</a>
-          <a class="lang-opt" data-lang="ru" href="#">🇷🇺 Русский</a>
+          <a class="lang-opt" data-lang="ko" href="#"><span class="fi fi-kr"></span> 한국어</a>
+          <a class="lang-opt" data-lang="en" href="#"><span class="fi fi-us"></span> English</a>
+          <a class="lang-opt" data-lang="de" href="#"><span class="fi fi-de"></span> Deutsch</a>
+          <a class="lang-opt" data-lang="ja" href="#"><span class="fi fi-jp"></span> 日本語</a>
+          <a class="lang-opt" data-lang="zh" href="#"><span class="fi fi-cn"></span> 中文</a>
+          <a class="lang-opt" data-lang="fr" href="#"><span class="fi fi-fr"></span> Français</a>
+          <a class="lang-opt" data-lang="es" href="#"><span class="fi fi-es"></span> Español</a>
+          <a class="lang-opt" data-lang="ru" href="#"><span class="fi fi-ru"></span> Русский</a>
         </div>
       </div>
       <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;background:var(--gradient-primary);color:#fff;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;text-decoration:none"><i class="fab fa-telegram-plane"></i> <span data-i18n="j">무료 텔레그램 참여</span></a>
@@ -112,7 +113,7 @@
     es: { title:'Preguntas frecuentes', subtitle:'Preguntas frecuentes sobre nuestro servicio.', h:'Inicio', p:'Servicio', f:'Preguntas frecuentes (FAQ)', c:'Contacto', j:'Unirse gratis a Telegram', loading:'Cargando...', translating:'Traduciendo...', empty:'No hay preguntas registradas.' },
     ru: { title:'Часто задаваемые вопросы', subtitle:'Часто задаваемые вопросы о нашем сервисе.', h:'Главная', p:'Сервис', f:'Часто задаваемые вопросы (FAQ)', c:'Контакт', j:'Присоединиться к Telegram бесплатно', loading:'Загрузка...', translating:'Перевод...', empty:'Вопросы не зарегистрированы.' }
   };
-  var LANG_META = {ko:{flag:'🇰🇷',name:'한국어'},en:{flag:'🇺🇸',name:'English'},de:{flag:'🇩🇪',name:'Deutsch'},ja:{flag:'🇯🇵',name:'日本語'},zh:{flag:'🇨🇳',name:'中文'},fr:{flag:'🇫🇷',name:'Français'},es:{flag:'🇪🇸',name:'Español'},ru:{flag:'🇷🇺',name:'Русский'}};
+  var LANG_META = {ko:{flag: 'fi-kr',name:'한국어'},en:{flag: 'fi-us',name:'English'},de:{flag: 'fi-de',name:'Deutsch'},ja:{flag: 'fi-jp',name:'日本語'},zh:{flag: 'fi-cn',name:'中文'},fr:{flag: 'fi-fr',name:'Français'},es:{flag: 'fi-es',name:'Español'},ru:{flag: 'fi-ru',name:'Русский'}};
   // MyMemory API language codes
   var MM_LANG = {ko:'ko',en:'en-GB',de:'de-DE',ja:'ja-JP',zh:'zh-CN',fr:'fr-FR',es:'es-ES',ru:'ru-RU'};
 
@@ -175,7 +176,7 @@
       if (t[k] !== undefined) el.textContent = t[k];
     });
     var meta = LANG_META[lang];
-    document.getElementById('curFlag').textContent = meta.flag;
+    document.getElementById('curFlag').className = 'fi ' + meta.flag;
     document.getElementById('curLang').textContent = meta.name;
     document.querySelectorAll('.lang-opt').forEach(function(opt) {
       opt.classList.toggle('cur', opt.dataset.lang === lang);

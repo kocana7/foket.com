@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/7.2.3/css/flag-icons.min.css">
   <style>
     :root {
       --bg-primary: #0a0e1a;
@@ -62,7 +63,7 @@
     .binance-mark{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-right:6px;background:#f0b90b;color:#0a0e1a;font-size:11px;font-weight:800;border-radius:4px;vertical-align:middle}
     .empty-msg{padding:48px 24px;text-align:center;color:var(--text-muted);font-size:15px}
     .empty-msg a{margin-top:12px;display:inline-block}
-  </style>
+  .fi{width:18px;height:13px;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.15);vertical-align:-2px}</style>
 </head>
 <body>
   <header class="page-header">
@@ -71,16 +72,16 @@
       <h1 class="page-title" data-i18n="page_title">FoketSignal 수익율 상세</h1>
       <div class="header-right">
         <div class="lang-dropdown">
-          <button class="lang-btn" id="langToggle"><span id="curFlag">🇰🇷</span><span id="curLang">한국어</span><span>▾</span></button>
+          <button class="lang-btn" id="langToggle"><span id="curFlag" class="fi fi-kr"></span><span id="curLang">한국어</span><span>▾</span></button>
           <div class="lang-menu" id="langMenu">
-            <a class="lang-opt" data-lang="ko" href="#">🇰🇷 한국어</a>
-            <a class="lang-opt" data-lang="en" href="#">🇺🇸 English</a>
-            <a class="lang-opt" data-lang="de" href="#">🇩🇪 Deutsch</a>
-            <a class="lang-opt" data-lang="ja" href="#">🇯🇵 日本語</a>
-            <a class="lang-opt" data-lang="zh" href="#">🇨🇳 中文</a>
-            <a class="lang-opt" data-lang="fr" href="#">🇫🇷 Français</a>
-            <a class="lang-opt" data-lang="es" href="#">🇪🇸 Español</a>
-            <a class="lang-opt" data-lang="ru" href="#">🇷🇺 Русский</a>
+            <a class="lang-opt" data-lang="ko" href="#"><span class="fi fi-kr"></span> 한국어</a>
+            <a class="lang-opt" data-lang="en" href="#"><span class="fi fi-us"></span> English</a>
+            <a class="lang-opt" data-lang="de" href="#"><span class="fi fi-de"></span> Deutsch</a>
+            <a class="lang-opt" data-lang="ja" href="#"><span class="fi fi-jp"></span> 日本語</a>
+            <a class="lang-opt" data-lang="zh" href="#"><span class="fi fi-cn"></span> 中文</a>
+            <a class="lang-opt" data-lang="fr" href="#"><span class="fi fi-fr"></span> Français</a>
+            <a class="lang-opt" data-lang="es" href="#"><span class="fi fi-es"></span> Español</a>
+            <a class="lang-opt" data-lang="ru" href="#"><span class="fi fi-ru"></span> Русский</a>
           </div>
         </div>
       </div>
@@ -144,7 +145,7 @@
         col_sym:'Символ',col_monthly:'Средн. месячная доходность',col_maxloss:'Макс. дневной убыток',col_roundtrips:'Средн. ежедн. сделок',col_days:'Торговых дней',col_exch:'Биржа',
         days_unit:'д',fallback_name:'Символ'}
     };
-    var LANG_META = {ko:{flag:'🇰🇷',name:'한국어'},en:{flag:'🇺🇸',name:'English'},de:{flag:'🇩🇪',name:'Deutsch'},ja:{flag:'🇯🇵',name:'日本語'},zh:{flag:'🇨🇳',name:'中文'},fr:{flag:'🇫🇷',name:'Français'},es:{flag:'🇪🇸',name:'Español'},ru:{flag:'🇷🇺',name:'Русский'}};
+    var LANG_META = {ko:{flag: 'fi-kr',name:'한국어'},en:{flag: 'fi-us',name:'English'},de:{flag: 'fi-de',name:'Deutsch'},ja:{flag: 'fi-jp',name:'日本語'},zh:{flag: 'fi-cn',name:'中文'},fr:{flag: 'fi-fr',name:'Français'},es:{flag: 'fi-es',name:'Español'},ru:{flag: 'fi-ru',name:'Русский'}};
     var currentLang = localStorage.getItem('lang') || 'ko';
 
     function applyLang(lang) {
@@ -158,7 +159,7 @@
         if (t[k] !== undefined) el.textContent = t[k];
       });
       var meta = LANG_META[lang];
-      document.getElementById('curFlag').textContent = meta.flag;
+      document.getElementById('curFlag').className = 'fi ' + meta.flag;
       document.getElementById('curLang').textContent = meta.name;
       document.querySelectorAll('.lang-opt').forEach(function(opt){ opt.classList.toggle('cur', opt.dataset.lang === lang); });
       render();
