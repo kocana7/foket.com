@@ -1907,6 +1907,7 @@
                 <button class="upload-type-tab" onclick="setUploadType('plans',this)"><i class="fas fa-tags"></i> 플랜</button>
                 <button class="upload-type-tab" onclick="setUploadType('testimonials',this)"><i class="fas fa-star"></i> 후기</button>
                 <button class="upload-type-tab" onclick="setUploadType('markets',this)"><i class="fas fa-layer-group"></i> 종목관리</button>
+                <button class="upload-type-tab" onclick="setUploadType('records',this)"><i class="fas fa-history"></i> 과거 실적</button>
               </div>
               <!-- 컬럼 안내 -->
               <div class="schema-box" id="upload-schema-info"></div>
@@ -4442,6 +4443,40 @@
           };
         },
         displayCols: ['catId','sym','nameKo','monthlyReturn','maxDailyLoss','startDate','dailyRoundTrips','active']
+      },
+      records: {
+        label: '과거 실적',
+        cols: ['date','sym','name','side','entry','exit','pnl','cur','kind'],
+        required: ['date','sym','side','pnl','kind'],
+        hints: {
+          date: '거래일 YYYY-MM-DD',
+          sym: '종목코드 (예: NQ, K200)',
+          side: 'LONG 또는 SHORT',
+          pnl: '손익 금액 (손실은 음수)',
+          cur: 'USD 또는 KRW (비우면 USD)',
+          kind: 'live = 실제 신호 기록, backtest = 가상 성과. 반드시 구분해서 입력'
+        },
+        map: function(row) {
+          var kind = String(row.kind || '').toLowerCase().trim();
+          var date = toYMD(row.date);
+          var pnl = Number(row.pnl);
+          /* 구분(kind)이 없거나 잘못된 행은 받지 않는다: 가상 성과가 실제 기록으로 섞이지 않게 */
+          if (kind !== 'live' && kind !== 'backtest') throw new Error('kind');
+          if (!date || !isFinite(pnl) || String(row.pnl).trim() === '') throw new Error('row');
+          var side = String(row.side || '').toUpperCase().trim();
+          return {
+            date: date,
+            sym: String(row.sym || '').toUpperCase().trim(),
+            name: String(row.name || '').trim(),
+            side: (side === 'SHORT' || side === 'S' || side === 'SELL' || side === '매도') ? 'SHORT' : 'LONG',
+            entry: (row.entry === '' || row.entry == null) ? null : Number(row.entry),
+            exit: (row.exit === '' || row.exit == null) ? null : Number(row.exit),
+            pnl: pnl,
+            cur: String(row.cur || 'USD').toUpperCase().trim(),
+            kind: kind
+          };
+        },
+        displayCols: ['date','sym','name','side','entry','exit','pnl','cur','kind']
       }
     };
 
@@ -4531,6 +4566,9 @@
           var mapped = normalized.map(function(row, idx) {
             try { return schema.map(row); } catch(ex) { return null; }
           }).filter(Boolean);
+          if (mapped.length < normalized.length) {
+            showAlert('경고: ' + (normalized.length - mapped.length) + '행은 값이 비었거나 형식이 맞지 않아 제외했습니다.', 'err');
+          }
           _uploadParsed = mapped;
           showUploadPreview(mapped, schema);
         } catch(ex) {
@@ -4613,6 +4651,19 @@
         lsSave('markets', cats);
         publishMarkets(true); /* markets_published 동기화 (메인 반영), 알림 생략 */
         if (skipped > 0) showAlert('경고: ' + skipped + '행은 catId가 없거나 일치하는 카테고리가 없어 건너뛰었습니다.', 'err');
+      } else if (type === 'records') {
+        /* 과거 실적: 같은 거래(날짜·종목·방향·진입·청산·구분)는 덮어쓰고, 새 거래는 추가 */
+        var recKey = function(r){ return [r.date, r.sym, r.side, r.entry, r.exit, r.kind].join('|'); };
+        var recs = ls('records', []);
+        var index = {};
+        recs.forEach(function(r, i){ index[recKey(r)] = i; });
+        _uploadParsed.forEach(function(r) {
+          var k = recKey(r);
+          if (index[k] !== undefined) { recs[index[k]] = r; updated++; }
+          else { index[k] = recs.length; recs.push(r); added++; }
+        });
+        recs.sort(function(a, b){ return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+        lsSave('records', recs);
       } else {
         var existing = ls(type, []);
         var merged = existing.slice();
