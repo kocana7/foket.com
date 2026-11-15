@@ -60,6 +60,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// public/data 안의 예전 저장 파일(.json)은 웹으로 내보내지 않는다 (회원 목록·토큰 등이 들어 있을 수 있음)
+app.use('/data', (req, res, next) => {
+  if (/\.json$/i.test(req.path)) return res.status(404).end();
+  next();
+});
+
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
