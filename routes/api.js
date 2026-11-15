@@ -5,18 +5,39 @@ const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const path = require('path');
 
-const DATA_DIR = path.join(__dirname, '..', 'public', 'data');
+const crypto = require('crypto');
+
+// 파일 백업 저장소: 웹에 공개되지 않는 폴더 (.gitignore 대상이라 배포 시 git clean에도 남는다)
+const DATA_DIR = path.join(__dirname, '..', 'storage-data');
+// 예전 백업 위치 (public/data). 읽기만 하고 새로 쓰지 않는다.
+const LEGACY_DATA_DIR = path.join(__dirname, '..', 'public', 'data');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+
+// 누구나 읽어도 되는 저장 키 (메인·하위 페이지가 로그인 없이 읽는 것만)
+const PUBLIC_STORAGE_KEYS = new Set([
+  'markets_published', 'settings', 'plans', 'faq', 'terms', 'privacy',
+  'risk', 'refund', 'affiliate', 'earnings', 'records'
+]);
+// 어떤 경우에도 API로 내보내지 않는 키
+const SECRET_STORAGE_KEYS = new Set(['telegram_bot_token', 'adminPw', 'admin_sess']);
 
 function saveToFile(key, value) {
   try { fs.writeFileSync(path.join(DATA_DIR, key + '.json'), JSON.stringify({ value }), 'utf8'); } catch(e) {}
 }
 function readFromFile(key) {
-  try {
-    const raw = fs.readFileSync(path.join(DATA_DIR, key + '.json'), 'utf8');
-    const obj = JSON.parse(raw);
-    return obj.value != null ? obj.value : null;
-  } catch(e) { return null; }
+  for (const dir of [DATA_DIR, LEGACY_DATA_DIR]) {
+    try {
+      const raw = fs.readFileSync(path.join(dir, key + '.json'), 'utf8');
+      const obj = JSON.parse(raw);
+      if (obj.value != null) return obj.value;
+    } catch(e) { /* 다음 위치 */ }
+  }
+  return null;
+}
+
+function isAdmin(req) {
+  if (req.session && req.session.adminVerified) return true;
+  return !!(req.session && req.session.user && (req.session.user.role === 'admin' || req.session.user.role === 'superadmin'));
 }
 
 function requireAuth(req, res, next) {
@@ -25,20 +46,50 @@ function requireAuth(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-  if (req.session && req.session.adminVerified) return next();
-  if (req.session && req.session.user && (req.session.user.role === 'admin' || req.session.user.role === 'superadmin')) return next();
+  if (isAdmin(req)) return next();
   res.status(403).json({ success: false, error: 'Forbidden' });
+}
+
+// 관리자 비밀번호 무차별 대입 방지: IP당 15분에 10회
+const verifyAttempts = new Map();
+function tooManyAttempts(ip) {
+  const now = Date.now(), WINDOW = 15 * 60 * 1000;
+  const list = (verifyAttempts.get(ip) || []).filter(t => now - t < WINDOW);
+  verifyAttempts.set(ip, list);
+  return list.length >= 10;
+}
+function safeEqual(a, b) {
+  const ha = crypto.createHash('sha256').update(String(a)).digest();
+  const hb = crypto.createHash('sha256').update(String(b)).digest();
+  return crypto.timingSafeEqual(ha, hb);
 }
 
 // POST /api/admin/verify — admin panel password → server session
 router.post('/admin/verify', (req, res) => {
   const { password } = req.body || {};
-  const expected = process.env.ADMIN_PANEL_PASSWORD || 'Admin@123';
-  if (password && password === expected) {
-    req.session.adminVerified = true;
-    return res.json({ success: true });
+  const expected = process.env.ADMIN_PANEL_PASSWORD || '';
+  // 비밀번호가 설정되지 않았거나 예전 기본값이면 로그인 자체를 막는다
+  if (!expected || expected === 'Admin@123') {
+    return res.status(503).json({ success: false, error: 'ADMIN_PANEL_PASSWORD is not configured on the server' });
   }
+  if (tooManyAttempts(req.ip)) {
+    return res.status(429).json({ success: false, error: 'Too many attempts. Try again later.' });
+  }
+  if (password && safeEqual(password, expected)) {
+    verifyAttempts.delete(req.ip);
+    return req.session.regenerate(err => {
+      if (err) return res.status(500).json({ success: false, error: 'Session error' });
+      req.session.adminVerified = true;
+      res.json({ success: true });
+    });
+  }
+  verifyAttempts.get(req.ip).push(Date.now());
   res.status(401).json({ success: false, error: 'Invalid admin password' });
+});
+
+// GET /api/admin/session — 관리자 로그인 상태 확인 (새로고침 후 복원용)
+router.get('/admin/session', (req, res) => {
+  res.json({ success: true, admin: isAdmin(req) });
 });
 
 // POST /api/auth/register
@@ -323,6 +374,8 @@ router.get('/ticker', async (req, res) => {
 // GET /api/storage/:key
 router.get('/storage/:key', async (req, res) => {
   const key = req.params.key.replace(/[^a-z0-9_-]/gi, '') || 'markets';
+  if (SECRET_STORAGE_KEYS.has(key)) return res.status(403).json({ success: false, error: 'Forbidden' });
+  if (!PUBLIC_STORAGE_KEYS.has(key) && !isAdmin(req)) return res.status(403).json({ success: false, error: 'Forbidden' });
   try {
     const [rows] = await db.query('SELECT value FROM app_storage WHERE `key` = ? LIMIT 1', [key]);
     const value = rows.length ? rows[0].value : null;
@@ -334,10 +387,12 @@ router.get('/storage/:key', async (req, res) => {
 });
 
 // POST /api/storage  body: { key, value }
-router.post('/storage', express.json(), async (req, res) => {
+router.post('/storage', requireAdmin, express.json(), async (req, res) => {
   try {
     const key = (req.body && req.body.key) ? String(req.body.key).replace(/[^a-z0-9_-]/gi, '') : null;
     if (!key) return res.status(400).json({ success: false, error: 'key required' });
+    // 관리자 비밀번호는 이제 서버 환경변수로만 관리한다
+    if (key === 'adminPw' || key === 'admin_sess') return res.json({ success: true, saved: false });
     const value = req.body.value != null ? (typeof req.body.value === 'string' ? req.body.value : JSON.stringify(req.body.value)) : '';
     saveToFile(key, value);
     try {
@@ -437,7 +492,7 @@ async function getTelegramToken() {
 }
 
 // GET /api/telegram/status
-router.get('/telegram/status', async (req, res) => {
+router.get('/telegram/status', requireAdmin, async (req, res) => {
   try {
     const token = await getTelegramToken();
     if (!token) return res.json({ configured: false });
@@ -451,7 +506,7 @@ router.get('/telegram/status', async (req, res) => {
 });
 
 // GET /api/telegram/chats - 웹훅 삭제 후 getUpdates로 채팅 목록 조회
-router.get('/telegram/chats', async (req, res) => {
+router.get('/telegram/chats', requireAdmin, async (req, res) => {
   try {
     const token = await getTelegramToken();
     if (!token) return res.json({ success: false, error: '봇 토큰 미설정' });
@@ -474,7 +529,7 @@ router.get('/telegram/chats', async (req, res) => {
 });
 
 // POST /api/telegram/send  body: { groups: [...], message: string }
-router.post('/telegram/send', express.json(), async (req, res) => {
+router.post('/telegram/send', requireAdmin, express.json(), async (req, res) => {
   try {
     const token = await getTelegramToken();
     if (!token) return res.status(400).json({ success: false, error: '봇 토큰이 설정되지 않았습니다. 관리자 패널에서 봇 토큰을 입력해주세요.' });
