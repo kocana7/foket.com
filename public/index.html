@@ -847,6 +847,15 @@
 
 
     /* ── 부문별 대표 종목 카드 (수익율 현황) ── */
+    .best10-hd-r { display: flex; align-items: center; gap: 14px }
+    .best10-more { font-size: 13px; font-weight: 600; color: var(--accent-blue); text-decoration: none; white-space: nowrap }
+    .best10-more:hover { text-decoration: underline }
+    @media(max-width:768px) {
+      #best10Card .csp-hd { flex-wrap: wrap; row-gap: 10px }
+      #best10Card .csp-title { white-space: nowrap }
+      .best10-hd-r { margin-left: auto; gap: 10px }
+      .best10-more { font-size: 12px }
+    }
     .bestcat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding-top: 4px }
     .bestcat-card {
       background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md);
@@ -2378,7 +2387,10 @@
           <div class="csp-title">
             <div class="csp-dot"></div><span data-i18n="best10.title">Foket 수익율 현황</span><span id="best10DateLabel" style="font-size:0.75em;font-weight:400;color:var(--text-secondary);margin-left:10px;"></span>
           </div>
-          <div class="csp-live">LIVE</div>
+          <div class="best10-hd-r">
+            <a class="best10-more" href="performance.html" data-i18n="best10.more">전체 실적 조회 →</a>
+            <div class="csp-live">LIVE</div>
+          </div>
         </div>
         <div id="best10Rows" class="bestcat-grid">
           <div class="bestcat-card is-empty"><div class="bestcat-name">—</div></div>
@@ -2763,6 +2775,7 @@
         "best10.title": "Foket 수익율 현황", "best10.col_rank": "순위", "best10.col_symbol": "종목", "best10.col_monthly_return": "월평균 수익률", "best10.col_monthly_profit": "월평균 수익액($)", "best10.col_margin": "거래 증거금($)", "best10.col_max_loss": "120거래일내 최대 손실 기록($)", "best10.col_trade_days": "딥러닝 이후 검증 거래일수",
         "best10.days_unit": "일", "best10.no_data": "저장된 종목 데이터가 없습니다", "best10.no_items": "등록된 종목이 없습니다", "best10.load_fail": "로드 실패", "best10.date_suffix": "현재까지",
         "best10.cat1": "최고 수익률", "best10.cat1_desc": "월평균 수익률 기준", "best10.cat2": "최장 검증", "best10.cat2_desc": "딥러닝 이후 검증 기간 기준", "best10.cat3": "최소 손실 비율", "best10.cat3_desc": "120거래일 최대 손실 ÷ 거래 증거금", "best10.cat4": "위험 대비 수익", "best10.cat4_desc": "월평균 수익액 ÷ 120거래일 최대 손실", "best10.cat5": "꾸준한 수익", "best10.cat5_desc": "최근 30거래일 중 수익을 낸 날의 비율", "best10.cat6": "소액 투자 추천", "best10.cat6_desc": "월평균 수익률 {n}% 이상 종목의 증거금 기준", "best10.unit_times": "배", "best10.lbl_margin": "증거금",
+        "best10.more": "전체 실적 조회 →",
         "nav.kakao_consult": "카카오톡 문의",
         "how_it_works.entry_item1": "SNS등을 통한 1:1 트레이딩 알림 수신(알림은 종목별로 실시간으로 전송됩니다.)", "how_it_works.entry_item2": "신청회원의 자율적 트레이딩 진행", "how_it_works.entry_item3": "24시간 트레이딩", "how_it_works.entry_fee": "서비스요금 : 종목당 월 $300 또는 50만원 (정액제, 부가세 제외)",
         "how_it_works.delegate_item1": "Foket과 직접 계약 또는 Foket의 제휴 자산운용사, 투자자문사와 계약", "how_it_works.delegate_item2": "Foket의 100% 자동 트레이딩 시스템 가동", "how_it_works.delegate_item3": "주단위 수익 정산(계약에 따라 상이하며 수익의 30~40% 정산)", "how_it_works.delegate_item4": "계약 사항의 자율적 상시 조정 가능", "how_it_works.delegate_fee": "서비스요금 : 별도의 요금은 없으며, 계약에 따라 수익의 30~40% 정산 방식",
@@ -2801,6 +2814,7 @@
         "best10.title": "Foket Return Status", "best10.col_rank": "Rank", "best10.col_symbol": "Symbol", "best10.col_monthly_return": "Avg Monthly Return", "best10.col_max_loss": "Max Daily Drawdown", "best10.col_daily_trades": "Avg Daily Round Trips", "best10.col_trade_days": "Trading Days",
         "best10.days_unit": "d", "best10.no_data": "No market data saved", "best10.no_items": "No instruments registered", "best10.load_fail": "Load failed", "best10.date_suffix": "current",
         "best10.cat1": "Highest return", "best10.cat1_desc": "By average monthly return", "best10.cat2": "Longest track record", "best10.cat2_desc": "By time verified since deep learning", "best10.cat3": "Lowest loss-to-margin ratio", "best10.cat3_desc": "120-day maximum loss ÷ trading margin", "best10.cat4": "Return relative to risk", "best10.cat4_desc": "Average monthly profit ÷ 120-day maximum loss", "best10.cat5": "Most consistent", "best10.cat5_desc": "Share of profitable days in the last 30 trading days", "best10.cat6": "Suited to smaller accounts", "best10.cat6_desc": "By margin, among symbols with ≥{n}% average monthly return", "best10.unit_times": "x", "best10.lbl_margin": "Margin",
+        "best10.more": "Full performance →",
         "best10.col_monthly_profit": "Avg Monthly Profit ($)", "best10.col_margin": "Trading Margin ($)",
         "nav.kakao_consult": "KakaoTalk Inquiry",
         "how_it_works.entry_item1": "1:1 trading alert reception via SNS (alerts are delivered in real-time per symbol)", "how_it_works.entry_item2": "Member conducts trading autonomously", "how_it_works.entry_item3": "24-hour trading", "how_it_works.entry_fee": "Service fee: $300/month per symbol or KRW 500,000 (flat rate, excl. VAT)",
@@ -2840,6 +2854,7 @@
         "best10.title": "Foket Rendite-Status", "best10.col_rank": "Rang", "best10.col_symbol": "Symbol", "best10.col_monthly_return": "Ø Monatsrendite", "best10.col_max_loss": "Max. Tages-Drawdown", "best10.col_daily_trades": "Ø Tägliche Roundtrips", "best10.col_trade_days": "Handelstage",
         "best10.days_unit": "T", "best10.no_data": "Keine Marktdaten gespeichert", "best10.no_items": "Keine Instrumente registriert", "best10.load_fail": "Ladefehler", "best10.date_suffix": "aktuell",
         "best10.cat1": "Höchste Rendite", "best10.cat1_desc": "Nach durchschnittlicher Monatsrendite", "best10.cat2": "Längste Bewährung", "best10.cat2_desc": "Nach Bewährungsdauer seit dem Deep Learning", "best10.cat3": "Geringstes Verlust-Margin-Verhältnis", "best10.cat3_desc": "Maximalverlust (120 Tage) ÷ Margin", "best10.cat4": "Rendite im Verhältnis zum Risiko", "best10.cat4_desc": "Ø-Monatsgewinn ÷ Maximalverlust (120 Tage)", "best10.cat5": "Beständigste Erträge", "best10.cat5_desc": "Anteil profitabler Tage in den letzten 30 Handelstagen", "best10.cat6": "Für kleinere Konten", "best10.cat6_desc": "Nach Margin, unter Kontrakten mit ≥{n}% Ø-Monatsrendite", "best10.unit_times": "x", "best10.lbl_margin": "Margin",
+        "best10.more": "Alle Ergebnisse →",
         "best10.col_monthly_profit": "Ø Monatsertrag ($)", "best10.col_margin": "Handelsmarge ($)",
         "nav.kakao_consult": "KakaoTalk Anfrage",
         "how_it_works.entry_item1": "1:1 Handelsalarm-Empfang per SNS (Alarme werden in Echtzeit pro Symbol geliefert)", "how_it_works.entry_item2": "Mitglieder handeln eigenständig", "how_it_works.entry_item3": "24-Stunden-Handel", "how_it_works.entry_fee": "Servicegebühr: 300 $/Monat pro Symbol oder 500.000 KRW (Pauschalpreis, zzgl. MwSt.)",
@@ -2879,6 +2894,7 @@
         "best10.title": "Foket 収益率現況", "best10.col_rank": "順位", "best10.col_symbol": "銘柄", "best10.col_monthly_return": "月平均収益率", "best10.col_max_loss": "日最大損失変動幅", "best10.col_daily_trades": "日平均往復取引回数", "best10.col_trade_days": "取引日数",
         "best10.days_unit": "日", "best10.no_data": "保存された銘柄データがありません", "best10.no_items": "登録された銘柄がありません", "best10.load_fail": "読み込み失敗", "best10.date_suffix": "現在まで",
         "best10.cat1": "最高収益率", "best10.cat1_desc": "月平均収益率基準", "best10.cat2": "最長検証", "best10.cat2_desc": "ディープラーニング以降の検証期間基準", "best10.cat3": "最小損失率", "best10.cat3_desc": "120取引日最大損失 ÷ 取引証拠金", "best10.cat4": "リスク対比収益", "best10.cat4_desc": "月平均収益額 ÷ 120取引日最大損失", "best10.cat5": "安定した収益", "best10.cat5_desc": "直近30取引日のうち利益が出た日の割合", "best10.cat6": "少額投資におすすめ", "best10.cat6_desc": "月平均収益率{n}%以上の銘柄の証拠金基準", "best10.unit_times": "倍", "best10.lbl_margin": "証拠金",
+        "best10.more": "全実績を見る →",
         "best10.col_monthly_profit": "月平均収益額($)", "best10.col_margin": "取引証拠金($)",
         "nav.kakao_consult": "KakaoTalk お問い合わせ",
         "how_it_works.entry_item1": "SNS等を通じた1:1トレーディングアラート受信（アラートは銘柄ごとにリアルタイムで配信されます）", "how_it_works.entry_item2": "申込会員が自律的にトレーディングを進める", "how_it_works.entry_item3": "24時間トレーディング", "how_it_works.entry_fee": "サービス料金：銘柄ごと月$300または50万ウォン（定額制、消費税別）",
@@ -2918,6 +2934,7 @@
         "best10.title": "Foket 收益率现况", "best10.col_rank": "排名", "best10.col_symbol": "标的", "best10.col_monthly_return": "月均收益率", "best10.col_max_loss": "日最大亏损幅度", "best10.col_daily_trades": "日均往返交易次数", "best10.col_trade_days": "交易天数",
         "best10.days_unit": "天", "best10.no_data": "暂无保存的标的数据", "best10.no_items": "暂无注册标的", "best10.load_fail": "加载失败", "best10.date_suffix": "截至目前",
         "best10.cat1": "最高收益率", "best10.cat1_desc": "按月平均收益率", "best10.cat2": "最长验证", "best10.cat2_desc": "按深度学习以来的验证时长", "best10.cat3": "最小亏损比率", "best10.cat3_desc": "120日最大亏损 ÷ 交易保证金", "best10.cat4": "风险调整收益", "best10.cat4_desc": "月平均收益额 ÷ 120日最大亏损", "best10.cat5": "稳定收益", "best10.cat5_desc": "最近30个交易日中盈利天数占比", "best10.cat6": "小额投资推荐", "best10.cat6_desc": "按保证金（月平均收益率{n}%以上品种）", "best10.unit_times": "倍", "best10.lbl_margin": "保证金",
+        "best10.more": "查看全部业绩 →",
         "best10.col_monthly_profit": "月均收益额($)", "best10.col_margin": "交易保证金($)",
         "nav.kakao_consult": "KakaoTalk 咨询",
         "how_it_works.entry_item1": "通过SNS等渠道接收1:1交易提醒（提醒按标的实时推送）", "how_it_works.entry_item2": "申请会员自主进行交易", "how_it_works.entry_item3": "24小时交易", "how_it_works.entry_fee": "服务费：每个标的月$300或50万韩元（包月制，不含税）",
@@ -2957,6 +2974,7 @@
         "best10.title": "Foket Rendements actuels", "best10.col_rank": "Rang", "best10.col_symbol": "Symbole", "best10.col_monthly_return": "Rendement mensuel moy.", "best10.col_max_loss": "Perte max journalière", "best10.col_daily_trades": "Opérations/jour moy.", "best10.col_trade_days": "Jours de trading",
         "best10.days_unit": "j", "best10.no_data": "Aucune donnée de marché enregistrée", "best10.no_items": "Aucun instrument enregistré", "best10.load_fail": "Échec du chargement", "best10.date_suffix": "à ce jour",
         "best10.cat1": "Rendement le plus élevé", "best10.cat1_desc": "Selon le rendement mensuel moyen", "best10.cat2": "Historique le plus long", "best10.cat2_desc": "Selon la durée de vérification depuis le deep learning", "best10.cat3": "Plus faible ratio perte/marge", "best10.cat3_desc": "Perte maximale sur 120 jours ÷ marge", "best10.cat4": "Rendement rapporté au risque", "best10.cat4_desc": "Gain mensuel moyen ÷ perte maximale sur 120 jours", "best10.cat5": "Le plus régulier", "best10.cat5_desc": "Part de jours gagnants sur les 30 derniers jours de bourse", "best10.cat6": "Adapté aux petits comptes", "best10.cat6_desc": "Selon la marge, parmi les contrats à rendement mensuel moyen ≥ {n}%", "best10.unit_times": "x", "best10.lbl_margin": "Marge",
+        "best10.more": "Toutes les performances →",
         "best10.col_monthly_profit": "Bénéfice mensuel moy. ($)", "best10.col_margin": "Marge de trading ($)",
         "nav.kakao_consult": "Contact KakaoTalk",
         "how_it_works.entry_item1": "Réception d'alertes de trading 1:1 via SNS (les alertes sont envoyées en temps réel par symbole)", "how_it_works.entry_item2": "Le membre effectue les transactions de manière autonome", "how_it_works.entry_item3": "Trading 24 heures sur 24", "how_it_works.entry_fee": "Frais de service : 300 $/mois par symbole ou 500 000 KRW (forfait, TVA non comprise)",
@@ -2996,6 +3014,7 @@
         "best10.title": "Foket Rendimientos actuales", "best10.col_rank": "Rango", "best10.col_symbol": "Símbolo", "best10.col_monthly_return": "Rentabilidad mensual media", "best10.col_max_loss": "Pérdida máx. diaria", "best10.col_daily_trades": "Operaciones/día medias", "best10.col_trade_days": "Días de trading",
         "best10.days_unit": "d", "best10.no_data": "No hay datos de mercado guardados", "best10.no_items": "No hay instrumentos registrados", "best10.load_fail": "Error de carga", "best10.date_suffix": "a la fecha",
         "best10.cat1": "Mayor rentabilidad", "best10.cat1_desc": "Según la rentabilidad mensual media", "best10.cat2": "Historial más largo", "best10.cat2_desc": "Según el tiempo verificado desde el deep learning", "best10.cat3": "Menor ratio pérdida/margen", "best10.cat3_desc": "Pérdida máxima en 120 sesiones ÷ margen", "best10.cat4": "Rentabilidad frente al riesgo", "best10.cat4_desc": "Beneficio mensual medio ÷ pérdida máxima en 120 sesiones", "best10.cat5": "Más constante", "best10.cat5_desc": "Proporción de días con beneficio en las últimas 30 sesiones", "best10.cat6": "Para cuentas pequeñas", "best10.cat6_desc": "Según el margen, entre contratos con rentabilidad mensual media ≥ {n}%", "best10.unit_times": "x", "best10.lbl_margin": "Margen",
+        "best10.more": "Ver todo el rendimiento →",
         "best10.col_monthly_profit": "Ganancia mensual media ($)", "best10.col_margin": "Margen de trading ($)",
         "nav.kakao_consult": "Consulta KakaoTalk",
         "how_it_works.entry_item1": "Recepción de alertas de trading 1:1 vía SNS (las alertas se entregan en tiempo real por símbolo)", "how_it_works.entry_item2": "El miembro opera de forma autónoma", "how_it_works.entry_item3": "Trading 24 horas", "how_it_works.entry_fee": "Tarifa de servicio: $300/mes por símbolo o 500.000 KRW (tarifa plana, IVA excl.)",
@@ -3035,6 +3054,7 @@
         "best10.title": "Foket Текущая доходность", "best10.col_rank": "Ранг", "best10.col_symbol": "Символ", "best10.col_monthly_return": "Средн. месячная доходность", "best10.col_max_loss": "Макс. дневная просадка", "best10.col_daily_trades": "Средн. дневных сделок", "best10.col_trade_days": "Торговых дней",
         "best10.days_unit": "д", "best10.no_data": "Нет сохранённых данных", "best10.no_items": "Нет зарегистрированных инструментов", "best10.load_fail": "Ошибка загрузки", "best10.date_suffix": "на сегодня",
         "best10.cat1": "Наибольшая доходность", "best10.cat1_desc": "По средней месячной доходности", "best10.cat2": "Самая долгая проверка", "best10.cat2_desc": "По сроку проверки после внедрения deep learning", "best10.cat3": "Наименьший убыток к ГО", "best10.cat3_desc": "Максимальный убыток за 120 дней ÷ ГО", "best10.cat4": "Доходность к риску", "best10.cat4_desc": "Средняя месячная прибыль ÷ максимальный убыток за 120 дней", "best10.cat5": "Самая стабильная прибыль", "best10.cat5_desc": "Доля прибыльных дней за последние 30 торговых дней", "best10.cat6": "Для небольших счетов", "best10.cat6_desc": "По ГО среди инструментов со средней месячной доходностью от {n}%", "best10.unit_times": "x", "best10.lbl_margin": "ГО",
+        "best10.more": "Все результаты →",
         "best10.col_monthly_profit": "Средн. месячная прибыль ($)", "best10.col_margin": "Торговая маржа ($)",
         "nav.kakao_consult": "Запрос KakaoTalk",
         "how_it_works.entry_item1": "Получение торговых алертов 1:1 через SNS (алерты доставляются в реальном времени по каждому символу)", "how_it_works.entry_item2": "Участник ведёт торговлю самостоятельно", "how_it_works.entry_item3": "Торговля 24 часа", "how_it_works.entry_fee": "Стоимость услуги: $300/месяц за символ или 500 000 KRW (фиксированная ставка, без НДС)",
