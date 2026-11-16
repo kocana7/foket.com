@@ -226,8 +226,11 @@
     var tot=sumByCur(rows), cp=document.getElementById('cPnl');
     cp.textContent=rows.length?curText(tot):'-';
     var ks=Object.keys(tot); cp.className='v '+(ks.length===1?cls(tot[ks[0]]):'');
-    var worst=null; rows.forEach(function(r){if(r.pnl<0&&(!worst||r.pnl<worst.pnl))worst=r;});
-    var cw=document.getElementById('cWorst'); cw.textContent=worst?fmtMoney(worst.pnl,worst.cur):'-'; cw.className='v '+(worst?'dn':'');
+    /* 통화가 다른 손익은 크기를 비교할 수 없으므로 통화별로 가장 큰 손실을 따로 보여준다 */
+    var worst={}; rows.forEach(function(r){if(r.pnl<0&&(worst[r.cur]===undefined||r.pnl<worst[r.cur]))worst[r.cur]=r.pnl;});
+    var cw=document.getElementById('cWorst'), wk=Object.keys(worst);
+    var wo={}; ks.forEach(function(c){if(worst[c]!==undefined)wo[c]=worst[c];});
+    cw.textContent=wk.length?curText(wo):'-'; cw.className='v '+(wk.length?'dn':'');
 
     /* 월별 */
     var mb=document.getElementById('monthBody'), months={}, order=[];
