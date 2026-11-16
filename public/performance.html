@@ -44,6 +44,8 @@
     .pf-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}
     .pf-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:18px 20px}
     .pf-card .k{font-size:12px;color:var(--text-secondary);font-weight:600;margin-bottom:8px}
+    .pf-card .v .lb{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-top:4px}
+    .pf-card .v>div>span:last-child{white-space:nowrap;font-size:20px}
     .pf-card .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.35}
     .pf-h2{font-size:18px;font-weight:800;margin:8px 0 12px}
     .pf-tbl-wrap{overflow-x:auto;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);margin-bottom:28px}
@@ -59,7 +61,7 @@
     .pf-pager button:disabled{opacity:.4;cursor:default}
     .pf-note{font-size:13px;color:var(--text-secondary);line-height:1.8;border-top:1px solid var(--border-color);padding-top:16px}
     @media(max-width:900px){.pf-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.navbar-nav{display:none}}
-    @media(max-width:640px){.pf-tbl{min-width:0;font-size:13px}.pf-tbl th,.pf-tbl td{padding:10px 10px;white-space:normal}.pf-tbl .opt{display:none}.pf-card .v{font-size:18px}main.section{padding-bottom:96px}}
+    @media(max-width:640px){.pf-tbl{min-width:0;font-size:13px}.pf-tbl th,.pf-tbl td{padding:10px 10px;white-space:normal}.pf-tbl .opt{display:none}.pf-card .v{font-size:18px}.pf-card .v>div>span:last-child{font-size:16px}main.section{padding-bottom:96px}}
   .fi{width:18px;height:13px;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.15);vertical-align:-2px}</style>
 </head>
 <body>
@@ -145,18 +147,18 @@
 </footer>
 <script>
 (function(){
-  var KO={title:'과거 실적 조회',h:'홈',p:'서비스 구성',f:'자주하는 질문(FAQ)',perf:'실적 조회',c:'문의',j:'텔레그램 문의',risk:'투자위험고지',
+  var KO={title:'과거 실적 조회',h:'홈',p:'서비스 구성',f:'자주하는 질문(FAQ)',perf:'실적 조회',c:'문의',j:'텔레그램 문의',k:'카카오톡 문의',risk:'투자위험고지',
     pt:'과거 실적 조회',sub:'공개된 매매 신호의 결과를 손실 포함 그대로 조회할 수 있습니다.',
     fSym:'종목',all:'전체',fFrom:'시작일',fTo:'종료일',fRange:'빠른 선택',rAll:'전체 기간',r20:'최근 20거래일',rM1:'이번 달',rM3:'최근 3개월',rY1:'최근 1년',
-    cTrades:'거래 수',cWin:'승률',cPnl:'누적 손익',cWorst:'최대 손실 거래',
+    cTrades:'거래 수',cWin:'승률',cPnl:'누적 손익',cWorst:'최대 손실 거래',lK200:'KOSPI200',lFutSum:'해외선물 총합',lFut:'해외선물',
     hMonth:'월별 요약',hTrades:'거래 내역',tMonth:'월',tTrades:'거래 수',tWin:'승률',tPnl:'손익',tDate:'날짜',tSym:'종목',tSide:'방향',tEntry:'진입가',tExit:'청산가',tMin:'당일 최소기록',
     long:'매수',short:'매도',prev:'이전',next:'다음',
     emptyLive:'아직 공개된 신호 기록이 없습니다.',emptyFilter:'조건에 맞는 기록이 없습니다.',loading:'불러오는 중…',
     note:'신호 기록은 포켓 자동 시스템이 낸 매매 신호를 1계약 기준으로 계산한 결과이며, 고객 계좌의 실거래 결과가 아닙니다. 모든 기록은 수수료·슬리피지에 따라 실제 계좌 결과와 다를 수 있습니다. 과거 실적은 미래 수익을 보장하지 않으며, 선물 거래는 원금 이상의 손실이 발생할 수 있습니다.'};
-  var EN={title:'Past Performance',h:'Home',p:'Service',f:'FAQ',perf:'Performance',c:'Contact',j:'Telegram Inquiry',risk:'Risk Disclosure',
+  var EN={title:'Past Performance',h:'Home',p:'Service',f:'FAQ',perf:'Performance',c:'Contact',j:'Telegram Inquiry',k:'KakaoTalk Inquiry',risk:'Risk Disclosure',
     pt:'Past Performance',sub:'Look up the results of published trading signals, losses included.',
     fSym:'Symbol',all:'All',fFrom:'From',fTo:'To',fRange:'Quick range',rAll:'All time',r20:'Last 20 trading days',rM1:'This month',rM3:'Last 3 months',rY1:'Last 12 months',
-    cTrades:'Trades',cWin:'Win rate',cPnl:'Total P&L',cWorst:'Largest loss',
+    cTrades:'Trades',cWin:'Win rate',cPnl:'Total P&L',cWorst:'Largest loss',lK200:'KOSPI200',lFutSum:'Overseas futures total',lFut:'Overseas futures',
     hMonth:'Monthly summary',hTrades:'Trade history',tMonth:'Month',tTrades:'Trades',tWin:'Win rate',tPnl:'P&L',tDate:'Date',tSym:'Symbol',tSide:'Side',tEntry:'Entry',tExit:'Exit',tMin:'Intraday low P&L',
     long:'Long',short:'Short',prev:'Prev',next:'Next',
     emptyLive:'No signal records have been published yet.',emptyFilter:'No records match these filters.',loading:'Loading…',
@@ -192,6 +194,17 @@
   /* 통화별 합계 → "＋$1,200 / -30,000원" */
   function sumByCur(rows){var m={};rows.forEach(function(r){m[r.cur]=(m[r.cur]||0)+r.pnl;});return m;}
   function curText(m){var ks=Object.keys(m);if(!ks.length)return '-';return ks.map(function(c){return fmtMoney(m[c],c);}).join(' / ');}
+  /* 요약 카드: 통화별 값을 한 줄씩, 앞에 시장 이름을 붙여 쓴다 (원화 = KOSPI200, 그 밖 = 해외선물) */
+  function cardLines(el,m,sumLabel){
+    var t=tr(), ks=Object.keys(m).sort(function(a,b){return (a==='KRW'?0:1)-(b==='KRW'?0:1);});
+    el.textContent=''; if(!ks.length){el.textContent='-';return;}
+    ks.forEach(function(c){
+      var line=document.createElement('div'), lb=document.createElement('span'), v=document.createElement('span');
+      lb.className='lb'; lb.textContent=(c==='KRW'?t.lK200:(sumLabel?t.lFutSum:t.lFut))+' ';
+      v.textContent=fmtMoney(m[c],c); v.className=cls(m[c]);
+      line.appendChild(lb); line.appendChild(v); el.appendChild(line);
+    });
+  }
   function cls(n){return n>0?'up':(n<0?'dn':'');}
 
   function td(text,className){var el=document.createElement('td');el.textContent=text;if(className)el.className=className;return el;}
@@ -223,10 +236,13 @@
     document.getElementById('cTrades').textContent=rows.length?rows.length.toLocaleString('en-US'):'-';
     document.getElementById('cWin').textContent=rows.length?(wins/rows.length*100).toFixed(1)+'%':'-';
     var tot=sumByCur(rows), cp=document.getElementById('cPnl');
-    cp.textContent=rows.length?curText(tot):'-';
-    var ks=Object.keys(tot); cp.className='v '+(ks.length===1?cls(tot[ks[0]]):'');
-    var worst=null; rows.forEach(function(r){if(r.pnl<0&&(!worst||r.pnl<worst.pnl))worst=r;});
-    var cw=document.getElementById('cWorst'); cw.textContent=worst?fmtMoney(worst.pnl,worst.cur):'-'; cw.className='v '+(worst?'dn':'');
+    cardLines(cp,rows.length?tot:{},true);
+    var ks=Object.keys(tot); cp.className='v';
+    /* 통화가 다른 손익은 크기를 비교할 수 없으므로 통화별로 가장 큰 손실을 따로 보여준다 */
+    var worst={}; rows.forEach(function(r){if(r.pnl<0&&(worst[r.cur]===undefined||r.pnl<worst[r.cur]))worst[r.cur]=r.pnl;});
+    var cw=document.getElementById('cWorst'), wk=Object.keys(worst);
+    var wo={}; ks.forEach(function(c){if(worst[c]!==undefined)wo[c]=worst[c];});
+    cardLines(cw,wo,false); cw.className='v';
 
     /* 월별 */
     var mb=document.getElementById('monthBody'), months={}, order=[];
@@ -321,11 +337,42 @@
   });
 })();
 </script>
-  <!-- ── FLOATING TELEGRAM BUTTON ── -->
-  <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" style="position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;align-items:center;gap:10px;background:#229ed9;color:white;text-decoration:none;padding:14px 20px;border-radius:50px;font-size:15px;font-weight:700;box-shadow:0 4px 20px rgba(34,158,217,.5);transition:transform .2s,box-shadow .2s;white-space:nowrap;">
-    <i class="fab fa-telegram-plane" style="font-size:20px;"></i>
-    <span data-i18n="j">텔레그램 문의</span>
-  </a>
+  <!-- ── FLOATING BUTTONS (카카오톡 문의 위, 텔레그램 문의 아래) ── -->
+  <style>
+    .pf-float{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+    .pf-float a{display:flex;align-items:center;gap:10px;text-decoration:none;padding:14px 20px;border-radius:50px;font-size:15px;font-weight:700;white-space:nowrap;transition:transform .2s,box-shadow .2s}
+    .pf-float a i{font-size:20px}
+    .pf-float .kk{background:#FEE500;color:#3A1D1D;box-shadow:0 4px 20px rgba(254,229,0,.5)}
+    .pf-float .tg{background:#229ed9;color:#fff;box-shadow:0 4px 20px rgba(34,158,217,.5)}
+    .pf-float a:hover{transform:translateY(-3px)}
+    @media(max-width:480px){.pf-float{bottom:16px;right:16px}.pf-float a{padding:12px 16px;font-size:14px}}
+  </style>
+  <div class="pf-float">
+    <a href="#" target="_blank" rel="noopener noreferrer" class="kk" id="pfKakao" style="display:none;">
+      <i class="fas fa-comment-dots"></i>
+      <span data-i18n="k">카카오톡 문의</span>
+    </a>
+    <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="tg" id="pfTg">
+      <i class="fab fa-telegram-plane"></i>
+      <span data-i18n="j">텔레그램 문의</span>
+    </a>
+  </div>
+  <script>
+  /* 메인 페이지와 같은 관리자 설정(settings)에서 카카오톡·텔레그램 링크를 읽는다. 카카오톡 링크가 없으면 버튼을 숨긴다. */
+  (function(){
+    function apply(cfg){
+      if(!cfg)return;
+      if(cfg.telegram_free)document.getElementById('pfTg').href=cfg.telegram_free;
+      var k=document.getElementById('pfKakao');
+      if(cfg.kakao_consult){k.href=cfg.kakao_consult;k.style.display='';}
+    }
+    var base=(location.protocol!=='file:')?location.origin+'/api':'http://localhost:3000/api';
+    fetch(base+'/storage/settings',{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
+      if(j&&j.success&&j.value){apply(JSON.parse(j.value));return;}
+      throw 0;
+    }).catch(function(){try{apply(JSON.parse(localStorage.getItem('fk_settings')||'null'));}catch(e){}});
+  })();
+  </script>
 
 </body>
 </html>
