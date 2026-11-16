@@ -2433,7 +2433,7 @@
   <section class="hpf-sec" id="perfSummary" hidden>
     <div class="hpf-inner">
       <div class="hpf-hd">
-        <div class="hpf-title"><div class="csp-dot"></div><span id="hpfTitle">실적 한눈에 보기</span><span class="hpf-asof" id="hpfAsof"></span></div>
+        <div class="hpf-title"><div class="csp-dot"></div><span id="hpfTitle">전일 기록</span><span class="hpf-asof" id="hpfAsof"></span></div>
         <a class="hpf-more" href="performance.html" id="hpfMore">전체 실적 조회 →</a>
       </div>
       <div class="hpf-chips" id="hpfChips" role="group"></div>
@@ -3843,12 +3843,12 @@
   /* 실적 한눈에 보기: 실적 조회 페이지와 같은 기록(records.json, 관리자 업로드)을 읽는다. */
   (function(){
     var T={
-      ko:{title:'실적 한눈에 보기',asof:' 기준',more:'전체 실적 조회 →',p20:'최근 20거래일',pM1:'이번 달',pY:'올해',pAll:'전체 기간',
+      ko:{title:'전일 기록',asof:' 기준',more:'전체 실적 조회 →',p20:'최근 20거래일',pM1:'이번 달',pY:'올해',pAll:'전체 기간',
         noneLive:'아직 공개된 신호 기록이 없습니다.',
         fut:'해외선물',k200:'코스피200',futSub:'매일 엄선한 1종목',k200Sub:'코스피200 선물 1종목',
         last:'최근 거래일',min:'당일 최소기록 ',pnl:'누적 손익',win:'승률',days:'거래일',capD:'일별 손익',capM:'월별 손익',none:'이 기간에는 기록이 없습니다.',
         note:'1계약 기준으로 계산한 포켓 자동 시스템 신호 결과이며, 고객 계좌의 실거래 결과가 아닙니다. 수수료·슬리피지에 따라 실제 결과와 다를 수 있고, 과거 실적은 미래 수익을 보장하지 않습니다.'},
-      en:{title:'Performance at a glance',asof:'',more:'Full performance →',p20:'Last 20 trading days',pM1:'This month',pY:'This year',pAll:'All time',
+      en:{title:"Previous day's record",asof:'',more:'Full performance →',p20:'Last 20 trading days',pM1:'This month',pY:'This year',pAll:'All time',
         noneLive:'No signal records have been published yet.',
         fut:'Overseas futures',k200:'KOSPI 200',futSub:'One strictly selected symbol a day',k200Sub:'One KOSPI 200 futures contract',
         last:'Latest trading day',min:'Intraday low ',pnl:'Total P&L',win:'Win rate',days:'Days',capD:'Daily P&L',capM:'Monthly P&L',none:'No records in this period.',
