@@ -1539,6 +1539,10 @@
               </div>
               <div class="fg"><label class="fl">표시용 사용자명</label><input class="fc" id="tg-display_handle" placeholder="@foketsignal_Lobby"></div>
               <div class="fg"><label class="fl">카카오톡 상담 링크</label><input class="fc" id="tg-kakao_consult" placeholder="https://open.kakao.com/o/XXXXXXXX"></div>
+              <div class="fgrid">
+                <div class="fg"><label class="fl">카카오톡 1:1 문의 링크 (처음 방문자 안내)</label><input class="fc" id="tg-kakao_1on1" placeholder="https://pf.kakao.com/_XXXXX/chat"></div>
+                <div class="fg"><label class="fl">텔레그램 1:1 문의 링크 (처음 방문자 안내)</label><input class="fc" id="tg-telegram_1on1" placeholder="https://t.me/상담계정 또는 상담봇"></div>
+              </div>
               <div class="fg" style="grid-column:1/-1;"><label class="fl"><i class="fab fa-youtube" style="color:#FF0000;"></i> YouTube Live 링크</label><input class="fc" id="tg-youtube_live" placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX" oninput="previewYoutube(this.value)">
                 <div id="yt-preview" style="margin-top:8px;display:none;font-size:12px;color:#00b4d8;"></div>
               </div>
@@ -3205,6 +3209,7 @@
       if (handleEl) handleEl.value = cfg.telegram_handle || '@foketsignal_Lobby';
       const kakaoEl = document.getElementById('tg-kakao_consult');
       if (kakaoEl) kakaoEl.value = cfg.kakao_consult || '';
+      ['kakao_1on1','telegram_1on1'].forEach(function(k){ const el = document.getElementById('tg-' + k); if (el) el.value = cfg[k] || ''; });
       const ytEl = document.getElementById('tg-youtube_live');
       if (ytEl) { ytEl.value = cfg.youtube_live || ''; previewYoutube(ytEl.value); }
 
@@ -3267,6 +3272,7 @@
       if (handleEl) cfg.telegram_handle = handleEl.value.trim() || '@foketsignal_Lobby';
       const kakaoEl = document.getElementById('tg-kakao_consult');
       if (kakaoEl) cfg.kakao_consult = kakaoEl.value.trim();
+      ['kakao_1on1','telegram_1on1'].forEach(function(k){ const el = document.getElementById('tg-' + k); if (el) cfg[k] = el.value.trim(); });
       const ytEl = document.getElementById('tg-youtube_live');
       if (ytEl) cfg.youtube_live = ytEl.value.trim();
       lsSave('settings', cfg);
