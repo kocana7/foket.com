@@ -939,6 +939,9 @@
     .hpf-cap{font-size:11px;color:var(--text-muted);margin-top:4px}
     .hpf-empty{color:var(--text-secondary);font-size:14px;padding:24px 0;text-align:center}
     .hpf-note{font-size:12px;color:var(--text-muted);line-height:1.7;margin-top:14px}
+    .fk-basis{word-break:keep-all}
+    .fk-basis b,.fk-basis-in b{color:var(--text-primary);margin-right:4px}
+    .fk-basis-in{margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,180,216,.18);word-break:keep-all}
     .hpf-up{color:var(--accent-green)!important}.hpf-dn{color:var(--accent-red)!important}
     @media(max-width:768px){.hpf-grid{grid-template-columns:1fr}.hpf-inner{padding:0 16px}.hpf-stats .v{font-size:16px}.hpf-last{grid-template-columns:1fr}.hpf-last .pnl,.hpf-last .min{text-align:left}.hpf-last .sym{order:2}.hpf-last .pnl{order:3}.hpf-last .min{order:4}}
     @media(max-width:900px){ .chart-grid { grid-template-columns:repeat(2,1fr); } .profit-charts-sec { padding:0 16px; } }
@@ -2356,7 +2359,7 @@
   <div class="ticker-bar">
     <div class="ticker-inner" id="tickerWrap">
       <div class="ticker-item" style="color:var(--text-muted);gap:6px;">
-        <i class="fas fa-circle-notch fa-spin" style="font-size:11px;"></i> 시세 불러오는 중...
+        <i class="fas fa-circle-notch fa-spin" style="font-size:11px;"></i> <span data-i18n="ticker.loading">시세 불러오는 중...</span>
       </div>
     </div>
   </div>
@@ -2417,7 +2420,7 @@
       <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="btn-tg" data-tg="free"
         style="margin:12px 16px 0;"><i class="fab fa-telegram-plane"></i> <span data-i18n="nav.join_free">텔레그램 문의</span></a>
       <a href="#" target="_blank" rel="noopener noreferrer" class="btn-tg" data-kakao="consult"
-        style="margin:8px 16px 0;background:#FEE500;color:#3A1D1D;"><i class="fas fa-comment-dots"></i> <span>카카오톡 문의</span></a>
+        style="margin:8px 16px 0;background:#FEE500;color:#3A1D1D;"><i class="fas fa-comment-dots"></i> <span data-i18n="nav.kakao_consult">카카오톡 문의</span></a>
     </div>
   </nav>
 
@@ -2444,6 +2447,7 @@
           <span data-i18n="best10.calc_ex1">예: A종목의 증거금 5,000달러 → 초기 투자금 15,000달러(3배) → 월 수익이 1,000달러이면 월 수익율은 1,000달러 / 15,000달러 = </span><strong style="color:var(--accent-green);">6.67%</strong><br>
           <span data-i18n="best10.calc_ex2">투자금은 전체 투자금의 1/3만 소요되며, 트레이딩 종목의 증거금 명목으로 활용됩니다.</span>
         </span>
+        <div class="fk-basis-in" data-fk-basis="sym"></div>
       </div>
     </div>
   </section>
@@ -2457,6 +2461,7 @@
       </div>
       <div class="sym30-grid" id="profitChartGrid"></div>
       <div class="hpf-note" data-i18n="charts.note">월평균 수익률 상위 8종목의 최근 30거래일 일별 수익률입니다. 과거 실적은 미래 수익을 보장하지 않습니다.</div>
+      <p class="hpf-note fk-basis" data-fk-basis="sym"></p>
     </div>
   </div>
 
@@ -2469,7 +2474,7 @@
       </div>
       <div class="hpf-chips" id="hpfChips" role="group"></div>
       <div class="hpf-grid" id="hpfGrid"></div>
-      <p class="hpf-note" id="hpfNote"></p>
+      <p class="hpf-note fk-basis" id="hpfNote" data-fk-basis="rec"></p>
     </div>
   </section>
 
@@ -2517,7 +2522,7 @@
             class="btn btn-primary btn-lg" data-tg="free"><i class="fab fa-telegram-plane"></i> <span data-i18n="hero.join_free_btn">텔레그램 문의</span></a>
           <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-lg" data-kakao="consult"
             style="background:#FEE500;color:#3A1D1D;border:none;box-shadow:0 2px 10px rgba(254,229,0,.3);display:none;">
-            <i class="fas fa-comment-dots"></i> <span>카카오톡 문의</span></a>
+            <i class="fas fa-comment-dots"></i> <span data-i18n="nav.kakao_consult">카카오톡 문의</span></a>
           <a href="#services" class="btn btn-outline btn-lg"><span data-i18n="hero.view_vip_btn">서비스 구성</span> <i
               class="fas fa-arrow-right"></i></a>
         </div>
@@ -2843,7 +2848,7 @@
         "best10.days_unit": "일", "best10.no_data": "저장된 종목 데이터가 없습니다", "best10.no_items": "등록된 종목이 없습니다", "best10.load_fail": "로드 실패", "best10.date_suffix": "현재까지",
         "best10.cat1": "최고 수익률", "best10.cat1_desc": "월평균 수익률 기준", "best10.cat2": "최장 검증", "best10.cat2_desc": "딥러닝 이후 검증 기간 기준", "best10.cat3": "최소 손실 비율", "best10.cat3_desc": "120거래일 최대 손실 ÷ 거래 증거금", "best10.cat4": "위험 대비 수익", "best10.cat4_desc": "월평균 수익액 ÷ 120거래일 최대 손실", "best10.cat5": "꾸준한 수익", "best10.cat5_desc": "최근 30거래일 중 수익을 낸 날의 비율", "best10.cat6": "소액 투자 추천", "best10.cat6_desc": "월평균 수익률 {n}% 이상 종목의 증거금 기준", "best10.unit_times": "배", "best10.lbl_margin": "증거금",
         "best10.more": "전체 실적 조회 →",
-        "nav.kakao_consult": "카카오톡 문의",
+        "nav.kakao_consult": "카카오톡 문의", "ticker.loading": "시세 불러오는 중...",
         "how_it_works.entry_item1": "SNS등을 통한 1:1 트레이딩 알림 수신(알림은 종목별로 실시간으로 전송됩니다.)", "how_it_works.entry_item2": "신청회원의 자율적 트레이딩 진행", "how_it_works.entry_item3": "24시간 트레이딩", "how_it_works.entry_fee": "서비스요금 : 20거래일 50만원(또는 $300) (매일 2종목 또는 원하는 1종목, 같은 요금, 부가세 별도)",
         "how_it_works.delegate_item1": "Foket과 직접 계약 또는 Foket의 제휴 자산운용사, 투자자문사와 계약", "how_it_works.delegate_item2": "Foket의 100% 자동 트레이딩 시스템 가동", "how_it_works.delegate_item3": "주단위 수익 정산(계약에 따라 상이하며 수익의 30~40% 정산)", "how_it_works.delegate_item4": "계약 사항의 자율적 상시 조정 가능", "how_it_works.delegate_fee": "서비스요금 : 별도의 요금은 없으며, 계약에 따라 수익의 30~40% 정산 방식",
         "how_it_works.apply_title": "서비스 신청 방법", "how_it_works.apply_step1": "SNS 문의 신청", "how_it_works.apply_step2": "위탁 및 대리 주문 신청 또는 알림 수신 중 택 1", "how_it_works.apply_step3": "선택 서비스에 관련된 이용약관에 따른 서비스 진행",
@@ -2868,7 +2873,7 @@
         "charts.note": "월평균 수익률 상위 8종목의 최근 30거래일 일별 수익률입니다. 과거 실적은 미래 수익을 보장하지 않습니다.", "charts.last": "최근 거래일", "charts.min30": "30일 최저", "charts.sum30": "30일 합계", "charts.win": "수익일 비율", "charts.days": "거래일", "charts.cap": "일별 수익률(%) · 왼쪽 30거래일 전 → 오른쪽 최근",
       },
       en: {
-        "nav.home": "Home", "nav.alerts": "Foket Guide", "nav.pricing": "Service", "nav.faq": "FAQ", "nav.perf": "Performance", "nav.contact": "Contact", "nav.join_free": "Telegram Inquiry", "nav.login": "Log In", "nav.signup": "Sign Up", "nav.mypage": "My Page",
+        "nav.home": "Home", "nav.alerts": "Foket Guide", "nav.signals": "Foket Guide", "nav.pricing": "Service", "nav.faq": "FAQ", "nav.perf": "Performance", "nav.contact": "Contact", "nav.join_free": "Telegram Inquiry", "nav.login": "Log In", "nav.signup": "Sign Up", "nav.mypage": "My Page",
         "hero.badge": "Alert verified by data, proven by results.", "hero.title": "15 years of market data + deep learning on 280 million trading logics", "hero.subtitle": "AI machine learning optimized trading alerts", "hero.free_signals_week": "3 free alerts per week", "hero.vip_signals_day": "2-5 VIP alerts per day", "hero.money_back": "30-day money-back guarantee", "hero.join_free_btn": "Telegram Inquiry", "hero.view_vip_btn": "View Services", "hero.perk2": "Buy/sell alerts for 2 symbols total — one Korean futures and one overseas futures symbol each", "hero.perk3": "Day trading", "hero.perk4": "Delivery via SNS", "hero.perk5": "Asset management delegated trading – application available", "hero.perk6": "Choose between individual trading and delegated trading via alert reception",
         "stats.members": "Members", "stats.success_rate": "Success Rate", "stats.alerts": "Alerts Sent", "stats.years": "Years Active",
         "features.title": "Why Foket?", "features.subtitle": "The best trading logic service combining professional trader teams and AI technology", "features.ai_title": "AI-Powered Analysis", "features.ai_desc": "Data-based AI market analysis\nDeep learning on selected profit logic from 280M+ trading logics", "features.expert_title": "Expert Team", "features.expert_desc": "Seasoned trader & analysis team\nverified strategy-based alerts", "features.risk_title": "Risk Management", "features.risk_desc": "Systematic risk management\ncapital-preservation focused trading", "features.instant_title": "Instant Alert Delivery", "features.instant_desc": "Real-time trading alerts via Telegram\naccess anytime anywhere on mobile", "features.support_title": "24/7 Support", "features.support_desc": "8 languages supported\n24-hour automated system trading\n24-hour customer service", "features.education_title": "Trading Delegation", "features.education_desc": "Trading delegation possible to affiliated asset management companies and investment advisory firms",
@@ -2885,7 +2890,7 @@
         "best10.cat1": "Highest return", "best10.cat1_desc": "By average monthly return", "best10.cat2": "Longest track record", "best10.cat2_desc": "By time verified since deep learning", "best10.cat3": "Lowest loss-to-margin ratio", "best10.cat3_desc": "120-day maximum loss ÷ trading margin", "best10.cat4": "Return relative to risk", "best10.cat4_desc": "Average monthly profit ÷ 120-day maximum loss", "best10.cat5": "Most consistent", "best10.cat5_desc": "Share of profitable days in the last 30 trading days", "best10.cat6": "Suited to smaller accounts", "best10.cat6_desc": "By margin, among symbols with ≥{n}% average monthly return", "best10.unit_times": "x", "best10.lbl_margin": "Margin",
         "best10.more": "Full performance →",
         "best10.col_monthly_profit": "Avg Monthly Profit ($)", "best10.col_margin": "Trading Margin ($)",
-        "nav.kakao_consult": "KakaoTalk Inquiry",
+        "nav.kakao_consult": "KakaoTalk Inquiry", "ticker.loading": "Loading prices...",
         "how_it_works.entry_item1": "1:1 trading alert reception via SNS (alerts are delivered in real-time per symbol)", "how_it_works.entry_item2": "Member conducts trading autonomously", "how_it_works.entry_item3": "24-hour trading", "how_it_works.entry_fee": "Service fee: $300 or KRW 500,000 per 20 trading days (daily 2 symbols or 1 symbol of your choice, same price, excl. VAT)",
         "how_it_works.delegate_item1": "Contract directly with Foket or through Foket's affiliated asset managers / investment advisors", "how_it_works.delegate_item2": "Foket's 100% automated trading system is activated", "how_it_works.delegate_item3": "Weekly profit settlement (varies by contract; 30–40% of profits)", "how_it_works.delegate_item4": "Contract terms can be adjusted freely at any time", "how_it_works.delegate_fee": "Service fee: No separate charge; profit-sharing of 30–40% according to contract",
         "how_it_works.apply_title": "How to Apply", "how_it_works.apply_step1": "Submit inquiry via SNS", "how_it_works.apply_step2": "Choose between delegated/proxy trading or alert reception", "how_it_works.apply_step3": "Proceed with the service according to the terms of the selected service",
@@ -2910,7 +2915,7 @@
         "charts.note": "Daily returns over the last 30 trading days for the 8 symbols with the highest average monthly return. Past performance does not guarantee future results.", "charts.last": "Latest trading day", "charts.min30": "30-day low", "charts.sum30": "30-day total", "charts.win": "Profitable days", "charts.days": "Days", "charts.cap": "Daily return (%) · left: 30 days ago → right: latest",
       },
       de: {
-        "nav.home": "Startseite", "nav.alarms": "Foket Guide", "nav.pricing": "Service", "nav.faq": "Häufige Fragen (FAQ)", "nav.perf": "Performance", "nav.contact": "Kontakt", "nav.join_free": "Telegram Anfrage", "nav.login": "Anmelden", "nav.signup": "Registrieren", "nav.mypage": "Mein Konto",
+        "nav.home": "Startseite", "nav.alarms": "Foket Guide", "nav.signals": "Foket Leitfaden", "nav.pricing": "Service", "nav.faq": "Häufige Fragen (FAQ)", "nav.perf": "Performance", "nav.contact": "Kontakt", "nav.join_free": "Telegram Anfrage", "nav.login": "Anmelden", "nav.signup": "Registrieren", "nav.mypage": "Mein Konto",
         "hero.badge": "Alarm durch Daten bestätigt, durch Ergebnisse bewiesen.", "hero.title": "15 Jahre Marktdaten + Deep Learning aus 280 Mio. Handelslogiken", "hero.subtitle": "KI-Machine-Learning-optimierte Handelsalarme", "hero.free_alarms_week": "3 kostenlose Alarme pro Woche", "hero.vip_alarms_day": "2-5 VIP-Alarme pro Tag", "hero.money_back": "30-Tage-Geld-zurück-Garantie", "hero.join_free_btn": "Telegram Anfrage", "hero.view_vip_btn": "Dienste ansehen", "hero.perk2": "Kauf-/Verkaufsalarme für insgesamt 2 Symbole – je ein koreanisches und ein ausländisches Futures-Symbol", "hero.perk3": "Daytrading", "hero.perk4": "Übermittlung per SNS", "hero.perk5": "Treuhandhandel – Antrag möglich", "hero.perk6": "Wählen Sie per Alarm zwischen Eigenhandel und Treuhandhandel",
         "stats.members": "Mitglieder", "stats.success_rate": "Erfolgsquote", "stats.alarms": "Gesendete Alarme", "stats.years": "Jahre aktiv",
         "features.title": "Warum Foket?", "features.subtitle": "Der beste Trading-Logik-Service mit professionellem Trader-Team und KI-Technologie", "features.ai_title": "KI-gestützte Analyse", "features.ai_desc": "Datenbasierte KI-Marktanalyse\nDeep Learning der ausgewählten Gewinnlogik aus 280 Mio.+ Handelslogiken", "features.expert_title": "Expertenteam", "features.expert_desc": "Erfahrene Trader- und Analystenteams\nverifizierte strategiebasierte Alarme", "features.risk_title": "Risikomanagement", "features.risk_desc": "Systematisches Risikomanagement\nkapitalschonendes Trading", "features.instant_title": "Sofortige Alarm-Lieferung", "features.instant_desc": "Echtzeit-Tradingalarme per Telegram\nmobil jederzeit und überall", "features.support_title": "24/7 Support", "features.support_desc": "8 Sprachen\n24-Stunden-Automatikhandel\n24-Stunden-Kundendienst", "features.education_title": "Handelsdelegierung", "features.education_desc": "Handelsdelegierung an angeschlossene Vermögensverwalter und Anlageberater möglich",
@@ -2927,7 +2932,7 @@
         "best10.cat1": "Höchste Rendite", "best10.cat1_desc": "Nach durchschnittlicher Monatsrendite", "best10.cat2": "Längste Bewährung", "best10.cat2_desc": "Nach Bewährungsdauer seit dem Deep Learning", "best10.cat3": "Geringstes Verlust-Margin-Verhältnis", "best10.cat3_desc": "Maximalverlust (120 Tage) ÷ Margin", "best10.cat4": "Rendite im Verhältnis zum Risiko", "best10.cat4_desc": "Ø-Monatsgewinn ÷ Maximalverlust (120 Tage)", "best10.cat5": "Beständigste Erträge", "best10.cat5_desc": "Anteil profitabler Tage in den letzten 30 Handelstagen", "best10.cat6": "Für kleinere Konten", "best10.cat6_desc": "Nach Margin, unter Kontrakten mit ≥{n}% Ø-Monatsrendite", "best10.unit_times": "x", "best10.lbl_margin": "Margin",
         "best10.more": "Alle Ergebnisse →",
         "best10.col_monthly_profit": "Ø Monatsertrag ($)", "best10.col_margin": "Handelsmarge ($)",
-        "nav.kakao_consult": "KakaoTalk Anfrage",
+        "nav.kakao_consult": "KakaoTalk Anfrage", "ticker.loading": "Kurse werden geladen...",
         "how_it_works.entry_item1": "1:1 Handelsalarm-Empfang per SNS (Alarme werden in Echtzeit pro Symbol geliefert)", "how_it_works.entry_item2": "Mitglieder handeln eigenständig", "how_it_works.entry_item3": "24-Stunden-Handel", "how_it_works.entry_fee": "Servicegebühr: 300 $ oder 500.000 KRW pro 20 Handelstage (täglich 2 Kontrakte oder 1 Kontrakt Ihrer Wahl, gleicher Preis, zzgl. MwSt.)",
         "how_it_works.delegate_item1": "Direktvertrag mit Foket oder über Fokets angeschlossene Vermögensverwalter/Anlageberater", "how_it_works.delegate_item2": "Fokets 100%iges automatisiertes Handelssystem wird aktiviert", "how_it_works.delegate_item3": "Wöchentliche Gewinnabrechnung (je nach Vertrag; 30–40% des Gewinns)", "how_it_works.delegate_item4": "Vertragskonditionen können jederzeit frei angepasst werden", "how_it_works.delegate_fee": "Servicegebühr: Keine separate Gebühr; Gewinnbeteiligung von 30–40% gemäß Vertrag",
         "how_it_works.apply_title": "Wie man sich bewirbt", "how_it_works.apply_step1": "Anfrage per SNS stellen", "how_it_works.apply_step2": "Wählen Sie zwischen delegiertem/Proxy-Handel oder Alarmempfang", "how_it_works.apply_step3": "Erbringung des Dienstes gemäß den AGB des gewählten Dienstes",
@@ -2969,7 +2974,7 @@
         "best10.cat1": "最高収益率", "best10.cat1_desc": "月平均収益率基準", "best10.cat2": "最長検証", "best10.cat2_desc": "ディープラーニング以降の検証期間基準", "best10.cat3": "最小損失率", "best10.cat3_desc": "120取引日最大損失 ÷ 取引証拠金", "best10.cat4": "リスク対比収益", "best10.cat4_desc": "月平均収益額 ÷ 120取引日最大損失", "best10.cat5": "安定した収益", "best10.cat5_desc": "直近30取引日のうち利益が出た日の割合", "best10.cat6": "少額投資におすすめ", "best10.cat6_desc": "月平均収益率{n}%以上の銘柄の証拠金基準", "best10.unit_times": "倍", "best10.lbl_margin": "証拠金",
         "best10.more": "全実績を見る →",
         "best10.col_monthly_profit": "月平均収益額($)", "best10.col_margin": "取引証拠金($)",
-        "nav.kakao_consult": "KakaoTalk お問い合わせ",
+        "nav.kakao_consult": "KakaoTalk お問い合わせ", "ticker.loading": "相場を読み込み中...",
         "how_it_works.entry_item1": "SNS等を通じた1:1トレーディングアラート受信（アラートは銘柄ごとにリアルタイムで配信されます）", "how_it_works.entry_item2": "申込会員が自律的にトレーディングを進める", "how_it_works.entry_item3": "24時間トレーディング", "how_it_works.entry_fee": "サービス料金:20取引日50万ウォン(または300ドル)(毎日2銘柄またはお好きな1銘柄、同一料金、税別)",
         "how_it_works.delegate_item1": "Foketと直接契約、またはFoketの提携資産運用会社・投資顧問会社と契約", "how_it_works.delegate_item2": "Foketの100%自動トレーディングシステムを稼働", "how_it_works.delegate_item3": "週単位での収益精算（契約によって異なりますが、収益の30〜40%を精算）", "how_it_works.delegate_item4": "契約内容の自律的な随時調整が可能", "how_it_works.delegate_fee": "サービス料金：別途料金はなく、契約に応じた収益の30〜40%精算方式",
         "how_it_works.apply_title": "サービス申込方法", "how_it_works.apply_step1": "SNSでお問い合わせ申請", "how_it_works.apply_step2": "委託・代理注文申請またはアラート受信のいずれかを選択", "how_it_works.apply_step3": "選択したサービスに関連する利用規約に従ってサービスを進める",
@@ -3011,7 +3016,7 @@
         "best10.cat1": "最高收益率", "best10.cat1_desc": "按月平均收益率", "best10.cat2": "最长验证", "best10.cat2_desc": "按深度学习以来的验证时长", "best10.cat3": "最小亏损比率", "best10.cat3_desc": "120日最大亏损 ÷ 交易保证金", "best10.cat4": "风险调整收益", "best10.cat4_desc": "月平均收益额 ÷ 120日最大亏损", "best10.cat5": "稳定收益", "best10.cat5_desc": "最近30个交易日中盈利天数占比", "best10.cat6": "小额投资推荐", "best10.cat6_desc": "按保证金（月平均收益率{n}%以上品种）", "best10.unit_times": "倍", "best10.lbl_margin": "保证金",
         "best10.more": "查看全部业绩 →",
         "best10.col_monthly_profit": "月均收益额($)", "best10.col_margin": "交易保证金($)",
-        "nav.kakao_consult": "KakaoTalk 咨询",
+        "nav.kakao_consult": "KakaoTalk 咨询", "ticker.loading": "行情加载中...",
         "how_it_works.entry_item1": "通过SNS等渠道接收1:1交易提醒（提醒按标的实时推送）", "how_it_works.entry_item2": "申请会员自主进行交易", "how_it_works.entry_item3": "24小时交易", "how_it_works.entry_fee": "服务费用：20个交易日50万韩元（或300美元）（每日2个品种或自选1个品种，价格相同，不含增值税）",
         "how_it_works.delegate_item1": "直接与Foket签约，或通过Foket合作的资产管理公司/投资顾问公司签约", "how_it_works.delegate_item2": "启动Foket 100%自动交易系统", "how_it_works.delegate_item3": "按周结算收益（因合同不同而有所差异，结算收益的30~40%）", "how_it_works.delegate_item4": "合同条款可随时自主调整", "how_it_works.delegate_fee": "服务费：无单独费用，按合同规定以收益的30~40%进行结算",
         "how_it_works.apply_title": "申请服务方式", "how_it_works.apply_step1": "通过SNS提交咨询申请", "how_it_works.apply_step2": "选择委托/代理交易申请或接收提醒", "how_it_works.apply_step3": "根据所选服务的相关条款进行服务",
@@ -3053,7 +3058,7 @@
         "best10.cat1": "Rendement le plus élevé", "best10.cat1_desc": "Selon le rendement mensuel moyen", "best10.cat2": "Historique le plus long", "best10.cat2_desc": "Selon la durée de vérification depuis le deep learning", "best10.cat3": "Plus faible ratio perte/marge", "best10.cat3_desc": "Perte maximale sur 120 jours ÷ marge", "best10.cat4": "Rendement rapporté au risque", "best10.cat4_desc": "Gain mensuel moyen ÷ perte maximale sur 120 jours", "best10.cat5": "Le plus régulier", "best10.cat5_desc": "Part de jours gagnants sur les 30 derniers jours de bourse", "best10.cat6": "Adapté aux petits comptes", "best10.cat6_desc": "Selon la marge, parmi les contrats à rendement mensuel moyen ≥ {n}%", "best10.unit_times": "x", "best10.lbl_margin": "Marge",
         "best10.more": "Toutes les performances →",
         "best10.col_monthly_profit": "Bénéfice mensuel moy. ($)", "best10.col_margin": "Marge de trading ($)",
-        "nav.kakao_consult": "Contact KakaoTalk",
+        "nav.kakao_consult": "Contact KakaoTalk", "ticker.loading": "Chargement des cours...",
         "how_it_works.entry_item1": "Réception d'alertes de trading 1:1 via SNS (les alertes sont envoyées en temps réel par symbole)", "how_it_works.entry_item2": "Le membre effectue les transactions de manière autonome", "how_it_works.entry_item3": "Trading 24 heures sur 24", "how_it_works.entry_fee": "Tarif : 300 $ ou 500 000 KRW pour 20 jours de bourse (2 contrats par jour ou 1 contrat au choix, même prix, hors TVA)",
         "how_it_works.delegate_item1": "Contrat direct avec Foket ou par le biais des gestionnaires d'actifs / conseillers financiers affiliés à Foket", "how_it_works.delegate_item2": "Le système de trading 100% automatisé de Foket est mis en marche", "how_it_works.delegate_item3": "Règlement hebdomadaire des bénéfices (selon le contrat ; 30 à 40 % des bénéfices)", "how_it_works.delegate_item4": "Les conditions du contrat peuvent être ajustées librement à tout moment", "how_it_works.delegate_fee": "Frais de service : Pas de frais séparés ; partage des bénéfices de 30 à 40 % selon le contrat",
         "how_it_works.apply_title": "Comment postuler", "how_it_works.apply_step1": "Soumettre une demande via SNS", "how_it_works.apply_step2": "Choisir entre trading délégué/proxy ou réception d'alertes", "how_it_works.apply_step3": "Poursuivre le service conformément aux conditions du service sélectionné",
@@ -3095,7 +3100,7 @@
         "best10.cat1": "Mayor rentabilidad", "best10.cat1_desc": "Según la rentabilidad mensual media", "best10.cat2": "Historial más largo", "best10.cat2_desc": "Según el tiempo verificado desde el deep learning", "best10.cat3": "Menor ratio pérdida/margen", "best10.cat3_desc": "Pérdida máxima en 120 sesiones ÷ margen", "best10.cat4": "Rentabilidad frente al riesgo", "best10.cat4_desc": "Beneficio mensual medio ÷ pérdida máxima en 120 sesiones", "best10.cat5": "Más constante", "best10.cat5_desc": "Proporción de días con beneficio en las últimas 30 sesiones", "best10.cat6": "Para cuentas pequeñas", "best10.cat6_desc": "Según el margen, entre contratos con rentabilidad mensual media ≥ {n}%", "best10.unit_times": "x", "best10.lbl_margin": "Margen",
         "best10.more": "Ver todo el rendimiento →",
         "best10.col_monthly_profit": "Ganancia mensual media ($)", "best10.col_margin": "Margen de trading ($)",
-        "nav.kakao_consult": "Consulta KakaoTalk",
+        "nav.kakao_consult": "Consulta KakaoTalk", "ticker.loading": "Cargando cotizaciones...",
         "how_it_works.entry_item1": "Recepción de alertas de trading 1:1 vía SNS (las alertas se entregan en tiempo real por símbolo)", "how_it_works.entry_item2": "El miembro opera de forma autónoma", "how_it_works.entry_item3": "Trading 24 horas", "how_it_works.entry_fee": "Tarifa: 300 $ o 500.000 KRW por 20 sesiones (2 contratos al día o 1 a su elección, mismo precio, sin IVA)",
         "how_it_works.delegate_item1": "Contrato directo con Foket o a través de los gestores de activos / asesores de inversión afiliados a Foket", "how_it_works.delegate_item2": "El sistema de trading 100% automatizado de Foket se activa", "how_it_works.delegate_item3": "Liquidación semanal de beneficios (varía según contrato; 30–40% de los beneficios)", "how_it_works.delegate_item4": "Los términos del contrato pueden ajustarse libremente en cualquier momento", "how_it_works.delegate_fee": "Tarifa de servicio: Sin cargo adicional; distribución de beneficios del 30–40% según contrato",
         "how_it_works.apply_title": "Cómo solicitar el servicio", "how_it_works.apply_step1": "Enviar solicitud de consulta por SNS", "how_it_works.apply_step2": "Elegir entre trading delegado/proxy o recepción de alertas", "how_it_works.apply_step3": "Proceder con el servicio según los términos del servicio seleccionado",
@@ -3137,7 +3142,7 @@
         "best10.cat1": "Наибольшая доходность", "best10.cat1_desc": "По средней месячной доходности", "best10.cat2": "Самая долгая проверка", "best10.cat2_desc": "По сроку проверки после внедрения deep learning", "best10.cat3": "Наименьший убыток к ГО", "best10.cat3_desc": "Максимальный убыток за 120 дней ÷ ГО", "best10.cat4": "Доходность к риску", "best10.cat4_desc": "Средняя месячная прибыль ÷ максимальный убыток за 120 дней", "best10.cat5": "Самая стабильная прибыль", "best10.cat5_desc": "Доля прибыльных дней за последние 30 торговых дней", "best10.cat6": "Для небольших счетов", "best10.cat6_desc": "По ГО среди инструментов со средней месячной доходностью от {n}%", "best10.unit_times": "x", "best10.lbl_margin": "ГО",
         "best10.more": "Все результаты →",
         "best10.col_monthly_profit": "Средн. месячная прибыль ($)", "best10.col_margin": "Торговая маржа ($)",
-        "nav.kakao_consult": "Запрос KakaoTalk",
+        "nav.kakao_consult": "Запрос KakaoTalk", "ticker.loading": "Загрузка котировок...",
         "how_it_works.entry_item1": "Получение торговых алертов 1:1 через SNS (алерты доставляются в реальном времени по каждому символу)", "how_it_works.entry_item2": "Участник ведёт торговлю самостоятельно", "how_it_works.entry_item3": "Торговля 24 часа", "how_it_works.entry_fee": "Стоимость: $300 или 500 000 KRW за 20 торговых дней (2 инструмента в день или 1 на выбор, одна цена, без НДС)",
         "how_it_works.delegate_item1": "Прямой договор с Foket или через аффилированных управляющих активами / инвестиционных консультантов Foket", "how_it_works.delegate_item2": "Запускается 100% автоматическая торговая система Foket", "how_it_works.delegate_item3": "Еженедельный расчёт прибыли (зависит от договора; 30–40% прибыли)", "how_it_works.delegate_item4": "Условия договора можно корректировать в любое время", "how_it_works.delegate_fee": "Стоимость услуги: без отдельной оплаты; распределение прибыли 30–40% согласно договору",
         "how_it_works.apply_title": "Как подать заявку", "how_it_works.apply_step1": "Отправить запрос через SNS", "how_it_works.apply_step2": "Выбрать между делегированной/прокси-торговлей или получением алертов", "how_it_works.apply_step3": "Продолжить работу с сервисом в соответствии с условиями выбранного сервиса",
@@ -3327,7 +3332,7 @@
       } catch (err) {
         console.warn('[Ticker] 시세 로드 실패:', err.message);
         if (!wrap.classList.contains('loaded'))
-          wrap.innerHTML = '<div class="ticker-item" style="color:var(--text-muted);">시세 불러오는 중...</div>';
+          wrap.innerHTML = '<div class="ticker-item" style="color:var(--text-muted);">' + (((typeof TRANSLATIONS !== 'undefined' && TRANSLATIONS[currentLang]) || {})['ticker.loading'] || '시세 불러오는 중...') + '</div>';
       }
     }
 
@@ -3347,7 +3352,7 @@
       const isKo = (typeof currentLang !== 'undefined' && currentLang === 'ko');
       const symCell = isKo
         ? `${inst.nameKo}<small>${inst.sym}</small>`
-        : `${inst.sym}<small>${inst.nameKo}</small>`;
+        : `${inst.sym}<small>${(window.FK_I18N && FK_I18N.symName(inst.sym, inst.nameKo, currentLang)) || inst.nameEn || ''}</small>`;
       return `<div class="csp-row" style="animation:cspRowIn .45s cubic-bezier(.22,.68,0,1.2) ${delay}s forwards;">
     <div class="csp-sym">${symCell}</div>
     <div class="csp-val ${mrCls}">${mrStr}</div>
@@ -3894,10 +3899,10 @@
   <!-- ── FLOATING BUTTONS ── -->
   <div class="float-btns">
     <a href="#" target="_blank" rel="noopener noreferrer" class="kakao-float" data-kakao="consult" style="display:none;">
-      <i class="fas fa-comment-dots"></i> 카카오톡 문의
+      <i class="fas fa-comment-dots"></i> <span data-i18n="nav.kakao_consult">카카오톡 문의</span>
     </a>
     <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="tg-float" data-tg="free">
-      <i class="fab fa-telegram-plane"></i> 텔레그램 문의
+      <i class="fab fa-telegram-plane"></i> <span data-i18n="nav.join_free">텔레그램 문의</span>
     </a>
   </div>
 
@@ -3914,11 +3919,17 @@
         noneLive:'No signal records have been published yet.',
         fut:'Overseas futures',k200:'KOSPI 200',futSub:'One strictly selected symbol a day',k200Sub:'One KOSPI 200 futures contract',
         last:'Latest trading day',min:'Intraday low ',pnl:'Total P&L',win:'Win rate',days:'Days',capD:'Daily P&L',capM:'Monthly P&L',none:'No records in this period.',
-        note:'Results of signals from the Foket automated system, calculated for one contract; not results of customer accounts. Actual results may differ due to fees and slippage. Past performance does not guarantee future results.'}
+        note:'Results of signals from the Foket automated system, calculated for one contract; not results of customer accounts. Actual results may differ due to fees and slippage. Past performance does not guarantee future results.'},
+      de:{"title": "Ergebnis des Vortags", "asof": " Stand", "more": "Alle Ergebnisse →", "p20": "Letzte 20 Handelstage", "pM1": "Dieser Monat", "pY": "Dieses Jahr", "pAll": "Gesamter Zeitraum", "noneLive": "Es wurden noch keine Signaldaten veröffentlicht.", "fut": "Auslandsfutures", "k200": "KOSPI 200", "futSub": "Täglich 1 sorgfältig ausgewählter Kontrakt", "k200Sub": "1 KOSPI-200-Future", "last": "Letzter Handelstag", "min": "Tagestief ", "pnl": "Kumulierter G/V", "win": "Trefferquote", "days": "Tage", "capD": "Täglicher G/V", "capM": "Monatlicher G/V", "none": "Keine Einträge in diesem Zeitraum."},
+      ja:{"title": "前日の記録", "asof": " 時点", "more": "全実績を見る →", "p20": "直近20取引日", "pM1": "今月", "pY": "今年", "pAll": "全期間", "noneLive": "公開されたシグナル記録はまだありません。", "fut": "海外先物", "k200": "KOSPI200", "futSub": "毎日厳選した1銘柄", "k200Sub": "KOSPI200先物1銘柄", "last": "直近取引日", "min": "当日最小記録 ", "pnl": "累積損益", "win": "勝率", "days": "取引日", "capD": "日別損益", "capM": "月別損益", "none": "この期間の記録はありません。"},
+      zh:{"title": "前一日记录", "asof": " 截至", "more": "查看全部业绩 →", "p20": "最近20个交易日", "pM1": "本月", "pY": "今年", "pAll": "全部期间", "noneLive": "尚无已公开的信号记录。", "fut": "海外期货", "k200": "KOSPI200", "futSub": "每日精选1个品种", "k200Sub": "1个KOSPI200期货品种", "last": "最近交易日", "min": "当日最低记录 ", "pnl": "累计盈亏", "win": "胜率", "days": "交易日", "capD": "每日盈亏", "capM": "每月盈亏", "none": "该期间没有记录。"},
+      fr:{"title": "Résultat de la veille", "asof": "", "more": "Toutes les performances →", "p20": "20 derniers jours de bourse", "pM1": "Ce mois-ci", "pY": "Cette année", "pAll": "Toute la période", "noneLive": "Aucun signal n’a encore été publié.", "fut": "Futures étrangers", "k200": "KOSPI 200", "futSub": "1 contrat sélectionné chaque jour", "k200Sub": "1 contrat à terme KOSPI 200", "last": "Dernier jour de bourse", "min": "Plus bas du jour ", "pnl": "P&L cumulé", "win": "Taux de réussite", "days": "Jours", "capD": "P&L quotidien", "capM": "P&L mensuel", "none": "Aucun enregistrement sur cette période."},
+      es:{"title": "Resultado del día anterior", "asof": "", "more": "Ver todo el rendimiento →", "p20": "Últimos 20 días hábiles", "pM1": "Este mes", "pY": "Este año", "pAll": "Todo el periodo", "noneLive": "Aún no se han publicado registros de señales.", "fut": "Futuros extranjeros", "k200": "KOSPI 200", "futSub": "1 contrato seleccionado cada día", "k200Sub": "1 futuro KOSPI 200", "last": "Último día hábil", "min": "Mínimo del día ", "pnl": "P&L acumulado", "win": "Tasa de acierto", "days": "Días", "capD": "P&L diario", "capM": "P&L mensual", "none": "No hay registros en este periodo."},
+      ru:{"title": "Итоги предыдущего дня", "asof": "", "more": "Все результаты →", "p20": "Последние 20 торговых дней", "pM1": "Этот месяц", "pY": "Этот год", "pAll": "Весь период", "noneLive": "Записи сигналов ещё не опубликованы.", "fut": "Зарубежные фьючерсы", "k200": "KOSPI 200", "futSub": "1 тщательно отобранный инструмент в день", "k200Sub": "1 фьючерс KOSPI 200", "last": "Последний торговый день", "min": "Минимум за день ", "pnl": "Накопленный P&L", "win": "Доля прибыльных", "days": "Дней", "capD": "P&L по дням", "capM": "P&L по месяцам", "none": "За этот период записей нет."}
     };
     var PERIODS=['p20','pM1','pY','pAll'], period='p20', ALL=null;
-    function tr(){var l=(typeof currentLang!=='undefined'&&currentLang)||'ko';return l==='ko'?T.ko:T.en;}
-    function fmt(n,cur){var s=Math.abs(n).toLocaleString('en-US',{maximumFractionDigits:cur==='KRW'?0:2});var g=n>0?'+':(n<0?'-':'');return cur==='KRW'?g+s+'원':g+'$'+s;}
+    function tr(){var l=(typeof currentLang!=='undefined'&&currentLang)||'ko';return T[l]||T.en;}
+    function fmt(n,cur){if(window.FK_I18N)return FK_I18N.money(n,cur,(typeof currentLang!=='undefined'&&currentLang)||'ko');var s=Math.abs(n).toLocaleString('en-US',{maximumFractionDigits:cur==='KRW'?0:2});var g=n>0?'+':(n<0?'-':'');return cur==='KRW'?g+s+'원':g+'$'+s;}
     function cl(n){return n>0?'hpf-up':(n<0?'hpf-dn':'');}
     function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
     function norm(r){
@@ -3956,7 +3967,7 @@
       if(!all.length){c.appendChild(el('div','hpf-empty',t.noneLive));return c;}
       var L=all[all.length-1],box=el('div','hpf-last');
       box.appendChild(el('div','lbl',t.last+' · '+L.date));box.appendChild(el('div','min',L.minPnl!=null?t.min+fmt(L.minPnl,L.cur):''));
-      box.appendChild(el('div','sym',L.name?L.sym+' · '+L.name:L.sym));box.appendChild(el('div','pnl '+cl(L.pnl),fmt(L.pnl,L.cur)));c.appendChild(box);
+      var nm_=window.FK_I18N?FK_I18N.symName(L.sym,L.name,(typeof currentLang!=='undefined'&&currentLang)||'ko'):L.name;box.appendChild(el('div','sym',nm_?L.sym+' · '+nm_:L.sym));box.appendChild(el('div','pnl '+cl(L.pnl),fmt(L.pnl,L.cur)));c.appendChild(box);
       var rows=inPeriod(all);
       if(!rows.length){c.appendChild(el('div','hpf-empty',t.none));return c;}
       var sum=0,w=0;rows.forEach(function(r){sum+=r.pnl;if(r.pnl>0)w++;});
@@ -3974,7 +3985,7 @@
       var CUR=ALL;
       document.getElementById('hpfTitle').textContent=t.title;
       document.getElementById('hpfAsof').textContent=CUR.length?CUR[CUR.length-1].date+t.asof:'';
-      document.getElementById('hpfMore').textContent=t.more;document.getElementById('hpfNote').textContent=t.note;
+      document.getElementById('hpfMore').textContent=t.more;if(window.FK_I18N)FK_I18N.refresh();else document.getElementById('hpfNote').textContent=t.note;
       var ch=document.getElementById('hpfChips');ch.textContent='';
       document.getElementById('hpfChips').hidden=!CUR.length;
       PERIODS.forEach(function(p){var b=el('button','hpf-chip'+(p===period?' on':''),t[p]);b.type='button';b.setAttribute('aria-pressed',p===period?'true':'false');
@@ -3995,6 +4006,7 @@
     if(typeof applyLang==='function'){var orig=applyLang;window.applyLang=function(l){orig(l);render();};}
   })();
   </script>
+<script src="js/i18n-common.js"></script>
 </body>
 
 </html>
