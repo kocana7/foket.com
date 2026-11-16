@@ -63,6 +63,7 @@
     .pf-pager button:disabled{opacity:.4;cursor:default}
     .pf-note{font-size:13px;color:var(--text-secondary);line-height:1.8;border-top:1px solid var(--border-color);padding-top:16px}
     @media(max-width:900px){.pf-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.navbar-nav{display:none}}
+    @media(max-width:640px){.pf-tbl{min-width:0;font-size:13px}.pf-tbl th,.pf-tbl td{padding:10px 10px;white-space:normal}.pf-tbl .opt{display:none}.pf-card .v{font-size:18px}main.section{padding-bottom:96px}}
   .fi{width:18px;height:13px;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.15);vertical-align:-2px}</style>
 </head>
 <body>
@@ -140,7 +141,7 @@
     <h2 class="pf-h2" data-i18n="hTrades">거래 내역</h2>
     <div class="pf-tbl-wrap">
       <table class="pf-tbl">
-        <thead><tr><th data-i18n="tDate">날짜</th><th data-i18n="tSym">종목</th><th data-i18n="tSide">방향</th><th class="r" data-i18n="tEntry">진입가</th><th class="r" data-i18n="tExit">청산가</th><th class="r" data-i18n="tMin">당일 최소기록</th><th class="r" data-i18n="tPnl">손익</th></tr></thead>
+        <thead><tr><th data-i18n="tDate">날짜</th><th data-i18n="tSym">종목</th><th class="opt" data-i18n="tSide">방향</th><th class="r opt" data-i18n="tEntry">진입가</th><th class="r opt" data-i18n="tExit">청산가</th><th class="r" data-i18n="tMin">당일 최소기록</th><th class="r" data-i18n="tPnl">손익</th></tr></thead>
         <tbody id="tradeBody"></tbody>
       </table>
     </div>
@@ -259,8 +260,8 @@
     else{tb.textContent='';slice.forEach(function(r){
       var row=document.createElement('tr');
       row.appendChild(td(r.date));row.appendChild(td(r.name?r.sym+' · '+r.name:r.sym));
-      row.appendChild(r.side?td(r.side==='SHORT'?t.short:t.long,r.side==='SHORT'?'dn':'up'):td('-'));
-      row.appendChild(td(fmtNum(r.entry),'r'));row.appendChild(td(fmtNum(r.exit),'r'));
+      row.appendChild(r.side?td(r.side==='SHORT'?t.short:t.long,'opt '+(r.side==='SHORT'?'dn':'up')):td('-','opt'));
+      row.appendChild(td(fmtNum(r.entry),'r opt'));row.appendChild(td(fmtNum(r.exit),'r opt'));
       row.appendChild(td(r.minPnl==null?'-':fmtMoney(r.minPnl,r.cur),'r '+(r.minPnl==null?'':cls(r.minPnl))));
       row.appendChild(td(fmtMoney(r.pnl,r.cur),'r '+cls(r.pnl)));tb.appendChild(row);});}
 
