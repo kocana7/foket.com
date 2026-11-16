@@ -20,6 +20,24 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H 34.212.176.114 >> ~/.ssh/known_hosts 2>/dev/null || true
 
+      - name: Check required secrets
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          ADMIN_PANEL_PASSWORD: ${{ secrets.ADMIN_PANEL_PASSWORD }}
+        run: |
+          missing=0
+          for v in DB_PASSWORD SESSION_SECRET ADMIN_PANEL_PASSWORD; do
+            if [ -z "${!v}" ]; then echo "::error::GitHub secret $v is not set"; missing=1; fi
+          done
+          # 값이 원격 셸의 따옴표 안에 들어가므로 영문·숫자·일부 기호만 허용한다
+          for v in DB_PASSWORD SESSION_SECRET ADMIN_PANEL_PASSWORD; do
+            if [ -n "${!v}" ] && ! printf '%s' "${!v}" | grep -Eq '^[A-Za-z0-9@#%^*_+=.,:!-]+$'; then
+              echo "::error::$v may only contain letters, digits and @#%^*_+=.,:!-"; missing=1
+            fi
+          done
+          exit $missing
+
       - name: Deploy to EC2
         run: |
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ubuntu@34.212.176.114 'set -e
@@ -31,15 +49,14 @@ jobs:
           echo "DB_HOST=localhost" > .env
           echo "DB_PORT=3306" >> .env
           echo "DB_USER=foket_user" >> .env
-          echo "DB_PASSWORD=Foket@DB2024!" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
           echo "DB_NAME=foket_db" >> .env
-          echo "SESSION_SECRET=foket-super-secret-key-2024" >> .env
+          echo "SESSION_SECRET=${{ secrets.SESSION_SECRET }}" >> .env
           echo "PORT=3000" >> .env
           echo "NODE_ENV=production" >> .env
           echo "BASE_URL=https://foket.com" >> .env
           echo "ADMIN_EMAIL=admin@foket.com" >> .env
-          echo "ADMIN_PASSWORD=Admin@123" >> .env
-          echo "ADMIN_PANEL_PASSWORD=Admin@123" >> .env
+          echo "ADMIN_PANEL_PASSWORD=${{ secrets.ADMIN_PANEL_PASSWORD }}" >> .env
           echo "GOOGLE_CLIENT_ID=" >> .env
           echo "GOOGLE_CLIENT_SECRET=" >> .env
           pm2 describe foket > /dev/null 2>&1 && pm2 restart foket --update-env || pm2 start ecosystem.config.js --env production

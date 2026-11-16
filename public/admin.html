@@ -1113,10 +1113,9 @@
       <div class="fg"><label class="fl">이메일 주소</label><input class="fc" type="email" id="loginEmail"
           placeholder="admin@foket.com" value="admin@foket.com"></div>
       <div class="fg"><label class="fl">비밀번호</label><input class="fc" type="password" id="loginPw"
-          placeholder="••••••••" value="Admin@123"></div>
+          placeholder="••••••••" value=""></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
         <label class="fcheck"><input type="checkbox" checked> 로그인 상태 유지</label>
-        <span style="font-size:12px;color:var(--dim);">기본값: Admin@123</span>
       </div>
       <button class="btn btn-pri" style="width:100%;justify-content:center;padding:12px;" onclick="doLogin()"><i
           class="fas fa-sign-in-alt"></i> 로그인</button>
@@ -1667,8 +1666,7 @@
               <div class="fgrid">
                 <div class="fg"><label class="fl">관리자 이메일</label><input class="fc" id="cfg-admin_email"
                     placeholder="admin@foket.com"></div>
-                <div class="fg"><label class="fl">새 비밀번호</label><input class="fc" type="password" id="cfg-admin_pw"
-                    placeholder="변경하지 않으면 비워두세요"></div>
+                <div class="fg"><label class="fl">관리자 비밀번호</label><div style="font-size:12px;color:var(--muted);line-height:1.6;padding-top:6px;">보안을 위해 비밀번호는 서버에서만 바꿀 수 있습니다. GitHub 저장소 Settings › Secrets의 <code>ADMIN_PANEL_PASSWORD</code>를 바꾸고 다시 배포하세요.</div></div>
               </div>
               <div class="fg"><label class="fl">표시 이름</label><input class="fc" id="cfg-admin_name" placeholder="관리자">
               </div>
@@ -2371,24 +2369,32 @@
       const pw = document.getElementById('loginPw').value;
       const cfg = ls('settings', {});
       const adminEmail = cfg.admin_email || 'admin@foket.com';
-      const adminPw = ls('adminPw', 'Admin@123');
       const adminName = cfg.admin_name || '관리자';
-      if (email === adminEmail && (pw === adminPw || pw === 'Admin@123')) {
-        lsSave('admin_sess', { email: adminEmail, name: adminName, ts: Date.now() });
-        // Establish server session via admin verify endpoint
-        try {
-          await fetch('/api/admin/verify', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({password: pw})
-          });
-        } catch(e) {}
-        showAdminApp(adminName);
-      } else {
+      const showErr = (msg) => {
         const err = document.getElementById('loginError');
-        document.getElementById('loginErrMsg').textContent = '이메일 또는 비밀번호가 올바르지 않습니다';
+        document.getElementById('loginErrMsg').textContent = msg;
         err.style.display = 'flex';
-        setTimeout(() => { err.style.display = 'none'; }, 3000);
+        setTimeout(() => { err.style.display = 'none'; }, 4000);
+      };
+      if (email !== adminEmail) { showErr('이메일 또는 비밀번호가 올바르지 않습니다'); return; }
+      // 비밀번호는 서버가 확인한다 (서버 환경변수 ADMIN_PANEL_PASSWORD)
+      let r;
+      try {
+        r = await fetch('/api/admin/verify', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({password: pw})
+        });
+      } catch(e) { showErr('서버에 연결할 수 없습니다'); return; }
+      if (r.ok) {
+        localStorage.setItem('fk_admin_sess', JSON.stringify({ email: adminEmail, name: adminName, ts: Date.now() }));
+        showAdminApp(adminName);
+      } else if (r.status === 503) {
+        showErr('서버에 관리자 비밀번호가 설정되지 않아 로그인할 수 없습니다');
+      } else if (r.status === 429) {
+        showErr('시도 횟수가 많습니다. 15분 뒤에 다시 시도하세요');
+      } else {
+        showErr('이메일 또는 비밀번호가 올바르지 않습니다');
       }
     }
     document.getElementById('loginPw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
@@ -3426,9 +3432,6 @@
         const el = document.getElementById(id);
         if (el) cfg[k] = el.value;
       }
-      // New password
-      const newPw = document.getElementById('cfg-admin_pw').value;
-      if (newPw) lsSave('adminPw', newPw);
       lsSave('settings', cfg);
       // Update sidebar name
       document.getElementById('sbName').textContent = cfg.admin_name || '관리자';
@@ -4226,15 +4229,12 @@
       if (!sess || !sess.email) return;
       const cfg = ls('settings', {});
       const name = cfg.admin_name || sess.name || '관리자';
-      const adminPw = ls('adminPw', 'Admin@123');
-      // Re-establish server session on page reload
+      // 서버 세션이 살아 있을 때만 복원한다
       try {
-        await fetch('/api/admin/verify', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({password: adminPw})
-        });
-      } catch(e) {}
+        const r = await fetch('/api/admin/session', { cache: 'no-store' });
+        const j = await r.json();
+        if (!j || !j.admin) { localStorage.removeItem('fk_admin_sess'); return; }
+      } catch(e) { return; }
       showAdminApp(name);
     })();
 

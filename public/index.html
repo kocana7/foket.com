@@ -558,7 +558,7 @@
       letter-spacing: .5px
     }
 
-    /* ── CRYPTO STATS PANEL ── */
+    /* ── STATS PANEL ── */
     @keyframes cspFadeDown {
       from {
         opacity: 0;
@@ -698,14 +698,6 @@
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45), 0 0 24px rgba(0, 180, 216, 0.06)
     }
 
-    #cryptoStatsPanel {
-      animation-delay: 0s
-    }
-
-    #binanceStatsPanel {
-      animation-delay: .15s
-    }
-
     #futuresStatsPanel {
       animation-delay: .3s
     }
@@ -823,21 +815,6 @@
       font-weight: 400;
       color: var(--text-muted);
       margin-left: 1px
-    }
-
-    .binance-mark {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 18px;
-      height: 18px;
-      margin-right: 6px;
-      background: #f0b90b;
-      color: #0a0e1a;
-      font-size: 11px;
-      font-weight: 800;
-      border-radius: 4px;
-      vertical-align: middle
     }
 
     /* ── 베스트10 ── */
@@ -1276,58 +1253,6 @@
     @media(max-width:480px) {
       .float-btns { bottom: 16px; right: 16px; }
       .tg-float, .kakao-float { padding: 12px 16px; font-size: 14px }
-    }
-
-    .yt-card {
-      background: rgba(255,0,0,.08);
-      border: 1px solid rgba(255,0,0,.25);
-      border-radius: 14px;
-      padding: 22px 28px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      transition: background .2s;
-    }
-    .yt-card:hover { background: rgba(255,0,0,.14); }
-    .yt-icon { font-size: 52px; color: #FF0000; flex-shrink: 0; }
-    .yt-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
-    .yt-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-    .yt-btn {
-      background: #FF0000;
-      color: #fff;
-      padding: 12px 22px;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-    @media(max-width:768px) {
-      .yt-card {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 18px 20px;
-        gap: 12px;
-      }
-      .yt-icon { font-size: 36px; }
-      .yt-title { font-size: 15px; }
-      .yt-sub { font-size: 12px; }
-      .yt-btn {
-        width: 100%;
-        justify-content: center;
-        padding: 10px 16px;
-        font-size: 14px;
-      }
-    }
-    @media(max-width:480px) {
-      .yt-card { padding: 14px 16px; gap: 10px; border-radius: 10px; }
-      .yt-icon { font-size: 28px; }
-      .yt-title { font-size: 14px; }
-      .yt-sub { display: none; }
-      .yt-btn { padding: 9px 14px; font-size: 13px; }
     }
 
     /* ── COINS ── */
@@ -2037,10 +1962,6 @@
     /* ── RESPONSIVE ── */
     @media(max-width:1200px) {
 
-      .coins-grid {
-        grid-template-columns: repeat(4, 1fr)
-      }
-
       .fmt-grid {
         grid-template-columns: repeat(2, 1fr)
       }
@@ -2108,10 +2029,6 @@
 
       .news-grid {
         grid-template-columns: 1fr
-      }
-
-      .coins-grid {
-        grid-template-columns: repeat(4, 1fr)
       }
 
       .fmt-grid {
@@ -2231,10 +2148,6 @@
       .hero-title {
         white-space: normal;
         font-size: clamp(15px, 4.5vw, 20px)
-      }
-
-      .coins-grid {
-        grid-template-columns: repeat(2, 1fr)
       }
 
       .fmt-grid {
@@ -2391,23 +2304,6 @@
     </div>
   </div>
 
-  <!-- ── YOUTUBE LIVE ── -->
-  <div id="youtube-live-section" style="display:none;max-width:900px;margin:32px auto;padding:0 20px;">
-    <a id="youtube-live-link" href="#" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:block;">
-      <div class="yt-card">
-        <i class="fab fa-youtube yt-icon"></i>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-            <span style="background:#FF0000;color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:1px;">● LIVE</span>
-          </div>
-          <div class="yt-title" data-i18n="yt.title">실시간 Trading Live 방송</div>
-          <div class="yt-sub" data-i18n="yt.sub">클릭하여 YouTube 라이브 방송 참여하기</div>
-        </div>
-        <div class="yt-btn"><i class="fab fa-youtube"></i> <span data-i18n="yt.btn">YouTube에서 보기</span></div>
-      </div>
-    </a>
-  </div>
-
   <!-- ── MAIN IMAGE ── -->
   <div style="width:100%;overflow:hidden;line-height:0;">
     <img src="images/Main_Image3.png" alt="Foket 트레이딩 시스템"
@@ -2428,9 +2324,6 @@
           AI 머신러닝 최적화 트레이딩 신호
         </p>
         <div class="hero-perks">
-          <div class="hero-perk">
-            <div class="chk"><i class="fas fa-check"></i></div><span data-i18n="hero.perk1">유튜브 실시간 라이브 트레이딩 방송 (주 1~3회) 진행</span>
-          </div>
           <div class="hero-perk">
             <div class="chk"><i class="fas fa-check"></i></div><span data-i18n="hero.perk2">해외선물 매수매도 시그널</span>
           </div>
@@ -2564,7 +2457,7 @@
         <p data-i18n="core.desc" style="font-size:15px;color:var(--text-secondary);line-height:1.9;max-width:760px;margin:0 auto;">FOKET의 알고리즘은 인간의 심리적 오류를 완벽히 차단하고, 오직 철저하게 검증된 통계적 확신 위에서만 움직입니다. 글로벌 선물 시장의 방대한 역사적 데이터와 고도화된 머신러닝 기술이 결합하여, 리스크는 최소화하고 수익은 극대화하는 독보적인 자산운용 솔루션을 제시합니다.</p>
       </div>
 
-      <!-- 6 CORE CARDS -->
+      <!-- 5 CORE CARDS -->
       <div class="core-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
 
         <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:28px 24px;transition:border-color .3s,transform .3s;" onmouseover="this.style.borderColor='var(--accent-blue)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='translateY(0)'">
@@ -2600,13 +2493,6 @@
           <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:6px;">Rigorous Risk Control (MDD)</div>
           <div data-i18n="core.card5_sub" style="font-size:12px;color:var(--accent-blue);font-weight:600;margin-bottom:12px;">미인지 위험 노출 방지를 위한 필수 손절 관리</div>
           <div data-i18n="core.card5_desc" style="font-size:13px;color:var(--text-secondary);line-height:1.8;">필수적인 손절매 기준과 최대 낙폭 제어(MDD) 메커니즘을 상시 가동하여, 보이지 않는 잠재 위험으로부터 투자 원금을 완벽하게 방어합니다.</div>
-        </div>
-
-        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:28px 24px;transition:border-color .3s,transform .3s;" onmouseover="this.style.borderColor='var(--accent-blue)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='translateY(0)'">
-          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--accent-blue);margin-bottom:10px;">06</div>
-          <div style="font-size:15px;font-weight:800;color:var(--text-primary);margin-bottom:6px;">24/7 Transparent Live Streaming</div>
-          <div data-i18n="core.card6_sub" style="font-size:12px;color:var(--accent-blue);font-weight:600;margin-bottom:12px;">유튜브 라이브를 통한 실시간 투명성 입증</div>
-          <div data-i18n="core.card6_desc" style="font-size:13px;color:var(--text-secondary);line-height:1.8;">FOKET은 알고리즘의 구동 과정과 실시간 트레이딩 퍼포먼스를 유튜브 라이브 방송을 통해 투명하게 공개합니다. 결과로 증명하는 FOKET의 압도적인 기술력을 실시간으로 직접 확인해 보십시오.</div>
         </div>
 
       </div>
@@ -2721,7 +2607,7 @@
         </div>
       </div>
       <div class="foot-bottom">
-        <p class="fdisclaimer" data-i18n="footer.disclaimer">투자 고지: 암호화폐 및 선물 거래는 높은 리스크를 수반합니다. 과거 성과가 미래 수익을 보장하지
+        <p class="fdisclaimer" data-i18n="footer.disclaimer">투자 고지: 선물 및 파생상품 거래는 높은 리스크를 수반합니다. 과거 성과가 미래 수익을 보장하지
           않습니다. 투자에 앞서 충분한 주의를 기울이시기 바랍니다.</p>
         <p class="fdisclaimer" style="margin-top:6px;opacity:.75;">For educational purposes only. Not financial advice. Trading involves risk. Past performance does not guarantee future results.</p>
         <div>
@@ -2744,17 +2630,17 @@
     const TRANSLATIONS = {
       ko: {
         "nav.home": "홈", "nav.signals": "Foket 시스템 트레이딩 소개", "nav.pricing": "서비스", "nav.faq": "자주하는 질문(FAQ)", "nav.perf": "실적 조회", "nav.contact": "문의", "nav.join_free": "텔레그램 문의", "nav.login": "로그인", "nav.signup": "회원가입", "nav.mypage": "마이페이지",
-        "hero.badge": "데이터로 검증한 알림, 결과로 증명합니다.", "hero.title": "최근 15년간 수치데이터 + 2억 8천만개 트레이딩 로직 딥러닝", "hero.subtitle": "AI 머신러닝 최적화 트레이딩 로직", "hero.free_signals_week": "무료 알림 주 3회", "hero.vip_signals_day": "VIP 알림 하루 2-5회", "hero.money_back": "30일 환불 보장", "hero.join_free_btn": "텔레그램 문의", "hero.view_vip_btn": "서비스 구성", "hero.perk1": "유튜브 실시간 라이브 트레이딩 방송 (주 1~3회) 진행", "hero.perk2": "해외선물 매수매도 알림", "hero.perk3": "데이트레이딩", "hero.perk4": "SNS를 통한 전송", "hero.perk5": "자산운용사 위탁 트레이딩 신청 가능", "hero.perk6": "알림 수신으로 개별 트레이딩 및 위탁 트레이딩 선택",
+        "hero.badge": "데이터로 검증한 알림, 결과로 증명합니다.", "hero.title": "최근 15년간 수치데이터 + 2억 8천만개 트레이딩 로직 딥러닝", "hero.subtitle": "AI 머신러닝 최적화 트레이딩 로직", "hero.free_signals_week": "무료 알림 주 3회", "hero.vip_signals_day": "VIP 알림 하루 2-5회", "hero.money_back": "30일 환불 보장", "hero.join_free_btn": "텔레그램 문의", "hero.view_vip_btn": "서비스 구성", "hero.perk2": "해외선물 매수매도 알림", "hero.perk3": "데이트레이딩", "hero.perk4": "SNS를 통한 전송", "hero.perk5": "자산운용사 위탁 트레이딩 신청 가능", "hero.perk6": "알림 수신으로 개별 트레이딩 및 위탁 트레이딩 선택",
         "stats.members": "회원", "stats.success_rate": "성공률", "stats.signals": "알림 발송", "stats.years": "년 경력",
         "features.title": "왜 Foket 일까요?", "features.subtitle": "전문 트레이더 팀과 AI 기술이 결합된 최고의 트레이딩 로직 서비스", "features.ai_title": "AI 기반 분석", "features.ai_desc": "데이터기반 AI 시장 분석\n2억 8천만개 중 선별된 수익로직 딥러닝", "features.expert_title": "전문가 팀", "features.expert_desc": "숙련된 트레이더 팀 및 분석팀\n검증된 전략 기반 알림", "features.risk_title": "리스크관리", "features.risk_desc": "체계적인 리스크관리\n자본보호 중심 트레이딩", "features.instant_title": "즉시 알림 전달", "features.instant_desc": "텔레그램을 통한 실시간 트레이딩 알림\n모바일로 언제어디서나 정보 취득 가능", "features.support_title": "24/7지원", "features.support_desc": "8개국어 지원\n24시간 자동 시스템 트레이딩\n24시간 고객센터 운영", "features.education_title": "트레이딩 위탁", "features.education_desc": "제휴 자산운용사, 투자자문사로의 트레이딩 위탁 가능",
         "how_it_works.title": "서비스 구성", "how_it_works.entry": "SNS 알림 수신", "how_it_works.entry_desc": "SNS등을 통한 트레이딩 알림 수신\n신청회원의 자율적 트레이딩 진행\n24시간 트레이딩", "how_it_works.take_profit": "위탁 또는 주문대리", "how_it_works.take_profit_desc": "1. Foket과 직접 계약 또는 Foket의 제휴 자산운용사, 투자자문사와 계약\n2. Foket의 100% 자동 트레이딩 시스템 가동\n3. 주단위 수익 정산(계약에 따라 상이하며 수익의 30~40% 정산)\n4. 계약 사항의 자율적 상시 조정 가능", "how_it_works.stop_loss": "손절가", "how_it_works.stop_loss_desc": "과거 로직에서 기록했던 평균적 및 최소 기록 모두 제시해 드립니다. 즉 데이터 상 평가손익의 기록이며 과거 해당 수치에서 거래를 종료한 것은 아닙니다.\n진입가의 -1.2%", "how_it_works.risk": "진행 중 트레이딩 종료 알림", "how_it_works.risk_desc": "현물의 시장가 매도, Futures의 포지션 청산 알림 입니다.\n현재 진행 중인 트레이딩을 종료하고 다음 진입 알림을 기다립니다.\n예: 이번 트레이딩 종료",
-        "coins.title": "지원 코인", "coins.subtitle": "주요 암호화폐 알림 제공",
+
         "free_signals.title": "무료 알림", "free_signals.subtitle": "VIP 품질의 알림을 무료로 경험해보세요", "free_signals.join_btn": "무료로 받기",
-        "pricing.title": "요금제 선택", "pricing.subtitle": "나에게 맞는 플랜을 선택하세요", "pricing.most_popular": "인기", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1개월", "pricing.per_month": "/월", "pricing.per_3months": "/3개월", "pricing.per_6months": "/6개월", "pricing.per_year": "/년", "pricing.feat_daily_signals": "1종목당 일 1~5회 왕복 알림", "pricing.feat_8lang": "8개언어 지원", "pricing.feat_cat1": "카테고리 중 1 선택 (예: CryptoSpot, Binance, Futures 중 1 선택)", "pricing.feat_cat2": "카테고리 중 2 선택 (예: CryptoSpot, Binance, Futures 중 2 선택)", "pricing.feat_cat_all": "카테고리 모두 선택 (예: CryptoSpot, Binance, Futures 모두 선택)", "pricing.feat_247": "CryptoSpot, Binance는 24/7서비스, Futures는 월~금 서비스", "pricing.feat_signals": "진입/목표/손절/완료 알림 제공", "pricing.feat_group": "각 Class 단체방참여", "pricing.feat_futures": "투자금의 포트폴리오 별로 Futures의 1~3개월 국제 시세 (국제 증시, 국제유가, 금시세, 농축산물 예측 시세) 제공", "pricing.get_started": "시작하기",
+        "pricing.title": "요금제 선택", "pricing.subtitle": "나에게 맞는 플랜을 선택하세요", "pricing.most_popular": "인기", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1개월", "pricing.per_month": "/월", "pricing.per_3months": "/3개월", "pricing.per_6months": "/6개월", "pricing.per_year": "/년", "pricing.feat_daily_signals": "1종목당 일 1~5회 왕복 알림", "pricing.feat_8lang": "8개언어 지원", "pricing.feat_cat1": "카테고리 중 1 선택 (예: 주가지수선물, 귀금속, 외환 중 1 선택)", "pricing.feat_cat2": "카테고리 중 2 선택 (예: 주가지수선물, 귀금속, 외환 중 2 선택)", "pricing.feat_cat_all": "카테고리 모두 선택 (예: 주가지수선물, 귀금속, 외환 모두 선택)", "pricing.feat_247": "월~금 실시간 서비스 제공", "pricing.feat_signals": "진입/목표/손절/완료 알림 제공", "pricing.feat_group": "각 Class 단체방참여", "pricing.feat_futures": "투자금의 포트폴리오 별로 Futures의 1~3개월 국제 시세 (국제 증시, 국제유가, 금시세, 농축산물 예측 시세) 제공", "pricing.get_started": "시작하기",
         "testimonials.title": "사용자 후기",
-        "news.title": "크립토 뉴스", "news.subtitle": "최신 암호화폐 시장 소식", "news.read_more": "더 읽기", "news.view_all": "모든 뉴스 보기",
+        "news.title": "시장 뉴스", "news.subtitle": "최신 시장 소식", "news.read_more": "더 읽기", "news.view_all": "모든 뉴스 보기",
         "cta.title": "지금 시작하세요", "cta.subtitle": "무료로 텔레그램에 참여하고 고품질 알림을 받아보세요", "cta.btn": "무료로 시작하기",
-        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "빠른 링크", "footer.follow_us": "소셜 미디어", "footer.disclaimer": "투자 고지: 암호화폐 및 선물 거래는 높은 리스크를 수반합니다. 과거 성과가 미래 수익을 보장하지 않습니다.", "footer.copyright": "All rights reserved", "footer.terms": "이용약관", "footer.privacy": "개인정보처리방침", "footer.risk": "투자위험고지", "footer.refund": "환불정책", "footer.affiliate": "제휴링크고지", "footer.earnings": "수익면책고지", "footer.contact": "문의",
+        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "빠른 링크", "footer.follow_us": "소셜 미디어", "footer.disclaimer": "투자 고지: 선물 및 파생상품 거래는 높은 리스크를 수반합니다. 과거 성과가 미래 수익을 보장하지 않습니다.", "footer.copyright": "All rights reserved", "footer.terms": "이용약관", "footer.privacy": "개인정보처리방침", "footer.risk": "투자위험고지", "footer.refund": "환불정책", "footer.affiliate": "제휴링크고지", "footer.earnings": "수익면책고지", "footer.contact": "문의",
         "best10.title": "Foket 수익율 현황", "best10.col_rank": "순위", "best10.col_symbol": "종목", "best10.col_monthly_return": "월평균 수익률", "best10.col_monthly_profit": "월평균 수익액($)", "best10.col_margin": "거래 증거금($)", "best10.col_max_loss": "120거래일내 최대 손실 기록($)", "best10.col_trade_days": "딥러닝 이후 검증 거래일수",
         "best10.days_unit": "일", "best10.no_data": "저장된 종목 데이터가 없습니다", "best10.no_items": "등록된 종목이 없습니다", "best10.load_fail": "로드 실패", "best10.date_suffix": "현재까지",
         "nav.kakao_consult": "카카오톡 문의",
@@ -2767,7 +2653,6 @@
         "core.card3_sub": "인간의 감정을 배제한 100% 자동 시스템 트레이딩", "core.card3_desc": "트레이딩의 가장 큰 적인 공포와 탐욕을 원천 차단하기 위해 모든 진입과 청산 프로세스를 100% 자동화 시스템으로 완벽히 통제합니다.",
         "core.card4_sub": "오버나이트 리스크 제로, 철저한 데이트레이딩 체계", "core.card4_desc": "포지션을 다음 날로 넘기는 롤오버(Rollover)를 절대 하지 않으며, 당일 진입·당일 청산의 원칙을 고수하여 예측 불가능한 갭(Gap) 리스크를 원천 봉쇄합니다.",
         "core.card5_sub": "미인지 위험 노출 방지를 위한 필수 손절 관리", "core.card5_desc": "필수적인 손절매 기준과 최대 낙폭 제어(MDD) 메커니즘을 상시 가동하여, 보이지 않는 잠재 위험으로부터 투자 원금을 완벽하게 방어합니다.",
-        "core.card6_sub": "유튜브 라이브를 통한 실시간 투명성 입증", "core.card6_desc": "FOKET은 알고리즘의 구동 과정과 실시간 트레이딩 퍼포먼스를 유튜브 라이브 방송을 통해 투명하게 공개합니다. 결과로 증명하는 FOKET의 압도적인 기술력을 실시간으로 직접 확인해 보십시오.",
         "markets.title": "포트폴리오의 완성, 시장을 주도하는 6대 대표 선물 종목 트레이딩", "markets.subtitle": "고수익·고위험 선물 시장에서 안정적인 알파 수익을 창출하기 위해선 철저한 자산 분산이 필수적입니다. FOKET은 전 세계 자본이 집중되는 가장 유동성이 풍부한 대표 종목만을 타겟팅합니다.",
         "markets.idx_cat": "지수 (Equity Indices)", "markets.idx_sub": "주식 지수 선물", "markets.idx_desc": "S&P 500, Nasdaq 100, 닛케이 225 등 글로벌 주요 증시 지수 선물",
         "markets.fx_cat": "외환 (FX)", "markets.fx_sub": "통화/외환", "markets.fx_desc": "유로, 엔화, 호주달러 등 전 세계 글로벌 자금 흐름의 척도",
@@ -2777,21 +2662,20 @@
         "markets.rates_cat": "금리 (Interest Rates)", "markets.rates_sub": "금리 선물", "markets.rates_desc": "미국채, T-Bond 등 거시경제 정책 변화에 따른 채권 시장의 핵심 선물",
         "best10.calc_title": "수익율 산정 기준 :", "best10.calc_desc": " 해외선물 특성상 증거금(Deposit)이 기초투자금이므로, 수익율 산정에는 증거금의 3배를 기준으로 산정됨.", "best10.calc_ex1": "예: A종목의 증거금 5,000달러 → 초기 투자금 15,000달러(3배) → 월 수익이 1,000달러이면 월 수익율은 1,000달러 / 15,000달러 = ", "best10.calc_ex2": "투자금은 전체 투자금의 1/3만 소요되며, 트레이딩 종목의 증거금 명목으로 활용됩니다.",
         "charts.title": "종목별 최근 30거래일 월평균 수익율 변동 현황", "charts.days_ago": "30일전", "charts.recent": "최근", "charts.no_data": "데이터 없음",
-        "yt.title": "실시간 Trading Live 방송", "yt.sub": "클릭하여 YouTube 라이브 방송 참여하기", "yt.btn": "YouTube에서 보기"
       },
       en: {
         "nav.home": "Home", "nav.alerts": "Foket Guide", "nav.pricing": "Service", "nav.faq": "FAQ", "nav.perf": "Performance", "nav.contact": "Contact", "nav.join_free": "Telegram Inquiry", "nav.login": "Log In", "nav.signup": "Sign Up", "nav.mypage": "My Page",
-        "hero.badge": "Alert verified by data, proven by results.", "hero.title": "15 years of market data + deep learning on 280 million trading logics", "hero.subtitle": "AI machine learning optimized trading alerts", "hero.free_signals_week": "3 free alerts per week", "hero.vip_signals_day": "2-5 VIP alerts per day", "hero.money_back": "30-day money-back guarantee", "hero.join_free_btn": "Telegram Inquiry", "hero.view_vip_btn": "View Services", "hero.perk1": "YouTube live trading broadcast (1–3 times/week)", "hero.perk2": "Overseas futures buy/sell alerts", "hero.perk3": "Day trading", "hero.perk4": "Delivery via SNS", "hero.perk5": "Asset management delegated trading – application available", "hero.perk6": "Choose between individual trading and delegated trading via alert reception",
+        "hero.badge": "Alert verified by data, proven by results.", "hero.title": "15 years of market data + deep learning on 280 million trading logics", "hero.subtitle": "AI machine learning optimized trading alerts", "hero.free_signals_week": "3 free alerts per week", "hero.vip_signals_day": "2-5 VIP alerts per day", "hero.money_back": "30-day money-back guarantee", "hero.join_free_btn": "Telegram Inquiry", "hero.view_vip_btn": "View Services", "hero.perk2": "Overseas futures buy/sell alerts", "hero.perk3": "Day trading", "hero.perk4": "Delivery via SNS", "hero.perk5": "Asset management delegated trading – application available", "hero.perk6": "Choose between individual trading and delegated trading via alert reception",
         "stats.members": "Members", "stats.success_rate": "Success Rate", "stats.alerts": "Alerts Sent", "stats.years": "Years Active",
         "features.title": "Why Foket?", "features.subtitle": "The best trading logic service combining professional trader teams and AI technology", "features.ai_title": "AI-Powered Analysis", "features.ai_desc": "Data-based AI market analysis\nDeep learning on selected profit logic from 280M+ trading logics", "features.expert_title": "Expert Team", "features.expert_desc": "Seasoned trader & analysis team\nverified strategy-based alerts", "features.risk_title": "Risk Management", "features.risk_desc": "Systematic risk management\ncapital-preservation focused trading", "features.instant_title": "Instant Alert Delivery", "features.instant_desc": "Real-time trading alerts via Telegram\naccess anytime anywhere on mobile", "features.support_title": "24/7 Support", "features.support_desc": "8 languages supported\n24-hour automated system trading\n24-hour customer service", "features.education_title": "Trading Delegation", "features.education_desc": "Trading delegation possible to affiliated asset management companies and investment advisory firms",
         "how_it_works.title": "Service Overview", "how_it_works.subtitle": "What's included in each alert", "how_it_works.entry": "SNS Alert Reception", "how_it_works.entry_desc": "Spot buy (Futures includes sell) executed at market price\ne.g. Buy opinion at BTC's current price", "how_it_works.take_profit": "Delegation or Proxy Order", "how_it_works.take_profit_desc": "Take-profit targets are provided by default, but a close alert may also be sent after excess profit.\ne.g. Set +2% from entry price", "how_it_works.stop_loss": "Stop Loss", "how_it_works.stop_loss_desc": "We provide both average and minimum records from past logic. These are unrealized P&L records in the data; past trades were not necessarily closed at those levels.\n-1.2% from entry price", "how_it_works.risk": "Active Trading Close Alert", "how_it_works.risk_desc": "Spot market sell, Futures position close alert.\nClose your current trade and wait for the next entry alert.\ne.g. Close this trade",
-        "coins.title": "Supported Coins", "coins.subtitle": "Alerts for major cryptocurrencies",
+
         "free_signals.title": "Free Alerts", "free_signals.subtitle": "Experience VIP-quality alerts for free", "free_signals.join_btn": "Get For Free",
-        "pricing.title": "Choose Your Plan", "pricing.subtitle": "Select the plan that's right for you", "pricing.most_popular": "Popular", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1 month", "pricing.per_month": "/month", "pricing.per_3months": "/3 months", "pricing.per_6months": "/6 months", "pricing.per_year": "/year", "pricing.feat_daily_signals": "1–5 round-trip alerts per symbol per day", "pricing.feat_8lang": "8 languages supported", "pricing.feat_cat1": "Choose 1 category (e.g. CryptoSpot, Binance, or Futures)", "pricing.feat_cat2": "Choose 2 categories (e.g. CryptoSpot, Binance, Futures – pick 2)", "pricing.feat_cat_all": "All categories (e.g. CryptoSpot, Binance, Futures – all 3)", "pricing.feat_247": "CryptoSpot, Binance 24/7 service, Futures Mon–Fri", "pricing.feat_signals": "Entry / target / stop-loss / completion alerts", "pricing.feat_group": "Class group chat access", "pricing.feat_futures": "1–3 month global Futures outlook by portfolio (global indices, oil, gold, softs)", "pricing.get_started": "Get Started",
+        "pricing.title": "Choose Your Plan", "pricing.subtitle": "Select the plan that's right for you", "pricing.most_popular": "Popular", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1 month", "pricing.per_month": "/month", "pricing.per_3months": "/3 months", "pricing.per_6months": "/6 months", "pricing.per_year": "/year", "pricing.feat_daily_signals": "1–5 round-trip alerts per symbol per day", "pricing.feat_8lang": "8 languages supported", "pricing.feat_cat1": "Choose 1 category (e.g. Index Futures, Metals, or Forex)", "pricing.feat_cat2": "Choose 2 categories (e.g. Index Futures, Metals, Forex – pick 2)", "pricing.feat_cat_all": "All categories (e.g. Index Futures, Metals, Forex – all 3)", "pricing.feat_247": "Real-time service, Monday–Friday", "pricing.feat_signals": "Entry / target / stop-loss / completion alerts", "pricing.feat_group": "Class group chat access", "pricing.feat_futures": "1–3 month global Futures outlook by portfolio (global indices, oil, gold, softs)", "pricing.get_started": "Get Started",
         "testimonials.title": "What Our Members Say",
-        "news.title": "Crypto News", "news.subtitle": "Latest cryptocurrency market updates", "news.read_more": "Read More", "news.view_all": "View All News",
+        "news.title": "Market News", "news.subtitle": "Latest market updates", "news.read_more": "Read More", "news.view_all": "View All News",
         "cta.title": "Start Today", "cta.subtitle": "Join our free Telegram and receive high-quality alerts", "cta.btn": "Start For Free",
-        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "Quick Links", "footer.follow_us": "Follow Us", "footer.disclaimer": "Investment Disclaimer: Cryptocurrency and futures trading carries high risk. Past performance does not guarantee future results.", "footer.copyright": "All rights reserved", "footer.terms": "Terms of Service", "footer.privacy": "Privacy Policy", "footer.risk": "Investment Risk Disclosure", "footer.refund": "Refund Policy", "footer.affiliate": "Affiliate Disclosure", "footer.earnings": "Earnings Disclaimer", "footer.contact": "Contact",
+        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "Quick Links", "footer.follow_us": "Follow Us", "footer.disclaimer": "Investment Disclaimer: Futures and derivatives trading carries high risk. Past performance does not guarantee future results.", "footer.copyright": "All rights reserved", "footer.terms": "Terms of Service", "footer.privacy": "Privacy Policy", "footer.risk": "Investment Risk Disclosure", "footer.refund": "Refund Policy", "footer.affiliate": "Affiliate Disclosure", "footer.earnings": "Earnings Disclaimer", "footer.contact": "Contact",
         "best10.title": "Foket Return Status", "best10.col_rank": "Rank", "best10.col_symbol": "Symbol", "best10.col_monthly_return": "Avg Monthly Return", "best10.col_max_loss": "Max Daily Drawdown", "best10.col_daily_trades": "Avg Daily Round Trips", "best10.col_trade_days": "Trading Days",
         "best10.days_unit": "d", "best10.no_data": "No market data saved", "best10.no_items": "No instruments registered", "best10.load_fail": "Load failed", "best10.date_suffix": "current",
         "best10.col_monthly_profit": "Avg Monthly Profit ($)", "best10.col_margin": "Trading Margin ($)",
@@ -2805,7 +2689,6 @@
         "core.card3_sub": "100% automated system trading free from human emotion", "core.card3_desc": "To fundamentally block fear and greed – the biggest enemies of trading – all entry and exit processes are completely controlled by a 100% automated system.",
         "core.card4_sub": "Zero overnight risk – rigorous day trading discipline", "core.card4_desc": "We never roll over positions to the next day, strictly adhering to the principle of same-day entry and same-day exit, fundamentally blocking unpredictable gap risks.",
         "core.card5_sub": "Essential stop-loss management to prevent unknown risk exposure", "core.card5_desc": "By constantly operating essential stop-loss criteria and a maximum drawdown control (MDD) mechanism, we perfectly defend investment principal from invisible potential risks.",
-        "core.card6_sub": "Real-time transparency proven through YouTube live streaming", "core.card6_desc": "FOKET transparently discloses the algorithm's operation process and real-time trading performance through YouTube live broadcasts. Witness FOKET's overwhelming technical prowess – proven by results – in real time.",
         "markets.title": "Completing the Portfolio: Trading the 6 Most Dominant Futures Markets", "markets.subtitle": "Thorough asset diversification is essential to generate stable alpha returns in high-reward, high-risk futures markets. FOKET targets only the most liquid benchmark instruments where global capital is concentrated.",
         "markets.idx_cat": "Equity Indices", "markets.idx_sub": "Stock Index Futures", "markets.idx_desc": "S&P 500, Nasdaq 100, Nikkei 225 and other global major stock index futures",
         "markets.fx_cat": "FX (Foreign Exchange)", "markets.fx_sub": "Currency / Foreign Exchange", "markets.fx_desc": "Euro, Japanese Yen, Australian Dollar – barometers of global capital flows",
@@ -2815,21 +2698,20 @@
         "markets.rates_cat": "Interest Rates", "markets.rates_sub": "Interest Rate Futures", "markets.rates_desc": "US Treasuries, T-Bond – key bond market futures driven by macroeconomic policy changes",
         "best10.calc_title": "Return Rate Basis:", "best10.calc_desc": " Since margin (Deposit) is the base investment for overseas futures, returns are calculated at 3× the margin.", "best10.calc_ex1": "Ex: Symbol A margin $5,000 → Initial investment $15,000 (×3) → If monthly profit is $1,000, monthly return = $1,000 / $15,000 = ", "best10.calc_ex2": "Only 1/3 of the total investment is required, used as margin for the trading instrument.",
         "charts.title": "30-Day Avg Monthly Return Trend by Symbol", "charts.days_ago": "30d ago", "charts.recent": "Recent", "charts.no_data": "No data",
-        "yt.title": "Live Trading Broadcast", "yt.sub": "Click to join the YouTube Live stream", "yt.btn": "Watch on YouTube"
       },
       de: {
         "nav.home": "Startseite", "nav.alarms": "Foket Guide", "nav.pricing": "Service", "nav.faq": "Häufige Fragen (FAQ)", "nav.perf": "Performance", "nav.contact": "Kontakt", "nav.join_free": "Telegram Anfrage", "nav.login": "Anmelden", "nav.signup": "Registrieren", "nav.mypage": "Mein Konto",
-        "hero.badge": "Alarm durch Daten bestätigt, durch Ergebnisse bewiesen.", "hero.title": "15 Jahre Marktdaten + Deep Learning aus 280 Mio. Handelslogiken", "hero.subtitle": "KI-Machine-Learning-optimierte Handelsalarme", "hero.free_alarms_week": "3 kostenlose Alarme pro Woche", "hero.vip_alarms_day": "2-5 VIP-Alarme pro Tag", "hero.money_back": "30-Tage-Geld-zurück-Garantie", "hero.join_free_btn": "Telegram Anfrage", "hero.view_vip_btn": "Dienste ansehen", "hero.perk1": "YouTube-Livestream-Trading-Sendung (1–3x/Woche)", "hero.perk2": "Auslands-Futures Kauf-/Verkaufsalarme", "hero.perk3": "Daytrading", "hero.perk4": "Übermittlung per SNS", "hero.perk5": "Treuhandhandel – Antrag möglich", "hero.perk6": "Wählen Sie per Alarm zwischen Eigenhandel und Treuhandhandel",
+        "hero.badge": "Alarm durch Daten bestätigt, durch Ergebnisse bewiesen.", "hero.title": "15 Jahre Marktdaten + Deep Learning aus 280 Mio. Handelslogiken", "hero.subtitle": "KI-Machine-Learning-optimierte Handelsalarme", "hero.free_alarms_week": "3 kostenlose Alarme pro Woche", "hero.vip_alarms_day": "2-5 VIP-Alarme pro Tag", "hero.money_back": "30-Tage-Geld-zurück-Garantie", "hero.join_free_btn": "Telegram Anfrage", "hero.view_vip_btn": "Dienste ansehen", "hero.perk2": "Auslands-Futures Kauf-/Verkaufsalarme", "hero.perk3": "Daytrading", "hero.perk4": "Übermittlung per SNS", "hero.perk5": "Treuhandhandel – Antrag möglich", "hero.perk6": "Wählen Sie per Alarm zwischen Eigenhandel und Treuhandhandel",
         "stats.members": "Mitglieder", "stats.success_rate": "Erfolgsquote", "stats.alarms": "Gesendete Alarme", "stats.years": "Jahre aktiv",
         "features.title": "Warum Foket?", "features.subtitle": "Der beste Trading-Logik-Service mit professionellem Trader-Team und KI-Technologie", "features.ai_title": "KI-gestützte Analyse", "features.ai_desc": "Datenbasierte KI-Marktanalyse\nDeep Learning der ausgewählten Gewinnlogik aus 280 Mio.+ Handelslogiken", "features.expert_title": "Expertenteam", "features.expert_desc": "Erfahrene Trader- und Analystenteams\nverifizierte strategiebasierte Alarme", "features.risk_title": "Risikomanagement", "features.risk_desc": "Systematisches Risikomanagement\nkapitalschonendes Trading", "features.instant_title": "Sofortige Alarm-Lieferung", "features.instant_desc": "Echtzeit-Tradingalarme per Telegram\nmobil jederzeit und überall", "features.support_title": "24/7 Support", "features.support_desc": "8 Sprachen\n24-Stunden-Automatikhandel\n24-Stunden-Kundendienst", "features.education_title": "Handelsdelegierung", "features.education_desc": "Handelsdelegierung an angeschlossene Vermögensverwalter und Anlageberater möglich",
         "how_it_works.title": "Serviceübersicht", "how_it_works.subtitle": "Was in jedem Alarm enthalten ist", "how_it_works.entry": "SNS-Alarmempfang", "how_it_works.entry_desc": "Spot-Kauf (Futures inkl. Verkauf) zum Marktpreis\nz.B. Kaufmeinung zum aktuellen BTC-Preis", "how_it_works.take_profit": "Delegation oder Proxy-Order", "how_it_works.take_profit_desc": "Gewinnziele werden standardmäßig angegeben, ein Schließungsalarm kann jedoch auch nach Übergewinn erfolgen.\nz.B. +2% vom Einstiegspreis festgelegt", "how_it_works.stop_loss": "Stop Loss", "how_it_works.stop_loss_desc": "Wir liefern Durchschnitts- und Mindestwerte aus vergangener Logik. Es handelt sich um buchmäßige Gewinn-/Verlustwerte; vergangene Trades wurden nicht zwingend zu diesen Werten geschlossen.\n-1,2% vom Einstiegspreis", "how_it_works.risk": "Alarm zum Beenden laufender Trades", "how_it_works.risk_desc": "Spot-Verkauf zum Marktpreis, Futures-Positionsschließalarm.\nBeenden Sie den aktuellen Trade und warten Sie auf das nächste Einstiegsalarm.\nz.B. Diesen Trade beenden",
-        "coins.title": "Unterstützte Coins", "coins.subtitle": "Alarme für wichtige Kryptowährungen",
+
         "free_alarms.title": "Kostenlose Alarme", "free_alarms.subtitle": "Erleben Sie VIP-Qualitätsalarme kostenlos", "free_alarms.join_btn": "Kostenlos erhalten",
-        "pricing.title": "Plan wählen", "pricing.subtitle": "Wählen Sie den Plan, der für Sie geeignet ist", "pricing.most_popular": "Beliebt", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1 Monat", "pricing.per_month": "/Monat", "pricing.per_3months": "/3 Monate", "pricing.per_6months": "/6 Monate", "pricing.per_year": "/Jahr", "pricing.feat_daily_alarms": "1–5 Hin- und Rückalarme pro Symbol pro Tag", "pricing.feat_8lang": "8 Sprachen", "pricing.feat_cat1": "1 Kategorie wählen (z. B. CryptoSpot, Binance oder Futures)", "pricing.feat_cat2": "2 Kategorien wählen (z. B. CryptoSpot, Binance, Futures – 2 wählen)", "pricing.feat_cat_all": "Alle Kategorien (z. B. CryptoSpot, Binance, Futures – alle 3)", "pricing.feat_247": "CryptoSpot, Binance 24/7, Futures Mo–Fr", "pricing.feat_alarms": "Einstieg-/Ziel-/Stopp-/Abschlussalarme", "pricing.feat_group": "Zugang zum Klassen-Gruppenchat", "pricing.feat_futures": "1–3 Monate globale Futures-Aussichten nach Portfolio (Indizes, Öl, Gold, Agrar)", "pricing.get_started": "Loslegen",
+        "pricing.title": "Plan wählen", "pricing.subtitle": "Wählen Sie den Plan, der für Sie geeignet ist", "pricing.most_popular": "Beliebt", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1 Monat", "pricing.per_month": "/Monat", "pricing.per_3months": "/3 Monate", "pricing.per_6months": "/6 Monate", "pricing.per_year": "/Jahr", "pricing.feat_daily_alarms": "1–5 Hin- und Rückalarme pro Symbol pro Tag", "pricing.feat_8lang": "8 Sprachen", "pricing.feat_cat1": "1 Kategorie wählen (z. B. Indexfutures, Metalle oder Forex)", "pricing.feat_cat2": "2 Kategorien wählen (z. B. Indexfutures, Metalle, Forex – 2 wählen)", "pricing.feat_cat_all": "Alle Kategorien (z. B. Indexfutures, Metalle, Forex – alle 3)", "pricing.feat_247": "Echtzeit-Service, Mo–Fr", "pricing.feat_alarms": "Einstieg-/Ziel-/Stopp-/Abschlussalarme", "pricing.feat_group": "Zugang zum Klassen-Gruppenchat", "pricing.feat_futures": "1–3 Monate globale Futures-Aussichten nach Portfolio (Indizes, Öl, Gold, Agrar)", "pricing.get_started": "Loslegen",
         "testimonials.title": "Was unsere Mitglieder sagen",
-        "news.title": "Krypto-Nachrichten", "news.subtitle": "Neueste Kryptowährungs-Marktnachrichten", "news.read_more": "Mehr lesen", "news.view_all": "Alle Nachrichten anzeigen",
+        "news.title": "Marktnachrichten", "news.subtitle": "Neueste Marktnachrichten", "news.read_more": "Mehr lesen", "news.view_all": "Alle Nachrichten anzeigen",
         "cta.title": "Jetzt starten", "cta.subtitle": "Treten Sie unserem kostenlosen Telegram bei und erhalten Sie hochwertige Alarme", "cta.btn": "Kostenlos starten",
-        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "Schnelllinks", "footer.follow_us": "Folgen Sie uns", "footer.disclaimer": "Investitionshinweis: Der Handel mit Kryptowährungen und Futures ist mit hohem Risiko verbunden.", "footer.copyright": "Alle Rechte vorbehalten", "footer.terms": "Nutzungsbedingungen", "footer.privacy": "Datenschutzrichtlinie", "footer.risk": "Risikohinweis", "footer.refund": "Rückerstattungsrichtlinie", "footer.affiliate": "Affiliate-Offenlegung", "footer.earnings": "Haftungsausschluss Einnahmen", "footer.contact": "Kontakt",
+        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "Schnelllinks", "footer.follow_us": "Folgen Sie uns", "footer.disclaimer": "Investitionshinweis: Der Handel mit Futures und Derivaten ist mit hohem Risiko verbunden.", "footer.copyright": "Alle Rechte vorbehalten", "footer.terms": "Nutzungsbedingungen", "footer.privacy": "Datenschutzrichtlinie", "footer.risk": "Risikohinweis", "footer.refund": "Rückerstattungsrichtlinie", "footer.affiliate": "Affiliate-Offenlegung", "footer.earnings": "Haftungsausschluss Einnahmen", "footer.contact": "Kontakt",
         "best10.title": "Foket Rendite-Status", "best10.col_rank": "Rang", "best10.col_symbol": "Symbol", "best10.col_monthly_return": "Ø Monatsrendite", "best10.col_max_loss": "Max. Tages-Drawdown", "best10.col_daily_trades": "Ø Tägliche Roundtrips", "best10.col_trade_days": "Handelstage",
         "best10.days_unit": "T", "best10.no_data": "Keine Marktdaten gespeichert", "best10.no_items": "Keine Instrumente registriert", "best10.load_fail": "Ladefehler", "best10.date_suffix": "aktuell",
         "best10.col_monthly_profit": "Ø Monatsertrag ($)", "best10.col_margin": "Handelsmarge ($)",
@@ -2843,7 +2725,6 @@
         "core.card3_sub": "100% automatisierter Systemhandel frei von menschlichen Emotionen", "core.card3_desc": "Um Angst und Gier – die größten Feinde des Handels – grundlegend zu blockieren, werden alle Ein- und Ausstiegsprozesse vollständig durch ein 100% automatisiertes System kontrolliert.",
         "core.card4_sub": "Null Overnight-Risiko – strenge Day-Trading-Disziplin", "core.card4_desc": "Wir rollen Positionen niemals auf den nächsten Tag, halten strikt am Prinzip des gleichtägigen Ein- und Ausstiegs fest und blockieren unvorhersehbare Gap-Risiken grundlegend.",
         "core.card5_sub": "Wesentliches Stop-Loss-Management zur Vermeidung unbekannter Risikoexpositionen", "core.card5_desc": "Durch den ständigen Betrieb wesentlicher Stop-Loss-Kriterien und eines Maximum-Drawdown-Kontrollmechanismus (MDD) schützen wir das Investitionskapital vollständig vor unsichtbaren potenziellen Risiken.",
-        "core.card6_sub": "Echtzeit-Transparenz durch YouTube-Livestream nachgewiesen", "core.card6_desc": "FOKET legt den Betriebsprozess des Algorithmus und die Echtzeit-Handelsperformance transparent über YouTube-Livestreams offen. Erleben Sie FOKETs überwältigende technische Kompetenz – durch Ergebnisse bewiesen – in Echtzeit.",
         "markets.title": "Portfolio-Vollendung: Trading der 6 führenden Futures-Märkte", "markets.subtitle": "Eine gründliche Vermögensdiversifikation ist unerlässlich, um in ertragsreichen, hochriskanten Futures-Märkten stabile Alpha-Renditen zu erzielen. FOKET zielt nur auf die liquidesten Benchmark-Instrumente, in denen globales Kapital konzentriert ist.",
         "markets.idx_cat": "Aktienindizes", "markets.idx_sub": "Aktienindex-Futures", "markets.idx_desc": "S&P 500, Nasdaq 100, Nikkei 225 und andere globale Aktienindex-Futures",
         "markets.fx_cat": "Devisen (FX)", "markets.fx_sub": "Währungen / Devisen", "markets.fx_desc": "Euro, japanischer Yen, australischer Dollar – Barometer der globalen Kapitalströme",
@@ -2853,21 +2734,20 @@
         "markets.rates_cat": "Zinssätze", "markets.rates_sub": "Zinssatz-Futures", "markets.rates_desc": "US-Treasuries, T-Bond – wichtige Anleihemarkt-Futures, getrieben durch makroökonomische Politikänderungen",
         "best10.calc_title": "Renditeberechnung:", "best10.calc_desc": " Da die Marge (Deposit) als Basisinvestition für Auslands-Futures gilt, wird die Rendite mit dem 3-fachen der Marge berechnet.", "best10.calc_ex1": "Bsp.: Marge Symbol A 5.000 $ → Anfangsinvestition 15.000 $ (×3) → Bei monatl. Gewinn 1.000 $: Rendite = 1.000 $ / 15.000 $ = ", "best10.calc_ex2": "Es wird nur 1/3 des Gesamtinvestments benötigt, als Marge für das Handelsinstrument.",
         "charts.title": "30-Tage Ø Monatsrendite je Symbol", "charts.days_ago": "vor 30T", "charts.recent": "Aktuell", "charts.no_data": "Keine Daten",
-        "yt.title": "Live Trading Übertragung", "yt.sub": "Klicken um am YouTube-Livestream teilzunehmen", "yt.btn": "Auf YouTube ansehen"
       },
       ja: {
         "nav.home": "ホーム", "nav.signals": "Foket ガイド", "nav.pricing": "サービス", "nav.faq": "よくある質問(FAQ)", "nav.perf": "実績照会", "nav.contact": "お問い合わせ", "nav.join_free": "Telegramでお問い合わせ", "nav.login": "ログイン", "nav.signup": "登録", "nav.mypage": "マイページ",
-        "hero.badge": "データで検証し、結果で証明します。", "hero.title": "過去15年間の数値データ＋2億8千万個のトレーディングロジックのディープラーニング", "hero.subtitle": "AIマシンラーニング最適化トレーディングアラート", "hero.free_signals_week": "週3回無料アラート", "hero.vip_signals_day": "VIPアラート1日2-5回", "hero.money_back": "30日間返金保証", "hero.join_free_btn": "Telegramでお問い合わせ", "hero.view_vip_btn": "サービスを見る", "hero.perk1": "YouTubeリアルタイムライブトレーディング放送（週1〜3回）", "hero.perk2": "海外先物の売買アラート", "hero.perk3": "デイトレード", "hero.perk4": "SNSで配信", "hero.perk5": "資産運用会社委託トレード 申込可能", "hero.perk6": "アラート受信による個別トレードまたは委託トレードの選択",
+        "hero.badge": "データで検証し、結果で証明します。", "hero.title": "過去15年間の数値データ＋2億8千万個のトレーディングロジックのディープラーニング", "hero.subtitle": "AIマシンラーニング最適化トレーディングアラート", "hero.free_signals_week": "週3回無料アラート", "hero.vip_signals_day": "VIPアラート1日2-5回", "hero.money_back": "30日間返金保証", "hero.join_free_btn": "Telegramでお問い合わせ", "hero.view_vip_btn": "サービスを見る", "hero.perk2": "海外先物の売買アラート", "hero.perk3": "デイトレード", "hero.perk4": "SNSで配信", "hero.perk5": "資産運用会社委託トレード 申込可能", "hero.perk6": "アラート受信による個別トレードまたは委託トレードの選択",
         "stats.members": "会員", "stats.success_rate": "成功率", "stats.signals": "アラート送信", "stats.years": "年の実績",
         "features.title": "なぜ Foket なのか？", "features.subtitle": "プロのトレーダーチームとAI技術を組み合わせた最高のトレーディングロジックサービス", "features.ai_title": "AI駆動の分析", "features.ai_desc": "データベースAI市場分析\n2億8千万超から選別された収益ロジックのディープラーニング", "features.expert_title": "専門家チーム", "features.expert_desc": "熟練トレーダー・分析チーム\n検証済み戦略ベースのアラート", "features.risk_title": "リスク管理", "features.risk_desc": "体系的なリスク管理\n資本保護重視のトレード", "features.instant_title": "即時アラート配信", "features.instant_desc": "Telegramでリアルタイムトレーディングアラート\nモバイルでいつでもどこでも", "features.support_title": "24/7サポート", "features.support_desc": "8言語対応\n24時間自動システムトレーディング\n24時間カスタマーサービス", "features.education_title": "トレード委託", "features.education_desc": "提携資産運用会社・投資顧問会社へのトレード委託が可能",
         "how_it_works.title": "サービス構成", "how_it_works.subtitle": "各アラートに含まれる情報", "how_it_works.entry": "SNSアラート受信", "how_it_works.entry_desc": "現物買い（Futuresは売り含む）の成行で実行\n例：現在のBTC価格で買い意見", "how_it_works.take_profit": "委託または注文代理", "how_it_works.take_profit_desc": "目標価格の提示を基本としますが、超過利益後に決済アラートが出る場合もあります。\n例：エントリー価格の+2%設定", "how_it_works.stop_loss": "ストップロス", "how_it_works.stop_loss_desc": "過去ロジックで記録した平均値・最小値の両方を提示します。つまりデータ上の評価損益の記録であり、過去にその数値で決済したわけではありません。\nエントリー価格の-1.2%", "how_it_works.risk": "進行中トレード終了アラート", "how_it_works.risk_desc": "現物の成行売り、Futuresのポジション決済アラートです。\n現在のトレードを終了し、次のエントリーアラートをお待ちください。\n例：今回のトレードを終了",
-        "coins.title": "対応コイン", "coins.subtitle": "主要暗号通貨のアラート提供",
+
         "free_signals.title": "無料アラート", "free_signals.subtitle": "VIP品質のアラートを無料で体験", "free_signals.join_btn": "無料で受け取る",
-        "pricing.title": "プランを選択", "pricing.subtitle": "あなたに合ったプランをお選びください", "pricing.most_popular": "人気", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1ヶ月", "pricing.per_month": "/月", "pricing.per_3months": "/3ヶ月", "pricing.per_6months": "/6ヶ月", "pricing.per_year": "/年", "pricing.feat_daily_signals": "1銘柄あたり1日1〜5回の往復アラート", "pricing.feat_8lang": "8言語対応", "pricing.feat_cat1": "1カテゴリ選択（例：CryptoSpot、Binance、Futuresのいずれか1つ）", "pricing.feat_cat2": "2カテゴリ選択（例：CryptoSpot、Binance、Futuresから2つ）", "pricing.feat_cat_all": "全カテゴリ（例：CryptoSpot、Binance、Futures すべて）", "pricing.feat_247": "CryptoSpot、Binance 24時間対応、Futures 月〜金", "pricing.feat_signals": "エントリー・目標・損切り・決済アラート", "pricing.feat_group": "各Classグループチャット参加", "pricing.feat_futures": "投資額・ポートフォリオに応じたFutures 1〜3ヶ月国際相場（国際株価・原油・金・農産物予測）", "pricing.get_started": "始める",
+        "pricing.title": "プランを選択", "pricing.subtitle": "あなたに合ったプランをお選びください", "pricing.most_popular": "人気", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1ヶ月", "pricing.per_month": "/月", "pricing.per_3months": "/3ヶ月", "pricing.per_6months": "/6ヶ月", "pricing.per_year": "/年", "pricing.feat_daily_signals": "1銘柄あたり1日1〜5回の往復アラート", "pricing.feat_8lang": "8言語対応", "pricing.feat_cat1": "1カテゴリ選択（例：株価指数先物、貴金属、為替のいずれか1つ）", "pricing.feat_cat2": "2カテゴリ選択（例：株価指数先物、貴金属、為替から2つ）", "pricing.feat_cat_all": "全カテゴリ（例：株価指数先物、貴金属、為替 すべて）", "pricing.feat_247": "月〜金 リアルタイム対応", "pricing.feat_signals": "エントリー・目標・損切り・決済アラート", "pricing.feat_group": "各Classグループチャット参加", "pricing.feat_futures": "投資額・ポートフォリオに応じたFutures 1〜3ヶ月国際相場（国際株価・原油・金・農産物予測）", "pricing.get_started": "始める",
         "testimonials.title": "会員の声",
-        "news.title": "暗号ニュース", "news.subtitle": "最新の暗号通貨市場情報", "news.read_more": "続きを読む", "news.view_all": "すべてのニュースを見る",
+        "news.title": "マーケットニュース", "news.subtitle": "最新の市場情報", "news.read_more": "続きを読む", "news.view_all": "すべてのニュースを見る",
         "cta.title": "今すぐ始めよう", "cta.subtitle": "無料のTelegramに参加して高品質のアラートを受け取ろう", "cta.btn": "無料で始める",
-        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "クイックリンク", "footer.follow_us": "フォローする", "footer.disclaimer": "投資免責事項：暗号通貨および先物取引は高いリスクを伴います。過去の実績は将来の結果を保証しません。", "footer.copyright": "All rights reserved", "footer.terms": "利用規約", "footer.privacy": "プライバシーポリシー", "footer.risk": "投資リスク開示", "footer.refund": "返金ポリシー", "footer.affiliate": "アフィリエイト開示", "footer.earnings": "収益免責事項", "footer.contact": "お問い合わせ",
+        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "クイックリンク", "footer.follow_us": "フォローする", "footer.disclaimer": "投資免責事項:先物およびデリバティブ取引は高いリスクを伴います。過去の実績は将来の結果を保証しません。", "footer.copyright": "All rights reserved", "footer.terms": "利用規約", "footer.privacy": "プライバシーポリシー", "footer.risk": "投資リスク開示", "footer.refund": "返金ポリシー", "footer.affiliate": "アフィリエイト開示", "footer.earnings": "収益免責事項", "footer.contact": "お問い合わせ",
         "best10.title": "Foket 収益率現況", "best10.col_rank": "順位", "best10.col_symbol": "銘柄", "best10.col_monthly_return": "月平均収益率", "best10.col_max_loss": "日最大損失変動幅", "best10.col_daily_trades": "日平均往復取引回数", "best10.col_trade_days": "取引日数",
         "best10.days_unit": "日", "best10.no_data": "保存された銘柄データがありません", "best10.no_items": "登録された銘柄がありません", "best10.load_fail": "読み込み失敗", "best10.date_suffix": "現在まで",
         "best10.col_monthly_profit": "月平均収益額($)", "best10.col_margin": "取引証拠金($)",
@@ -2881,7 +2761,6 @@
         "core.card3_sub": "人間の感情を排除した100%自動システムトレーディング", "core.card3_desc": "トレーディングの最大の敵である恐怖と貪欲を根本的に排除するため、すべてのエントリーとクローズのプロセスを100%自動化システムで完全にコントロールします。",
         "core.card4_sub": "オーバーナイトリスクゼロ、徹底したデイトレーディング体制", "core.card4_desc": "ポジションを翌日に持ち越すロールオーバーは一切行わず、当日進入・当日清算の原則を徹底し、予測不能なギャップリスクを根本的に封鎖します。",
         "core.card5_sub": "未認識リスクへのエクスポージャーを防止するための必須ストップロス管理", "core.card5_desc": "必須のストップロス基準と最大ドローダウン制御（MDD）メカニズムを常時稼働させ、見えない潜在的リスクから投資元本を完璧に守ります。",
-        "core.card6_sub": "YouTubeライブを通じたリアルタイムの透明性証明", "core.card6_desc": "FOKETはアルゴリズムの稼働プロセスとリアルタイムのトレーディングパフォーマンスをYouTubeライブ放送を通じて透明に公開します。結果で証明するFOKETの圧倒的な技術力をリアルタイムで直接ご確認ください。",
         "markets.title": "ポートフォリオの完成、市場をリードする6大代表先物種目トレーディング", "markets.subtitle": "高収益・高リスクの先物市場で安定したアルファ収益を生み出すには、徹底した資産分散が不可欠です。FOKETは全世界の資本が集中する最も流動性の高い代表種目のみをターゲットにします。",
         "markets.idx_cat": "株価指数", "markets.idx_sub": "株価指数先物", "markets.idx_desc": "S&P 500、Nasdaq 100、日経225など、グローバルな主要株価指数先物",
         "markets.fx_cat": "外国為替（FX）", "markets.fx_sub": "通貨/外国為替", "markets.fx_desc": "ユーロ、円、豪ドルなど、世界の資金フローのバロメーター",
@@ -2891,21 +2770,20 @@
         "markets.rates_cat": "金利", "markets.rates_sub": "金利先物", "markets.rates_desc": "米国債、T-Bondなど、マクロ経済政策変化に応じた債券市場の中核先物",
         "best10.calc_title": "収益率算定基準：", "best10.calc_desc": " 海外先物の特性上、証拠金(Deposit)が基礎投資金となるため、収益率は証拠金の3倍を基準に算定します。", "best10.calc_ex1": "例：A銘柄の証拠金5,000ドル → 初期投資15,000ドル(×3) → 月収益1,000ドルの場合、収益率 = 1,000÷15,000 = ", "best10.calc_ex2": "投資金は全体の1/3のみ必要で、取引銘柄の証拠金名目として活用されます。",
         "charts.title": "銘柄別直近30取引日 月平均収益率推移", "charts.days_ago": "30日前", "charts.recent": "最近", "charts.no_data": "データなし",
-        "yt.title": "リアルタイム Trading Live 放送", "yt.sub": "クリックしてYouTubeライブに参加", "yt.btn": "YouTubeで見る"
       },
       zh: {
         "nav.home": "首页", "nav.signals": "Foket 指南", "nav.pricing": "服务", "nav.faq": "常见问题(FAQ)", "nav.perf": "业绩查询", "nav.contact": "联系我们", "nav.join_free": "Telegram 咨询", "nav.login": "登录", "nav.signup": "注册", "nav.mypage": "我的账户",
-        "hero.badge": "以数据验证，以结果证明。", "hero.title": "近15年数值数据 + 2亿8千万个交易逻辑深度学习", "hero.subtitle": "AI 机器学习优化交易提醒", "hero.free_signals_week": "每周3个免费提醒", "hero.vip_signals_day": "每天2-5个VIP提醒", "hero.money_back": "30天退款保证", "hero.join_free_btn": "Telegram 咨询", "hero.view_vip_btn": "查看服务", "hero.perk1": "YouTube 实时 Trading 直播（每周1~3次）", "hero.perk2": "海外期货买卖提醒", "hero.perk3": "日内交易", "hero.perk4": "通过SNS发送", "hero.perk5": "资产管理委托交易 可申请", "hero.perk6": "通过接收提醒选择个人交易或委托交易",
+        "hero.badge": "以数据验证，以结果证明。", "hero.title": "近15年数值数据 + 2亿8千万个交易逻辑深度学习", "hero.subtitle": "AI 机器学习优化交易提醒", "hero.free_signals_week": "每周3个免费提醒", "hero.vip_signals_day": "每天2-5个VIP提醒", "hero.money_back": "30天退款保证", "hero.join_free_btn": "Telegram 咨询", "hero.view_vip_btn": "查看服务", "hero.perk2": "海外期货买卖提醒", "hero.perk3": "日内交易", "hero.perk4": "通过SNS发送", "hero.perk5": "资产管理委托交易 可申请", "hero.perk6": "通过接收提醒选择个人交易或委托交易",
         "stats.members": "会员", "stats.success_rate": "成功率", "stats.signals": "已发送提醒", "stats.years": "年经验",
         "features.title": "为什么选择 Foket？", "features.subtitle": "结合专业交易员团队与AI技术的最佳交易逻辑服务", "features.ai_title": "AI驱动分析", "features.ai_desc": "数据驱动AI市场分析\n从2亿8千万+交易逻辑中精选的收益逻辑深度学习", "features.expert_title": "专家团队", "features.expert_desc": "资深交易员及分析团队\n验证策略基础提醒", "features.risk_title": "风险管理", "features.risk_desc": "系统性风险管理\n资本保护为核心交易", "features.instant_title": "即时提醒推送", "features.instant_desc": "通过Telegram实时交易提醒\n移动端随时随地获取信息", "features.support_title": "全天候支持", "features.support_desc": "8种语言支持\n24小时自动化系统交易\n24小时客服中心", "features.education_title": "交易委托", "features.education_desc": "可委托给提携的资产管理公司和投资咨询公司进行交易",
         "how_it_works.title": "服务构成", "how_it_works.subtitle": "每个提醒包含的内容", "how_it_works.entry": "SNS 提醒接收", "how_it_works.entry_desc": "现货买入（Futures含卖出）以市价执行\n例：以BTC当前价格买入意见", "how_it_works.take_profit": "委托或代理委托", "how_it_works.take_profit_desc": "原则上提供目标价，但超额收益后也可能发出平仓提醒。\n例：设定进场价的+2%", "how_it_works.stop_loss": "止损", "how_it_works.stop_loss_desc": "提供过去逻辑记录的平均值及最小值。即数据上的评估损益记录，并非表示过去曾于该数值平仓。\n进场价的-1.2%", "how_it_works.risk": "进行中交易结束提醒", "how_it_works.risk_desc": "现货市价卖出、Futures仓位平仓提醒。\n结束当前交易，等待下一次入场提醒。\n例：本次交易结束",
-        "coins.title": "支持的币种", "coins.subtitle": "主要加密货币提醒",
+
         "free_signals.title": "免费提醒", "free_signals.subtitle": "免费体验VIP质量提醒", "free_signals.join_btn": "免费获取",
-        "pricing.title": "选择计划", "pricing.subtitle": "选择适合您的计划", "pricing.most_popular": "热门", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1个月", "pricing.per_month": "/月", "pricing.per_3months": "/3个月", "pricing.per_6months": "/6个月", "pricing.per_year": "/年", "pricing.feat_daily_signals": "每个标的每日1~5次往返提醒", "pricing.feat_8lang": "8种语言支持", "pricing.feat_cat1": "选择1个 类别（如 CryptoSpot、Binance、Futures 选1）", "pricing.feat_cat2": "选择2个 类别（如 CryptoSpot、Binance、Futures 选2）", "pricing.feat_cat_all": "全部类别（如 CryptoSpot、Binance、Futures 全部）", "pricing.feat_247": "CryptoSpot、Binance 24/7服务，Futures 周一至周五", "pricing.feat_signals": "入场/目标/止损/完成提醒", "pricing.feat_group": "各 Class 群组参与", "pricing.feat_futures": "按投资组合提供 Futures 1~3个月国际行情（国际股市、原油、金价、农产品预测）", "pricing.get_started": "立即开始",
+        "pricing.title": "选择计划", "pricing.subtitle": "选择适合您的计划", "pricing.most_popular": "热门", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1个月", "pricing.per_month": "/月", "pricing.per_3months": "/3个月", "pricing.per_6months": "/6个月", "pricing.per_year": "/年", "pricing.feat_daily_signals": "每个标的每日1~5次往返提醒", "pricing.feat_8lang": "8种语言支持", "pricing.feat_cat1": "选择1个 类别（如 股指期货、贵金属、外汇 选1）", "pricing.feat_cat2": "选择2个 类别（如 股指期货、贵金属、外汇 选2）", "pricing.feat_cat_all": "全部类别（如 股指期货、贵金属、外汇 全部）", "pricing.feat_247": "周一至周五 实时服务", "pricing.feat_signals": "入场/目标/止损/完成提醒", "pricing.feat_group": "各 Class 群组参与", "pricing.feat_futures": "按投资组合提供 Futures 1~3个月国际行情（国际股市、原油、金价、农产品预测）", "pricing.get_started": "立即开始",
         "testimonials.title": "会员评价",
-        "news.title": "加密新闻", "news.subtitle": "最新加密货币市场资讯", "news.read_more": "阅读更多", "news.view_all": "查看所有新闻",
+        "news.title": "市场新闻", "news.subtitle": "最新市场资讯", "news.read_more": "阅读更多", "news.view_all": "查看所有新闻",
         "cta.title": "立即开始", "cta.subtitle": "加入我们的免费Telegram群组，接收高质量提醒", "cta.btn": "免费开始",
-        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "快速链接", "footer.follow_us": "关注我们", "footer.disclaimer": "投资免责声明：加密货币及期货交易具有高风险。过去的表现不保证未来的结果。", "footer.copyright": "版权所有", "footer.terms": "服务条款", "footer.privacy": "隐私政策", "footer.risk": "投资风险披露", "footer.refund": "退款政策", "footer.affiliate": "联盟链接披露", "footer.earnings": "收益免责声明", "footer.contact": "联系我们",
+        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "快速链接", "footer.follow_us": "关注我们", "footer.disclaimer": "投资免责声明:期货及衍生品交易具有高风险。过去的表现不保证未来的结果。", "footer.copyright": "版权所有", "footer.terms": "服务条款", "footer.privacy": "隐私政策", "footer.risk": "投资风险披露", "footer.refund": "退款政策", "footer.affiliate": "联盟链接披露", "footer.earnings": "收益免责声明", "footer.contact": "联系我们",
         "best10.title": "Foket 收益率现况", "best10.col_rank": "排名", "best10.col_symbol": "标的", "best10.col_monthly_return": "月均收益率", "best10.col_max_loss": "日最大亏损幅度", "best10.col_daily_trades": "日均往返交易次数", "best10.col_trade_days": "交易天数",
         "best10.days_unit": "天", "best10.no_data": "暂无保存的标的数据", "best10.no_items": "暂无注册标的", "best10.load_fail": "加载失败", "best10.date_suffix": "截至目前",
         "best10.col_monthly_profit": "月均收益额($)", "best10.col_margin": "交易保证金($)",
@@ -2919,7 +2797,6 @@
         "core.card3_sub": "排除人类情绪的100%自动化系统交易", "core.card3_desc": "为从根源上阻断交易最大敌人——恐惧与贪婪，所有入场和平仓流程均由100%自动化系统完全掌控。",
         "core.card4_sub": "零隔夜风险，严格的日内交易体系", "core.card4_desc": "绝不将仓位滚转至次日，严格坚持当日入场、当日平仓的原则，从根本上封堵不可预测的跳空风险。",
         "core.card5_sub": "防止未知风险敞口的必要止损管理", "core.card5_desc": "持续运作必要的止损标准和最大回撤控制（MDD）机制，完美防御不可见的潜在风险对投资本金的侵害。",
-        "core.card6_sub": "通过YouTube直播证明实时透明度", "core.card6_desc": "FOKET通过YouTube直播透明地公开算法运行过程和实时交易表现。请实时直接见证FOKET以成绩证明的压倒性技术实力。",
         "markets.title": "投资组合的完成，引领市场的6大代表期货品种交易", "markets.subtitle": "在高收益、高风险的期货市场中创造稳定的阿尔法收益，必须进行彻底的资产分散。FOKET仅瞄准全球资本最集中、流动性最强的代表品种。",
         "markets.idx_cat": "股票指数", "markets.idx_sub": "股票指数期货", "markets.idx_desc": "S&P 500、Nasdaq 100、日经225等全球主要股票指数期货",
         "markets.fx_cat": "外汇（FX）", "markets.fx_sub": "货币/外汇", "markets.fx_desc": "欧元、日元、澳元等全球资金流动的晴雨表",
@@ -2929,21 +2806,20 @@
         "markets.rates_cat": "利率", "markets.rates_sub": "利率期货", "markets.rates_desc": "美国国债、T-Bond等随宏观经济政策变化的债券市场核心期货",
         "best10.calc_title": "收益率计算基准：", "best10.calc_desc": " 由于海外期货的特性，保证金(Deposit)是基础投资金，因此收益率以保证金的3倍为基准计算。", "best10.calc_ex1": "例：A品种保证金5,000美元 → 初始投资15,000美元(×3) → 若月收益为1,000美元，月收益率 = 1,000÷15,000 = ", "best10.calc_ex2": "投资金仅需全部投资金的1/3，作为交易品种的保证金使用。",
         "charts.title": "各标的近30交易日月均收益率变动", "charts.days_ago": "30天前", "charts.recent": "最近", "charts.no_data": "暂无数据",
-        "yt.title": "实时 Trading 直播", "yt.sub": "点击参加 YouTube 直播", "yt.btn": "在 YouTube 上观看"
       },
       fr: {
         "nav.home": "Accueil", "nav.signals": "Foket Guide", "nav.pricing": "Service", "nav.faq": "FAQ", "nav.perf": "Performances", "nav.contact": "Contact", "nav.join_free": "Contact Telegram", "nav.login": "Connexion", "nav.signup": "S'inscrire", "nav.mypage": "Mon compte",
-        "hero.badge": "Alerte vérifiée par les données, prouvée par les résultats.", "hero.title": "15 ans de données de marché + deep learning sur 280 millions de logiques de trading", "hero.subtitle": "Alertes de trading optimisées par machine learning IA", "hero.free_signals_week": "3 alertes gratuites par semaine", "hero.vip_signals_day": "2-5 alertes VIP par jour", "hero.money_back": "Garantie remboursement 30 jours", "hero.join_free_btn": "Contact Telegram", "hero.view_vip_btn": "Voir les services", "hero.perk1": "Diffusion live de trading YouTube (1 à 3 fois/semaine)", "hero.perk2": "Alertes d'achat/vente sur futures étrangers", "hero.perk3": "Day trading", "hero.perk4": "Transmission via SNS", "hero.perk5": "Trading délégué – demande possible", "hero.perk6": "Choisir entre trading individuel et délégué via réception de l'alerte",
+        "hero.badge": "Alerte vérifiée par les données, prouvée par les résultats.", "hero.title": "15 ans de données de marché + deep learning sur 280 millions de logiques de trading", "hero.subtitle": "Alertes de trading optimisées par machine learning IA", "hero.free_signals_week": "3 alertes gratuites par semaine", "hero.vip_signals_day": "2-5 alertes VIP par jour", "hero.money_back": "Garantie remboursement 30 jours", "hero.join_free_btn": "Contact Telegram", "hero.view_vip_btn": "Voir les services", "hero.perk2": "Alertes d'achat/vente sur futures étrangers", "hero.perk3": "Day trading", "hero.perk4": "Transmission via SNS", "hero.perk5": "Trading délégué – demande possible", "hero.perk6": "Choisir entre trading individuel et délégué via réception de l'alerte",
         "stats.members": "Membres", "stats.success_rate": "Taux de réussite", "stats.signals": "Alertes envoyées", "stats.years": "Années d'activité",
         "features.title": "Pourquoi Foket ?", "features.subtitle": "Le meilleur service de logique de trading combinant équipe de traders professionnels et technologie IA", "features.ai_title": "Analyse alimentée par IA", "features.ai_desc": "Analyse de marché IA basée sur les données\nDeep learning de logiques de profit sélectionnées parmi 280 M+ de logiques", "features.expert_title": "Équipe d'experts", "features.expert_desc": "Équipe de traders et d'analystes expérimentés\nalertes basées sur des stratégies vérifiées", "features.risk_title": "Gestion des risques", "features.risk_desc": "Gestion des risques systématique\ntrading axé sur la préservation du capital", "features.instant_title": "Livraison instantanée des alertes", "features.instant_desc": "Alertes de trading en temps réel via Telegram\naccès partout sur mobile", "features.support_title": "Support 24/7", "features.support_desc": "8 langues\nTrading système automatique 24h/24\nService client 24h/24", "features.education_title": "Délégation de trading", "features.education_desc": "Délégation de trading possible aux sociétés de gestion d'actifs et conseillers en investissement partenaires",
         "how_it_works.title": "Présentation du service", "how_it_works.subtitle": "Ce qui est inclus dans chaque alerte", "how_it_works.entry": "Réception d'alerte SNS", "how_it_works.entry_desc": "Achat au comptant (Futures inclut la vente) au prix du marché\nex. : Opinion d'achat au prix actuel du BTC", "how_it_works.take_profit": "Délégation ou ordre proxy", "how_it_works.take_profit_desc": "Les objectifs de prise de bénéfices sont fournis par défaut, mais une alerte de clôture peut être envoyée après un excédent de profit.\nex. : +2% du prix d'entrée fixé", "how_it_works.stop_loss": "Stop Loss", "how_it_works.stop_loss_desc": "Nous fournissons les enregistrements moyens et minimaux de la logique passée. Il s'agit d'enregistrements de P&L évalués en données ; les trades passés n'ont pas nécessairement été clôturés à ces niveaux.\n-1,2% du prix d'entrée", "how_it_works.risk": "Alerte de clôture du trading en cours", "how_it_works.risk_desc": "Vente au comptant au prix du marché, alerte de clôture de position Futures.\nClôturez le trade en cours et attendez la prochaine alerte d'entrée.\nex. : Clôturer ce trade",
-        "coins.title": "Cryptos supportées", "coins.subtitle": "Alertes pour les principales cryptomonnaies",
+
         "free_signals.title": "Alertes gratuites", "free_signals.subtitle": "Expérimentez des alertes de qualité VIP gratuitement", "free_signals.join_btn": "Obtenir gratuitement",
-        "pricing.title": "Choisissez votre plan", "pricing.subtitle": "Sélectionnez le plan qui vous convient", "pricing.most_popular": "Populaire", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1 mois", "pricing.per_month": "/mois", "pricing.per_3months": "/3 mois", "pricing.per_6months": "/6 mois", "pricing.per_year": "/an", "pricing.feat_daily_signals": "1 à 5 alertes aller-retour par symbole par jour", "pricing.feat_8lang": "8 langues", "pricing.feat_cat1": "Choisir 1 catégorie (ex. CryptoSpot, Binance ou Futures)", "pricing.feat_cat2": "Choisir 2 catégories (ex. CryptoSpot, Binance, Futures – 2 au choix)", "pricing.feat_cat_all": "Toutes les catégories (ex. CryptoSpot, Binance, Futures – les 3)", "pricing.feat_247": "CryptoSpot, Binance 24/7, Futures lun.–ven.", "pricing.feat_signals": "Alertes entrée / objectif / stop / clôture", "pricing.feat_group": "Accès au groupe de la classe", "pricing.feat_futures": "Perspectives Futures 1–3 mois par portefeuille (indices, pétrole, or, matières premières)", "pricing.get_started": "Commencer",
+        "pricing.title": "Choisissez votre plan", "pricing.subtitle": "Sélectionnez le plan qui vous convient", "pricing.most_popular": "Populaire", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1 mois", "pricing.per_month": "/mois", "pricing.per_3months": "/3 mois", "pricing.per_6months": "/6 mois", "pricing.per_year": "/an", "pricing.feat_daily_signals": "1 à 5 alertes aller-retour par symbole par jour", "pricing.feat_8lang": "8 langues", "pricing.feat_cat1": "Choisir 1 catégorie (ex. Futures sur indices, Métaux ou Forex)", "pricing.feat_cat2": "Choisir 2 catégories (ex. Futures sur indices, Métaux, Forex – 2 au choix)", "pricing.feat_cat_all": "Toutes les catégories (ex. Futures sur indices, Métaux, Forex – les 3)", "pricing.feat_247": "Service en temps réel, lun.–ven.", "pricing.feat_signals": "Alertes entrée / objectif / stop / clôture", "pricing.feat_group": "Accès au groupe de la classe", "pricing.feat_futures": "Perspectives Futures 1–3 mois par portefeuille (indices, pétrole, or, matières premières)", "pricing.get_started": "Commencer",
         "testimonials.title": "Ce que disent nos membres",
-        "news.title": "Actualités Crypto", "news.subtitle": "Dernières nouvelles du marché des cryptomonnaies", "news.read_more": "Lire la suite", "news.view_all": "Voir toutes les actualités",
+        "news.title": "Actualités du marché", "news.subtitle": "Dernières nouvelles du marché", "news.read_more": "Lire la suite", "news.view_all": "Voir toutes les actualités",
         "cta.title": "Commencez aujourd'hui", "cta.subtitle": "Rejoignez notre Telegram gratuit et recevez des alertes de haute qualité", "cta.btn": "Commencer gratuitement",
-        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "Liens rapides", "footer.follow_us": "Suivez-nous", "footer.disclaimer": "Avertissement sur les investissements : Le trading de cryptomonnaies et de contrats à terme comporte des risques élevés.", "footer.copyright": "Tous droits réservés", "footer.terms": "Conditions d'utilisation", "footer.privacy": "Politique de confidentialité", "footer.risk": "Divulgation des risques", "footer.refund": "Politique de remboursement", "footer.affiliate": "Divulgation d'affiliation", "footer.earnings": "Avis de non-responsabilité sur les revenus", "footer.contact": "Contact",
+        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "Liens rapides", "footer.follow_us": "Suivez-nous", "footer.disclaimer": "Avertissement sur les investissements : Le trading de contrats à terme et de produits dérivés comporte des risques élevés.", "footer.copyright": "Tous droits réservés", "footer.terms": "Conditions d'utilisation", "footer.privacy": "Politique de confidentialité", "footer.risk": "Divulgation des risques", "footer.refund": "Politique de remboursement", "footer.affiliate": "Divulgation d'affiliation", "footer.earnings": "Avis de non-responsabilité sur les revenus", "footer.contact": "Contact",
         "best10.title": "Foket Rendements actuels", "best10.col_rank": "Rang", "best10.col_symbol": "Symbole", "best10.col_monthly_return": "Rendement mensuel moy.", "best10.col_max_loss": "Perte max journalière", "best10.col_daily_trades": "Opérations/jour moy.", "best10.col_trade_days": "Jours de trading",
         "best10.days_unit": "j", "best10.no_data": "Aucune donnée de marché enregistrée", "best10.no_items": "Aucun instrument enregistré", "best10.load_fail": "Échec du chargement", "best10.date_suffix": "à ce jour",
         "best10.col_monthly_profit": "Bénéfice mensuel moy. ($)", "best10.col_margin": "Marge de trading ($)",
@@ -2957,7 +2833,6 @@
         "core.card3_sub": "Trading sur système 100% automatisé, libre de toute émotion humaine", "core.card3_desc": "Pour bloquer fondamentalement la peur et la cupidité – les plus grands ennemis du trading – tous les processus d'entrée et de sortie sont entièrement contrôlés par un système 100% automatisé.",
         "core.card4_sub": "Risque overnight nul – discipline rigoureuse de day trading", "core.card4_desc": "Nous ne reportons jamais les positions au lendemain, adhérant strictement au principe d'entrée et de sortie le même jour, bloquant fondamentalement les risques de gap imprévisibles.",
         "core.card5_sub": "Gestion essentielle du stop-loss pour prévenir l'exposition aux risques inconnus", "core.card5_desc": "En opérant en permanence des critères de stop-loss essentiels et un mécanisme de contrôle du drawdown maximum (MDD), nous défendons parfaitement le capital d'investissement contre les risques potentiels invisibles.",
-        "core.card6_sub": "Transparence en temps réel prouvée via le live YouTube", "core.card6_desc": "FOKET divulgue de manière transparente le processus de fonctionnement de l'algorithme et les performances de trading en temps réel via les diffusions en direct YouTube. Découvrez en temps réel la puissance technologique écrasante de FOKET – prouvée par les résultats.",
         "markets.title": "Compléter le portefeuille : Trading sur les 6 marchés à terme les plus dominants", "markets.subtitle": "Une diversification rigoureuse des actifs est essentielle pour générer des rendements alpha stables sur les marchés à terme à haut rendement et à haut risque. FOKET cible uniquement les instruments de référence les plus liquides où les capitaux mondiaux sont concentrés.",
         "markets.idx_cat": "Indices boursiers", "markets.idx_sub": "Futures sur indices boursiers", "markets.idx_desc": "S&P 500, Nasdaq 100, Nikkei 225 et autres futures sur indices boursiers mondiaux majeurs",
         "markets.fx_cat": "Forex (FX)", "markets.fx_sub": "Devises / Forex", "markets.fx_desc": "Euro, yen japonais, dollar australien – baromètres des flux de capitaux mondiaux",
@@ -2967,21 +2842,20 @@
         "markets.rates_cat": "Taux d'intérêt", "markets.rates_sub": "Futures sur taux d'intérêt", "markets.rates_desc": "Bons du Trésor américain, T-Bond – futures clés du marché obligataire liés aux changements de politique macroéconomique",
         "best10.calc_title": "Base de calcul du rendement :", "best10.calc_desc": " Dans les futures étrangers, la marge (Deposit) est l'investissement de base ; le rendement est donc calculé sur 3× la marge.", "best10.calc_ex1": "Ex : Marge symbole A 5 000 $ → Invest. initial 15 000 $ (×3) → Si profit mensuel 1 000 $, rendement = 1 000 $ / 15 000 $ = ", "best10.calc_ex2": "Seul 1/3 de l'investissement total est requis, utilisé comme marge pour l'instrument de trading.",
         "charts.title": "Variation du rendement mensuel moyen sur 30 jours par symbole", "charts.days_ago": "il y a 30j", "charts.recent": "Récent", "charts.no_data": "Pas de données",
-        "yt.title": "Diffusion Trading en direct", "yt.sub": "Cliquer pour rejoindre le live YouTube", "yt.btn": "Regarder sur YouTube"
       },
       es: {
         "nav.home": "Inicio", "nav.signals": "Foket Guía", "nav.pricing": "Servicio", "nav.faq": "Preguntas frecuentes (FAQ)", "nav.perf": "Rendimiento", "nav.contact": "Contacto", "nav.join_free": "Consulta por Telegram", "nav.login": "Iniciar sesión", "nav.signup": "Registrarse", "nav.mypage": "Mi cuenta",
-        "hero.badge": "Verificado por datos, demostrado por resultados.", "hero.title": "15 años de datos de mercado + deep learning en 280 millones de lógicas de trading", "hero.subtitle": "Señales de trading optimizadas con machine learning de IA", "hero.free_signals_week": "3 alertas gratuitas por semana", "hero.vip_signals_day": "2-5 alertas VIP por día", "hero.money_back": "Garantía de devolución de 30 días", "hero.join_free_btn": "Consulta por Telegram", "hero.view_vip_btn": "Ver servicios", "hero.perk1": "Transmisión en vivo de trading en YouTube (1–3 veces/semana)", "hero.perk2": "Señales de compra/venta de futuros en el extranjero", "hero.perk3": "Day trading", "hero.perk4": "Envío por SNS", "hero.perk5": "Trading delegado – solicitud disponible", "hero.perk6": "Elige entre trading individual y delegado mediante recepción de alertas",
+        "hero.badge": "Verificado por datos, demostrado por resultados.", "hero.title": "15 años de datos de mercado + deep learning en 280 millones de lógicas de trading", "hero.subtitle": "Señales de trading optimizadas con machine learning de IA", "hero.free_signals_week": "3 alertas gratuitas por semana", "hero.vip_signals_day": "2-5 alertas VIP por día", "hero.money_back": "Garantía de devolución de 30 días", "hero.join_free_btn": "Consulta por Telegram", "hero.view_vip_btn": "Ver servicios", "hero.perk2": "Señales de compra/venta de futuros en el extranjero", "hero.perk3": "Day trading", "hero.perk4": "Envío por SNS", "hero.perk5": "Trading delegado – solicitud disponible", "hero.perk6": "Elige entre trading individual y delegado mediante recepción de alertas",
         "stats.members": "Miembros", "stats.success_rate": "Tasa de éxito", "stats.signals": "Señales enviadas", "stats.years": "Años de actividad",
         "features.title": "¿Por qué Foket?", "features.subtitle": "El mejor servicio de lógica de trading que combina equipo de traders profesionales y tecnología IA", "features.ai_title": "Análisis impulsado por IA", "features.ai_desc": "Análisis de mercado IA basado en datos\nDeep learning de lógicas de beneficio seleccionadas entre 280 M+ lógicas", "features.expert_title": "Equipo de expertos", "features.expert_desc": "Equipo de traders y analistas experimentados\nalertas basadas en estrategias verificadas", "features.risk_title": "Gestión de riesgos", "features.risk_desc": "Gestión sistemática de riesgos\ntrading centrado en la protección del capital", "features.instant_title": "Entrega instantánea de alertas", "features.instant_desc": "Señales de trading en tiempo real vía Telegram\nacceso en móvil en cualquier momento", "features.support_title": "Soporte 24/7", "features.support_desc": "8 idiomas\nTrading de sistema automatizado 24 horas\nAtención al cliente 24 horas", "features.education_title": "Delegación de trading", "features.education_desc": "Delegación de trading posible en gestoras de activos y asesores de inversión afiliados",
         "how_it_works.title": "Descripción del servicio", "how_it_works.subtitle": "Lo que se incluye en cada alerta", "how_it_works.entry": "Recepción de alerta SNS", "how_it_works.entry_desc": "Compra al contado (Futures incluye venta) al precio de mercado\nej.: Opinión de compra al precio actual de BTC", "how_it_works.take_profit": "Delegación o pedido proxy", "how_it_works.take_profit_desc": "Se ofrecen objetivos de toma de beneficios por defecto, pero también puede enviarse una alerta de cierre tras beneficio excedente.\nej.: +2% desde el precio de entrada", "how_it_works.stop_loss": "Stop Loss", "how_it_works.stop_loss_desc": "Proporcionamos los registros medios y mínimos de la lógica pasada. Son registros de P&L evaluado en datos; los trades pasados no se cerraron necesariamente en esos niveles.\n-1,2% desde el precio de entrada", "how_it_works.risk": "Señal de cierre de trading en curso", "how_it_works.risk_desc": "Venta al contado al precio de mercado, alerta de cierre de posición Futures.\nCierre el trade actual y espere la siguiente alerta de entrada.\nej.: Cerrar este trade",
-        "coins.title": "Criptos soportadas", "coins.subtitle": "Señales para las principales criptomonedas",
+
         "free_signals.title": "Señales gratuitas", "free_signals.subtitle": "Experimenta alertas de calidad VIP gratis", "free_signals.join_btn": "Obtener gratis",
-        "pricing.title": "Elige tu plan", "pricing.subtitle": "Selecciona el plan que sea adecuado para ti", "pricing.most_popular": "Popular", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1 mes", "pricing.per_month": "/mes", "pricing.per_3months": "/3 meses", "pricing.per_6months": "/6 meses", "pricing.per_year": "/año", "pricing.feat_daily_signals": "1–5 alertas de ida y vuelta por símbolo al día", "pricing.feat_8lang": "8 idiomas", "pricing.feat_cat1": "Elegir 1 categoría (ej. CryptoSpot, Binance o Futures)", "pricing.feat_cat2": "Elegir 2 categorías (ej. CryptoSpot, Binance, Futures – 2 a elegir)", "pricing.feat_cat_all": "Todas las categorías (ej. CryptoSpot, Binance, Futures – las 3)", "pricing.feat_247": "CryptoSpot, Binance 24/7, Futures lun.–vie.", "pricing.feat_signals": "Señales de entrada / objetivo / stop / cierre", "pricing.feat_group": "Acceso al grupo de la clase", "pricing.feat_futures": "Perspectivas Futures 1–3 meses por cartera (índices, petróleo, oro, materias primas)", "pricing.get_started": "Empezar",
+        "pricing.title": "Elige tu plan", "pricing.subtitle": "Selecciona el plan que sea adecuado para ti", "pricing.most_popular": "Popular", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1 mes", "pricing.per_month": "/mes", "pricing.per_3months": "/3 meses", "pricing.per_6months": "/6 meses", "pricing.per_year": "/año", "pricing.feat_daily_signals": "1–5 alertas de ida y vuelta por símbolo al día", "pricing.feat_8lang": "8 idiomas", "pricing.feat_cat1": "Elegir 1 categoría (ej. Futuros de índices, Metales o Forex)", "pricing.feat_cat2": "Elegir 2 categorías (ej. Futuros de índices, Metales, Forex – 2 a elegir)", "pricing.feat_cat_all": "Todas las categorías (ej. Futuros de índices, Metales, Forex – las 3)", "pricing.feat_247": "Servicio en tiempo real, lun.–vie.", "pricing.feat_signals": "Señales de entrada / objetivo / stop / cierre", "pricing.feat_group": "Acceso al grupo de la clase", "pricing.feat_futures": "Perspectivas Futures 1–3 meses por cartera (índices, petróleo, oro, materias primas)", "pricing.get_started": "Empezar",
         "testimonials.title": "Lo que dicen nuestros miembros",
-        "news.title": "Noticias Crypto", "news.subtitle": "Últimas novedades del mercado de criptomonedas", "news.read_more": "Leer más", "news.view_all": "Ver todas las noticias",
+        "news.title": "Noticias del mercado", "news.subtitle": "Últimas novedades del mercado", "news.read_more": "Leer más", "news.view_all": "Ver todas las noticias",
         "cta.title": "Empieza hoy", "cta.subtitle": "Únete a nuestro Telegram gratuito y recibe alertas de alta calidad", "cta.btn": "Empezar gratis",
-        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "Enlaces rápidos", "footer.follow_us": "Síguenos", "footer.disclaimer": "Aviso de inversión: El trading de criptomonedas y futuros conlleva alto riesgo. Los resultados pasados no garantizan resultados futuros.", "footer.copyright": "Todos los derechos reservados", "footer.terms": "Términos de servicio", "footer.privacy": "Política de privacidad", "footer.risk": "Divulgación de riesgos", "footer.refund": "Política de reembolso", "footer.affiliate": "Divulgación de afiliados", "footer.earnings": "Descargo de responsabilidad de ganancias", "footer.contact": "Contacto",
+        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "Enlaces rápidos", "footer.follow_us": "Síguenos", "footer.disclaimer": "Aviso de inversión: El trading de futuros y derivados conlleva alto riesgo. Los resultados pasados no garantizan resultados futuros.", "footer.copyright": "Todos los derechos reservados", "footer.terms": "Términos de servicio", "footer.privacy": "Política de privacidad", "footer.risk": "Divulgación de riesgos", "footer.refund": "Política de reembolso", "footer.affiliate": "Divulgación de afiliados", "footer.earnings": "Descargo de responsabilidad de ganancias", "footer.contact": "Contacto",
         "best10.title": "Foket Rendimientos actuales", "best10.col_rank": "Rango", "best10.col_symbol": "Símbolo", "best10.col_monthly_return": "Rentabilidad mensual media", "best10.col_max_loss": "Pérdida máx. diaria", "best10.col_daily_trades": "Operaciones/día medias", "best10.col_trade_days": "Días de trading",
         "best10.days_unit": "d", "best10.no_data": "No hay datos de mercado guardados", "best10.no_items": "No hay instrumentos registrados", "best10.load_fail": "Error de carga", "best10.date_suffix": "a la fecha",
         "best10.col_monthly_profit": "Ganancia mensual media ($)", "best10.col_margin": "Margen de trading ($)",
@@ -2995,7 +2869,6 @@
         "core.card3_sub": "Trading de sistema 100% automatizado, libre de emociones humanas", "core.card3_desc": "Para bloquear fundamentalmente el miedo y la codicia – los mayores enemigos del trading – todos los procesos de entrada y salida están completamente controlados por un sistema 100% automatizado.",
         "core.card4_sub": "Riesgo overnight cero – disciplina rigurosa de day trading", "core.card4_desc": "Nunca traspasamos posiciones al día siguiente, adhiriéndonos estrictamente al principio de entrada y salida el mismo día, bloqueando fundamentalmente los riesgos de gap imprevisibles.",
         "core.card5_sub": "Gestión esencial del stop-loss para prevenir la exposición a riesgos desconocidos", "core.card5_desc": "Operando constantemente criterios esenciales de stop-loss y un mecanismo de control de drawdown máximo (MDD), defendemos perfectamente el capital de inversión de riesgos potenciales invisibles.",
-        "core.card6_sub": "Transparencia en tiempo real demostrada a través del streaming en directo de YouTube", "core.card6_desc": "FOKET divulga de forma transparente el proceso de operación del algoritmo y el rendimiento de trading en tiempo real a través de transmisiones en vivo de YouTube. Presencia en tiempo real la abrumadora capacidad técnica de FOKET – demostrada por los resultados.",
         "markets.title": "Completando el portafolio: Trading en los 6 mercados de futuros más dominantes", "markets.subtitle": "La diversificación rigurosa de activos es esencial para generar rentabilidades alfa estables en los mercados de futuros de alta rentabilidad y alto riesgo. FOKET apunta únicamente a los instrumentos de referencia más líquidos donde se concentra el capital global.",
         "markets.idx_cat": "Índices de renta variable", "markets.idx_sub": "Futuros sobre índices de renta variable", "markets.idx_desc": "S&P 500, Nasdaq 100, Nikkei 225 y otros futuros sobre índices bursátiles globales",
         "markets.fx_cat": "Divisas (FX)", "markets.fx_sub": "Monedas / Divisas", "markets.fx_desc": "Euro, yen japonés, dólar australiano – barómetros de los flujos de capital globales",
@@ -3005,21 +2878,20 @@
         "markets.rates_cat": "Tasas de interés", "markets.rates_sub": "Futuros sobre tasas de interés", "markets.rates_desc": "Bonos del Tesoro de EE.UU., T-Bond – futuros clave del mercado de bonos impulsados por cambios en la política macroeconómica",
         "best10.calc_title": "Base de cálculo de rendimiento:", "best10.calc_desc": " En futuros extranjeros el margen (Deposit) es la inversión base; el rendimiento se calcula a 3× el margen.", "best10.calc_ex1": "Ej.: Margen símbolo A $5,000 → Inv. inicial $15,000 (×3) → Si ganancia mensual $1,000, rendimiento = $1,000 / $15,000 = ", "best10.calc_ex2": "Solo se requiere 1/3 de la inversión total, usado como margen para el instrumento de trading.",
         "charts.title": "Variación de rentabilidad mensual promedio (30 días) por símbolo", "charts.days_ago": "hace 30d", "charts.recent": "Reciente", "charts.no_data": "Sin datos",
-        "yt.title": "Transmisión Trading en vivo", "yt.sub": "Haz clic para unirte al live de YouTube", "yt.btn": "Ver en YouTube"
       },
       ru: {
         "nav.home": "Главная", "nav.signals": "Foket Гид", "nav.pricing": "Сервис", "nav.faq": "Часто задаваемые вопросы (FAQ)", "nav.perf": "Результаты", "nav.contact": "Контакт", "nav.join_free": "Запрос в Telegram", "nav.login": "Войти", "nav.signup": "Регистрация", "nav.mypage": "Мой аккаунт",
-        "hero.badge": "Алерт, проверенный данными, доказанный результатами.", "hero.title": "15 лет рыночных данных + глубокое обучение на 280 млн торговых логик", "hero.subtitle": "Торговые алерты, оптимизированные машинным обучением ИИ", "hero.free_signals_week": "3 бесплатных алерта в неделю", "hero.vip_signals_day": "2-5 VIP-алертов в день", "hero.money_back": "Гарантия возврата денег 30 дней", "hero.join_free_btn": "Запрос в Telegram", "hero.view_vip_btn": "Посмотреть услуги", "hero.perk1": "Прямая трансляция торговли на YouTube (1–3 раза в неделю)", "hero.perk2": "Алерты покупки/продажи иностранных фьючерсов", "hero.perk3": "Дневная торговля", "hero.perk4": "Рассылка через SNS", "hero.perk5": "Делегированная торговля – доступна заявка", "hero.perk6": "Выбор между индивидуальной и делегированной торговлей через получение алертов",
+        "hero.badge": "Алерт, проверенный данными, доказанный результатами.", "hero.title": "15 лет рыночных данных + глубокое обучение на 280 млн торговых логик", "hero.subtitle": "Торговые алерты, оптимизированные машинным обучением ИИ", "hero.free_signals_week": "3 бесплатных алерта в неделю", "hero.vip_signals_day": "2-5 VIP-алертов в день", "hero.money_back": "Гарантия возврата денег 30 дней", "hero.join_free_btn": "Запрос в Telegram", "hero.view_vip_btn": "Посмотреть услуги", "hero.perk2": "Алерты покупки/продажи иностранных фьючерсов", "hero.perk3": "Дневная торговля", "hero.perk4": "Рассылка через SNS", "hero.perk5": "Делегированная торговля – доступна заявка", "hero.perk6": "Выбор между индивидуальной и делегированной торговлей через получение алертов",
         "stats.members": "Участники", "stats.success_rate": "Процент успеха", "stats.signals": "Отправлено алертов", "stats.years": "Лет опыта",
         "features.title": "Почему Foket?", "features.subtitle": "Лучший сервис торговых логик, объединяющий профессиональную команду трейдеров и технологии ИИ", "features.ai_title": "Анализ на основе ИИ", "features.ai_desc": "Анализ рынка ИИ на основе данных\nГлубокое обучение отобранных логик прибыли из 280+ млн торговых логик", "features.expert_title": "Команда экспертов", "features.expert_desc": "Опытная команда трейдеров и аналитиков\nалерты на основе проверенных стратегий", "features.risk_title": "Управление рисками", "features.risk_desc": "Систематическое управление рисками\nторговля с акцентом на защиту капитала", "features.instant_title": "Мгновенная доставка алертов", "features.instant_desc": "Алерты в реальном времени через Telegram\nдоступ с мобильного в любое время", "features.support_title": "Поддержка 24/7", "features.support_desc": "8 языков\n24-часовая автоматизированная системная торговля\nКлиентский сервис 24 часа", "features.education_title": "Делегирование торговли", "features.education_desc": "Делегирование торговли аффилированным управляющим компаниям и инвестиционным консультантам",
         "how_it_works.title": "Структура сервиса", "how_it_works.subtitle": "Что включено в каждый алерт", "how_it_works.entry": "Получение алерта через SNS", "how_it_works.entry_desc": "Покупка спот (фьючерсы включают продажу) по рыночной цене\nнапр.: Мнение о покупке по текущей цене BTC", "how_it_works.take_profit": "Делегирование или прокси-заказ", "how_it_works.take_profit_desc": "Цели тейк-профит предоставляются по умолчанию, но алерт закрытия может быть отправлен и после избыточной прибыли.\nнапр.: +2% от цены входа", "how_it_works.stop_loss": "Стоп лосс", "how_it_works.stop_loss_desc": "Мы предоставляем средние и минимальные значения из прошлой логики. Это записи оценённых P&L в данных; прошлые сделки не обязательно были закрыты на этих уровнях.\n-1,2% от цены входа", "how_it_works.risk": "Алерт закрытия текущей сделки", "how_it_works.risk_desc": "Рыночная продажа спот, алерт закрытия позиции Futures.\nЗакройте текущую сделку и дождитесь следующего алерта входа.\nнапр.: Завершить эту сделку",
-        "coins.title": "Поддерживаемые монеты", "coins.subtitle": "Алерты для основных криптовалют",
+
         "free_signals.title": "Бесплатные алерты", "free_signals.subtitle": "Попробуйте алерты VIP-качества бесплатно", "free_signals.join_btn": "Получить бесплатно",
-        "pricing.title": "Выберите план", "pricing.subtitle": "Выберите подходящий план", "pricing.most_popular": "Популярный", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1 месяц", "pricing.per_month": "/месяц", "pricing.per_3months": "/3 месяца", "pricing.per_6months": "/6 месяцев", "pricing.per_year": "/год", "pricing.feat_daily_signals": "1–5 алертов туда-обратно на символ в день", "pricing.feat_8lang": "8 языков", "pricing.feat_cat1": "Выбрать 1 категорию (напр. CryptoSpot, Binance или Futures)", "pricing.feat_cat2": "Выбрать 2 категории (напр. CryptoSpot, Binance, Futures – 2 на выбор)", "pricing.feat_cat_all": "Все категории (напр. CryptoSpot, Binance, Futures – все 3)", "pricing.feat_247": "CryptoSpot, Binance 24/7, Futures пн–пт", "pricing.feat_signals": "Алерты входа / цели / стоп / завершения", "pricing.feat_group": "Доступ к групповому чату класса", "pricing.feat_futures": "Прогноз Futures на 1–3 месяца по портфелю (индексы, нефть, золото, сырьё)", "pricing.get_started": "Начать",
+        "pricing.title": "Выберите план", "pricing.subtitle": "Выберите подходящий план", "pricing.most_popular": "Популярный", "pricing.plan_bronze": "Bronze Class", "pricing.plan_silver": "Silver Class", "pricing.plan_gold": "Gold Class", "pricing.plan_vip": "VIP Class", "pricing.dur_1month": "1 месяц", "pricing.per_month": "/месяц", "pricing.per_3months": "/3 месяца", "pricing.per_6months": "/6 месяцев", "pricing.per_year": "/год", "pricing.feat_daily_signals": "1–5 алертов туда-обратно на символ в день", "pricing.feat_8lang": "8 языков", "pricing.feat_cat1": "Выбрать 1 категорию (напр. Фьючерсы на индексы, Металлы или Форекс)", "pricing.feat_cat2": "Выбрать 2 категории (напр. Фьючерсы на индексы, Металлы, Форекс – 2 на выбор)", "pricing.feat_cat_all": "Все категории (напр. Фьючерсы на индексы, Металлы, Форекс – все 3)", "pricing.feat_247": "Обслуживание в реальном времени, пн–пт", "pricing.feat_signals": "Алерты входа / цели / стоп / завершения", "pricing.feat_group": "Доступ к групповому чату класса", "pricing.feat_futures": "Прогноз Futures на 1–3 месяца по портфелю (индексы, нефть, золото, сырьё)", "pricing.get_started": "Начать",
         "testimonials.title": "Отзывы участников",
-        "news.title": "Крипто новости", "news.subtitle": "Последние новости рынка криптовалют", "news.read_more": "Читать далее", "news.view_all": "Все новости",
+        "news.title": "Новости рынка", "news.subtitle": "Последние новости рынка", "news.read_more": "Читать далее", "news.view_all": "Все новости",
         "cta.title": "Начните сегодня", "cta.subtitle": "Присоединитесь к нашему бесплатному Telegram и получайте высококачественные алерты", "cta.btn": "Начать бесплатно",
-        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "Быстрые ссылки", "footer.follow_us": "Следите за нами", "footer.disclaimer": "Инвестиционное предупреждение: Торговля криптовалютой и фьючерсами сопряжена с высоким риском. Прошлые результаты не гарантируют будущих.", "footer.copyright": "Все права защищены", "footer.terms": "Условия использования", "footer.privacy": "Политика конфиденциальности", "footer.risk": "Раскрытие инвестиционных рисков", "footer.refund": "Политика возврата", "footer.affiliate": "Раскрытие партнёрских ссылок", "footer.earnings": "Отказ от ответственности за доходы", "footer.contact": "Контакт",
+        "footer.tagline": "AI Automatic Trading", "footer.quick_links": "Быстрые ссылки", "footer.follow_us": "Следите за нами", "footer.disclaimer": "Инвестиционное предупреждение: Торговля фьючерсами и деривативами сопряжена с высоким риском. Прошлые результаты не гарантируют будущих.", "footer.copyright": "Все права защищены", "footer.terms": "Условия использования", "footer.privacy": "Политика конфиденциальности", "footer.risk": "Раскрытие инвестиционных рисков", "footer.refund": "Политика возврата", "footer.affiliate": "Раскрытие партнёрских ссылок", "footer.earnings": "Отказ от ответственности за доходы", "footer.contact": "Контакт",
         "best10.title": "Foket Текущая доходность", "best10.col_rank": "Ранг", "best10.col_symbol": "Символ", "best10.col_monthly_return": "Средн. месячная доходность", "best10.col_max_loss": "Макс. дневная просадка", "best10.col_daily_trades": "Средн. дневных сделок", "best10.col_trade_days": "Торговых дней",
         "best10.days_unit": "д", "best10.no_data": "Нет сохранённых данных", "best10.no_items": "Нет зарегистрированных инструментов", "best10.load_fail": "Ошибка загрузки", "best10.date_suffix": "на сегодня",
         "best10.col_monthly_profit": "Средн. месячная прибыль ($)", "best10.col_margin": "Торговая маржа ($)",
@@ -3033,7 +2905,6 @@
         "core.card3_sub": "100% автоматизированная системная торговля без человеческих эмоций", "core.card3_desc": "Чтобы фундаментально заблокировать страх и жадность — главных врагов трейдинга — все процессы входа и выхода полностью контролируются 100% автоматизированной системой.",
         "core.card4_sub": "Нулевой риск овернайт — строгая дисциплина дневной торговли", "core.card4_desc": "Мы никогда не переносим позиции на следующий день, строго придерживаясь принципа входа и выхода в тот же день, фундаментально блокируя непредсказуемые риски гэпов.",
         "core.card5_sub": "Обязательное управление стоп-лоссом для предотвращения воздействия неизвестных рисков", "core.card5_desc": "Постоянно работая с основными критериями стоп-лосса и механизмом контроля максимальной просадки (MDD), мы идеально защищаем инвестиционный капитал от невидимых потенциальных рисков.",
-        "core.card6_sub": "Прозрачность в реальном времени, доказанная через YouTube-трансляции", "core.card6_desc": "FOKET прозрачно раскрывает процесс работы алгоритма и торговые показатели в реальном времени через прямые трансляции на YouTube. Убедитесь в реальном времени в подавляющем техническом мастерстве FOKET – доказанном результатами.",
         "markets.title": "Завершение портфеля: торговля 6 ведущими фьючерсными рынками", "markets.subtitle": "Тщательная диверсификация активов необходима для получения стабильной альфа-доходности на высокодоходных, высокорисковых фьючерсных рынках. FOKET нацелен только на наиболее ликвидные эталонные инструменты, где сосредоточен мировой капитал.",
         "markets.idx_cat": "Фондовые индексы", "markets.idx_sub": "Фьючерсы на фондовые индексы", "markets.idx_desc": "S&P 500, Nasdaq 100, Nikkei 225 и другие крупные мировые фьючерсы на фондовые индексы",
         "markets.fx_cat": "Форекс (FX)", "markets.fx_sub": "Валюты / Форекс", "markets.fx_desc": "Евро, японская иена, австралийский доллар — барометры мировых потоков капитала",
@@ -3043,7 +2914,6 @@
         "markets.rates_cat": "Процентные ставки", "markets.rates_sub": "Фьючерсы на процентные ставки", "markets.rates_desc": "Казначейские облигации США, T-Bond — ключевые фьючерсы рынка облигаций, движимые изменениями макроэкономической политики",
         "best10.calc_title": "Основа расчёта доходности:", "best10.calc_desc": " В иностранных фьючерсах маржа (Deposit) является базовой инвестицией; доходность рассчитывается как 3× маржи.", "best10.calc_ex1": "Пример: Маржа символа A $5,000 → Начальные инвестиции $15,000 (×3) → При ежемесячной прибыли $1,000: доходность = $1,000 / $15,000 = ", "best10.calc_ex2": "Требуется лишь 1/3 общего объёма инвестиций, используемая в качестве маржи для торгового инструмента.",
         "charts.title": "Средняя месячная доходность за 30 дней по инструментам", "charts.days_ago": "30д назад", "charts.recent": "Недавно", "charts.no_data": "Нет данных",
-        "yt.title": "Прямой эфир Trading Live", "yt.sub": "Нажмите, чтобы присоединиться к YouTube Live", "yt.btn": "Смотреть на YouTube"
       }
     };
 
@@ -3089,8 +2959,6 @@
       if (typeof renderPlans === 'function') renderPlans(lang);
 
       // Re-render stats panels so Korean shows nameKo first, others show sym first
-      if (typeof loadCryptoStats === 'function') loadCryptoStats();
-      if (typeof loadBinanceStats === 'function') loadBinanceStats();
       if (typeof loadFuturesStats === 'function') loadFuturesStats();
       if (typeof loadBest10 === 'function') loadBest10();
       if (typeof renderProfitCharts === 'function' && _marketsDataCache) renderProfitCharts(_marketsDataCache);
@@ -3220,15 +3088,7 @@
     fetchTicker();
     setInterval(fetchTicker, 60000);
 
-    /* ═══════════════════════════════════════════════
-       CRYPTO STATS PANEL – 어드민 localStorage 연동
-    ═══════════════════════════════════════════════ */
-    let _cspInsts = [];
-    let _cspIdx = 0;
-    let _cspTimer = null;
-    const CSP_PAGE = 2; // 한 번에 보여줄 종목 수
-
-    function _cspBuildRow(inst, delay, opts) {
+    function _cspBuildRow(inst, delay) {
       const mr = inst.monthlyReturn !== '' && inst.monthlyReturn != null ? parseFloat(inst.monthlyReturn) : null;
       const dl = inst.maxDailyLoss !== '' && inst.maxDailyLoss != null ? parseFloat(inst.maxDailyLoss) : null;
       const _sd = inst.startDate && /^\d{4}-\d{2}-\d{2}$/.test(String(inst.startDate).trim()) ? String(inst.startDate).trim() : null;
@@ -3238,11 +3098,10 @@
       const dlStr = dl !== null ? (dl >= 0 ? '+' : '') + dl.toFixed(2) + '%' : '—';
       const mrCls = mr !== null ? (mr >= 0 ? 'up' : 'dn') : 'dim';
       const dlCls = dl !== null ? (dl < 0 ? 'dn' : 'up') : 'dim';
-      const symPrefix = (opts && opts.binanceMark) ? '<span class="binance-mark" title="Binance">B</span>' : '';
       const isKo = (typeof currentLang !== 'undefined' && currentLang === 'ko');
       const symCell = isKo
-        ? `${symPrefix}${inst.nameKo}<small>${inst.sym}</small>`
-        : `${symPrefix}${inst.sym}<small>${inst.nameKo}</small>`;
+        ? `${inst.nameKo}<small>${inst.sym}</small>`
+        : `${inst.sym}<small>${inst.nameKo}</small>`;
       return `<div class="csp-row" style="animation:cspRowIn .45s cubic-bezier(.22,.68,0,1.2) ${delay}s forwards;">
     <div class="csp-sym">${symCell}</div>
     <div class="csp-val ${mrCls}">${mrStr}</div>
@@ -3250,122 +3109,6 @@
     <div class="csp-val dim">${roundTrips}</div>
     <div class="csp-days">${days !== null ? days : '—'}<small>${days !== null ? '일' : ''}</small></div>
   </div>`;
-    }
-
-    function _cspRenderPair(animate) {
-      const container = document.getElementById('cspRows');
-      const dotsEl = document.getElementById('cspDots');
-      if (!container || !_cspInsts.length) return;
-
-      const total = _cspInsts.length;
-      const pages = Math.ceil(total / CSP_PAGE);
-      const page = Math.floor(_cspIdx / CSP_PAGE);
-
-      function showPair() {
-        const pair = _cspInsts.slice(_cspIdx, _cspIdx + CSP_PAGE);
-        container.innerHTML = pair.map((inst, i) => _cspBuildRow(inst, i * 0.12)).join('');
-
-        // 페이지 도트 업데이트
-        if (dotsEl) {
-          dotsEl.innerHTML = Array.from({ length: pages }, (_, p) =>
-            `<button class="csp-dot-btn${p === page ? ' on' : ''}" onclick="_cspJump(${p * CSP_PAGE})"></button>`
-          ).join('');
-        }
-      }
-
-      if (animate && container.children.length) {
-        // 현재 행들 슬라이드 아웃
-        Array.from(container.children).forEach((el, i) => {
-          el.style.animation = `cspRowOut .3s ease ${i * 0.06}s forwards`;
-        });
-        setTimeout(showPair, 350);
-      } else {
-        showPair();
-      }
-    }
-
-    function _cspJump(idx) {
-      if (_cspTimer) clearInterval(_cspTimer);
-      _cspIdx = idx;
-      _cspRenderPair(true);
-      _cspTimer = setInterval(_cspNext, 3000);
-    }
-
-    function _cspNext() {
-      const total = _cspInsts.length;
-      _cspIdx = (_cspIdx + CSP_PAGE) % (Math.ceil(total / CSP_PAGE) * CSP_PAGE);
-      if (_cspIdx >= total) _cspIdx = 0;
-      _cspRenderPair(true);
-    }
-
-    function loadCryptoStats(markets) {
-      try {
-        if (!markets) return;
-        const crypto = markets.find(m => m.id === 1);
-        if (!crypto || !Array.isArray(crypto.instruments)) return;
-
-        _cspInsts = crypto.instruments;
-        _cspIdx = 0;
-        if (_cspTimer) clearInterval(_cspTimer);
-
-        _cspRenderPair(false);
-
-        if (_cspInsts.length > CSP_PAGE) {
-          _cspTimer = setInterval(_cspNext, 3000);
-        }
-      } catch (e) {
-        console.warn('[CryptoStats] 로드 실패:', e);
-      }
-    }
-
-    /* ═══════════════════════════════════════════════
-       BINANCE CRYPTO STATS PANEL – 어드민 id:8 연동
-    ═══════════════════════════════════════════════ */
-    let _bspInsts = [];
-    let _bspIdx = 0;
-    let _bspTimer = null;
-
-    function _bspRenderPair(animate) {
-      const container = document.getElementById('bspRows');
-      const dotsEl = document.getElementById('bspDots');
-      if (!container || !_bspInsts.length) return;
-
-      const total = _bspInsts.length;
-      const pages = Math.ceil(total / CSP_PAGE);
-      const page = Math.floor(_bspIdx / CSP_PAGE);
-
-      function showPair() {
-        const pair = _bspInsts.slice(_bspIdx, _bspIdx + CSP_PAGE);
-        container.innerHTML = pair.map((inst, i) => _cspBuildRow(inst, i * 0.12, { binanceMark: true })).join('');
-        if (dotsEl) {
-          dotsEl.innerHTML = Array.from({ length: pages }, (_, p) =>
-            `<button class="csp-dot-btn${p === page ? ' on' : ''}" style="${p === page ? 'background:#f0b90b;' : ''}" onclick="_bspJump(${p * CSP_PAGE})"></button>`
-          ).join('');
-        }
-      }
-
-      if (animate && container.children.length) {
-        Array.from(container.children).forEach((el, i) => {
-          el.style.animation = `cspRowOut .3s ease ${i * 0.06}s forwards`;
-        });
-        setTimeout(showPair, 350);
-      } else {
-        showPair();
-      }
-    }
-
-    function _bspJump(idx) {
-      if (_bspTimer) clearInterval(_bspTimer);
-      _bspIdx = idx;
-      _bspRenderPair(true);
-      _bspTimer = setInterval(_bspNext, 3000);
-    }
-
-    function _bspNext() {
-      const total = _bspInsts.length;
-      _bspIdx = (_bspIdx + CSP_PAGE) % (Math.ceil(total / CSP_PAGE) * CSP_PAGE);
-      if (_bspIdx >= total) _bspIdx = 0;
-      _bspRenderPair(true);
     }
 
     /* ═══════════════════════════════════════════════
@@ -3448,26 +3191,6 @@
       }
     }
 
-    function loadBinanceStats(markets) {
-      try {
-        if (!markets) return;
-        const cat = markets.find(m => m.id === 8);
-        if (!cat || !Array.isArray(cat.instruments)) return;
-
-        _bspInsts = cat.instruments;
-        _bspIdx = 0;
-        if (_bspTimer) clearInterval(_bspTimer);
-
-        _bspRenderPair(false);
-
-        if (_bspInsts.length > CSP_PAGE) {
-          _bspTimer = setInterval(_bspNext, 3000);
-        }
-      } catch (e) {
-        console.warn('[BinanceStats] 로드 실패:', e);
-      }
-    }
-
     function renderBest10(raw) {
       const container = document.getElementById('best10Rows');
       if (!container) return;
@@ -3535,10 +3258,9 @@
           const days = sd ? Math.max(0, Math.floor((new Date() - new Date(sd + 'T00:00:00')) / 86400000)) : null;
           const mrStr = mrVal !== null ? (mrVal >= 0 ? '+' : '') + parseFloat(mrVal).toFixed(2) + '%' : '—';
           const mrCls = mrVal !== null ? (mrVal >= 0 ? 'up' : 'dn') : 'dim';
-          const binancePrefix = (inst._catId === 8) ? '<span class="binance-mark" title="Binance">B</span>' : '';
           const symCell = isKo
-            ? binancePrefix + instName(inst) + '<small>' + (inst.sym || '') + ' · ' + catLabel(inst) + '</small>'
-            : binancePrefix + (inst.sym || '') + '<small>' + instName(inst) + ' · ' + catLabel(inst) + '</small>';
+            ? instName(inst) + '<small>' + (inst.sym || '') + ' · ' + catLabel(inst) + '</small>'
+            : (inst.sym || '') + '<small>' + instName(inst) + ' · ' + catLabel(inst) + '</small>';
           return '<div class="csp-row" style="animation:cspRowIn .45s cubic-bezier(.22,.68,0,1.2) ' + (idx * 0.06) + 's forwards;">' +
             '<div class="csp-rank">' + rank + '</div>' +
             '<div class="csp-sym">' + symCell + '</div>' +
@@ -3687,8 +3409,6 @@
         if (!markets) return;
         const raw = JSON.stringify(markets);
         loadBest10();
-        loadCryptoStats(markets);
-        loadBinanceStats(markets);
         loadFuturesStats(markets);
       });
 
@@ -3755,16 +3475,6 @@
           if (kakaoUrl) { el.href = kakaoUrl; el.style.display = ''; }
           else { el.style.display = 'none'; }
         });
-        // 유튜브 라이브 링크
-        const ytUrl = cfg.youtube_live || '';
-        const ytSection = document.getElementById('youtube-live-section');
-        const ytLink = document.getElementById('youtube-live-link');
-        if (ytUrl && ytSection) {
-          ytSection.style.display = 'block';
-          if (ytLink) ytLink.href = ytUrl;
-        } else if (ytSection) {
-          ytSection.style.display = 'none';
-        }
       })();
 
       // 구독 플랜 그리드 동적 렌더링
