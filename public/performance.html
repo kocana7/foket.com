@@ -51,7 +51,7 @@
     .pf-card .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.35}
     .pf-h2{font-size:18px;font-weight:800;margin:8px 0 12px}
     .pf-tbl-wrap{overflow-x:auto;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);margin-bottom:28px}
-    .pf-tbl{width:100%;min-width:640px;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+    .pf-tbl{width:100%;min-width:480px;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
     .pf-tbl th{text-align:left;color:var(--text-secondary);font-weight:600;font-size:12px;padding:12px 16px;border-bottom:1px solid var(--border-color);background:var(--bg-secondary);white-space:nowrap}
     .pf-tbl td{padding:11px 16px;border-bottom:1px solid var(--border-color);white-space:nowrap}
     .pf-tbl tr:last-child td{border-bottom:none}
@@ -141,7 +141,7 @@
     <h2 class="pf-h2" data-i18n="hTrades">거래 내역</h2>
     <div class="pf-tbl-wrap">
       <table class="pf-tbl">
-        <thead><tr><th data-i18n="tDate">날짜</th><th data-i18n="tSym">종목</th><th class="opt" data-i18n="tSide">방향</th><th class="r opt" data-i18n="tEntry">진입가</th><th class="r opt" data-i18n="tExit">청산가</th><th class="r" data-i18n="tMin">당일 최소기록</th><th class="r" data-i18n="tPnl">손익</th></tr></thead>
+        <thead><tr><th data-i18n="tDate">날짜</th><th data-i18n="tSym">종목</th><th class="r" data-i18n="tMin">당일 최소기록</th><th class="r" data-i18n="tPnl">손익</th></tr></thead>
         <tbody id="tradeBody"></tbody>
       </table>
     </div>
@@ -256,12 +256,10 @@
     /* 거래 내역 (페이지) */
     var pages=Math.max(1,Math.ceil(rows.length/PER)); if(page>pages)page=pages;
     var tb=document.getElementById('tradeBody'), slice=rows.slice((page-1)*PER,page*PER);
-    if(!slice.length)emptyRow(tb,7,emptyMsg);
+    if(!slice.length)emptyRow(tb,4,emptyMsg);
     else{tb.textContent='';slice.forEach(function(r){
       var row=document.createElement('tr');
       row.appendChild(td(r.date));row.appendChild(td(r.name?r.sym+' · '+r.name:r.sym));
-      row.appendChild(r.side?td(r.side==='SHORT'?t.short:t.long,'opt '+(r.side==='SHORT'?'dn':'up')):td('-','opt'));
-      row.appendChild(td(fmtNum(r.entry),'r opt'));row.appendChild(td(fmtNum(r.exit),'r opt'));
       row.appendChild(td(r.minPnl==null?'-':fmtMoney(r.minPnl,r.cur),'r '+(r.minPnl==null?'':cls(r.minPnl))));
       row.appendChild(td(fmtMoney(r.pnl,r.cur),'r '+cls(r.pnl)));tb.appendChild(row);});}
 
