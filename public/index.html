@@ -1434,7 +1434,7 @@
     }
     .wing-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(34,158,217,.55); color: #fff }
     .wing-pill {
-      position: fixed; left: 28px; top: calc(var(--nav-h, 70px) + 16px); z-index: 999;
+      position: fixed; left: 28px; top: calc(var(--nav-h, 110px) + 14px); z-index: 999;
       display: none; align-items: center; gap: 8px;
       background: var(--bg-card); color: var(--text-primary); text-decoration: none;
       border: 1px solid var(--accent-blue); border-radius: 50px;
@@ -1445,7 +1445,7 @@
     .wing-pill:hover { color: var(--text-primary); border-color: var(--accent-blue-light) }
     @media(min-width:1700px) { .wing-banner { display: block } }
     @media(max-width:1699px) { .wing-pill { display: inline-flex } }
-    @media(max-width:480px) { .wing-pill { left: 12px; top: calc(var(--nav-h, 60px) + 10px); padding: 8px 12px; font-size: 12.5px } }
+    @media(max-width:480px) { .wing-pill { left: 12px; top: calc(var(--nav-h, 100px) + 10px); padding: 8px 12px; font-size: 12.5px } }
     body.wing-off .wing-banner, body.wing-off .wing-pill { display: none !important }
 
     /* ── COINS ── */
@@ -4006,7 +4006,7 @@
     if(typeof applyLang==='function'){var orig=applyLang;window.applyLang=function(l){orig(l);render();};}
   })();
   </script>
-<script>(function(){function h(){var n=document.querySelector('.navbar');if(n)document.documentElement.style.setProperty('--nav-h',n.getBoundingClientRect().height+'px');}h();addEventListener('resize',h);})();</script>
+<script>(function(){var raf=0;function h(){raf=0;var n=document.querySelector('.navbar'),b=n?n.getBoundingClientRect().bottom:0;document.documentElement.style.setProperty('--nav-h',Math.max(0,Math.round(b))+'px');}function q(){if(!raf)raf=requestAnimationFrame(h);}h();addEventListener('resize',q);addEventListener('scroll',q,{passive:true});addEventListener('load',h);})();</script>
 <script src="js/i18n-common.js"></script>
 </body>
 
