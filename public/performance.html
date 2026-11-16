@@ -140,13 +140,13 @@
     <h2 class="pf-h2" data-i18n="hTrades">거래 내역</h2>
     <div class="pf-tbl-wrap">
       <table class="pf-tbl">
-        <thead><tr><th data-i18n="tDate">날짜</th><th data-i18n="tSym">종목</th><th data-i18n="tSide">방향</th><th class="r" data-i18n="tEntry">진입가</th><th class="r" data-i18n="tExit">청산가</th><th class="r" data-i18n="tPnl">손익</th></tr></thead>
+        <thead><tr><th data-i18n="tDate">날짜</th><th data-i18n="tSym">종목</th><th data-i18n="tSide">방향</th><th class="r" data-i18n="tEntry">진입가</th><th class="r" data-i18n="tExit">청산가</th><th class="r" data-i18n="tMin">당일 최소기록</th><th class="r" data-i18n="tPnl">손익</th></tr></thead>
         <tbody id="tradeBody"></tbody>
       </table>
     </div>
     <div class="pf-pager" id="pager"></div>
 
-    <p class="pf-note" data-i18n="note">모든 기록은 수수료·슬리피지에 따라 실제 계좌 결과와 다를 수 있습니다. 과거 실적은 미래 수익을 보장하지 않으며, 선물 거래는 원금 이상의 손실이 발생할 수 있습니다.</p>
+    <p class="pf-note" data-i18n="note">실제 신호 기록은 포켓 자동 시스템이 낸 매매 신호를 1계약 기준으로 계산한 결과이며, 고객 계좌의 실거래 결과가 아닙니다. 모든 기록은 수수료·슬리피지에 따라 실제 계좌 결과와 다를 수 있습니다. 과거 실적은 미래 수익을 보장하지 않으며, 선물 거래는 원금 이상의 손실이 발생할 수 있습니다.</p>
   </div>
 </main>
 <footer>
@@ -160,20 +160,20 @@
     simNote:'이 화면은 과거 데이터로 계산한 가상 성과(백테스트)입니다. 실제 거래 결과가 아니며, 미래 수익을 뜻하지 않습니다.',
     fSym:'종목',all:'전체',fFrom:'시작일',fTo:'종료일',fRange:'빠른 선택',rAll:'전체 기간',r20:'최근 20거래일',rM1:'이번 달',rM3:'최근 3개월',rY1:'최근 1년',
     cTrades:'거래 수',cWin:'승률',cPnl:'누적 손익',cWorst:'최대 손실 거래',
-    hMonth:'월별 요약',hTrades:'거래 내역',tMonth:'월',tTrades:'거래 수',tWin:'승률',tPnl:'손익',tDate:'날짜',tSym:'종목',tSide:'방향',tEntry:'진입가',tExit:'청산가',
+    hMonth:'월별 요약',hTrades:'거래 내역',tMonth:'월',tTrades:'거래 수',tWin:'승률',tPnl:'손익',tDate:'날짜',tSym:'종목',tSide:'방향',tEntry:'진입가',tExit:'청산가',tMin:'당일 최소기록',
     long:'매수',short:'매도',prev:'이전',next:'다음',
     emptyLive:'아직 공개된 실제 신호 기록이 없습니다.',emptyBt:'등록된 백테스트 결과가 없습니다.',emptyFilter:'조건에 맞는 기록이 없습니다.',loading:'불러오는 중…',
-    note:'모든 기록은 수수료·슬리피지에 따라 실제 계좌 결과와 다를 수 있습니다. 과거 실적은 미래 수익을 보장하지 않으며, 선물 거래는 원금 이상의 손실이 발생할 수 있습니다.'};
+    note:'실제 신호 기록은 포켓 자동 시스템이 낸 매매 신호를 1계약 기준으로 계산한 결과이며, 고객 계좌의 실거래 결과가 아닙니다. 모든 기록은 수수료·슬리피지에 따라 실제 계좌 결과와 다를 수 있습니다. 과거 실적은 미래 수익을 보장하지 않으며, 선물 거래는 원금 이상의 손실이 발생할 수 있습니다.'};
   var EN={title:'Past Performance',h:'Home',p:'Service',f:'FAQ',perf:'Performance',c:'Contact',j:'Telegram Inquiry',risk:'Risk Disclosure',
     pt:'Past Performance',sub:'Look up the results of published trading signals, losses included.',
     tabLive:'Live signal record',tabBt:'Backtest (simulated)',
     simNote:'This view shows simulated results (backtest) calculated on historical data. They are not real trades and do not indicate future returns.',
     fSym:'Symbol',all:'All',fFrom:'From',fTo:'To',fRange:'Quick range',rAll:'All time',r20:'Last 20 trading days',rM1:'This month',rM3:'Last 3 months',rY1:'Last 12 months',
     cTrades:'Trades',cWin:'Win rate',cPnl:'Total P&L',cWorst:'Largest loss',
-    hMonth:'Monthly summary',hTrades:'Trade history',tMonth:'Month',tTrades:'Trades',tWin:'Win rate',tPnl:'P&L',tDate:'Date',tSym:'Symbol',tSide:'Side',tEntry:'Entry',tExit:'Exit',
+    hMonth:'Monthly summary',hTrades:'Trade history',tMonth:'Month',tTrades:'Trades',tWin:'Win rate',tPnl:'P&L',tDate:'Date',tSym:'Symbol',tSide:'Side',tEntry:'Entry',tExit:'Exit',tMin:'Intraday low P&L',
     long:'Long',short:'Short',prev:'Prev',next:'Next',
     emptyLive:'No live signal records have been published yet.',emptyBt:'No backtest results registered.',emptyFilter:'No records match these filters.',loading:'Loading…',
-    note:'Records may differ from actual account results due to fees and slippage. Past performance does not guarantee future results. Futures trading can lose more than the initial capital.'};
+    note:'Live signal records are the results of signals issued by the Foket automated system, calculated for one contract; they are not results of customer accounts. Records may differ from actual account results due to fees and slippage. Past performance does not guarantee future results. Futures trading can lose more than the initial capital.'};
   var T={ko:KO,en:EN};
   var LANG_META={ko:{flag:'fi-kr',name:'한국어'},en:{flag:'fi-us',name:'English'},de:{flag:'fi-de',name:'Deutsch'},ja:{flag:'fi-jp',name:'日本語'},zh:{flag:'fi-cn',name:'中文'},fr:{flag:'fi-fr',name:'Français'},es:{flag:'fi-es',name:'Español'},ru:{flag:'fi-ru',name:'Русский'}};
   var currentLang='ko'; try{currentLang=localStorage.getItem('lang')||'ko';}catch(e){}
@@ -188,10 +188,12 @@
     if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return null;
     var pnl=Number(r.pnl); if(!isFinite(pnl))return null;
     var k=String(r.kind||'').toLowerCase(); if(k!=='live'&&k!=='backtest')return null;
-    var side=String(r.side||'').toUpperCase(); side=(side==='SHORT'||side==='S'||side==='SELL'||side==='매도')?'SHORT':'LONG';
+    var side=String(r.side||'').toUpperCase().trim();
+    side=(side==='SHORT'||side==='S'||side==='SELL'||side==='매도')?'SHORT':((side==='LONG'||side==='L'||side==='BUY'||side==='매수')?'LONG':'');
+    var mp=(r.min_pnl===''||r.min_pnl==null)?null:Number(r.min_pnl); if(mp!=null&&!isFinite(mp))mp=null;
     return {date:d,sym:String(r.sym||'').toUpperCase(),name:String(r.name||''),side:side,
       entry:(r.entry===''||r.entry==null)?null:Number(r.entry),exit:(r.exit===''||r.exit==null)?null:Number(r.exit),
-      pnl:pnl,cur:String(r.cur||'USD').toUpperCase(),kind:k};
+      pnl:pnl,minPnl:mp,cur:String(r.cur||'USD').toUpperCase(),kind:k};
   }
 
   function fmtNum(n){if(n==null||!isFinite(n))return '-';return Number(n).toLocaleString('en-US',{maximumFractionDigits:6});}
@@ -253,12 +255,13 @@
     /* 거래 내역 (페이지) */
     var pages=Math.max(1,Math.ceil(rows.length/PER)); if(page>pages)page=pages;
     var tb=document.getElementById('tradeBody'), slice=rows.slice((page-1)*PER,page*PER);
-    if(!slice.length)emptyRow(tb,6,emptyMsg);
+    if(!slice.length)emptyRow(tb,7,emptyMsg);
     else{tb.textContent='';slice.forEach(function(r){
       var row=document.createElement('tr');
       row.appendChild(td(r.date));row.appendChild(td(r.name?r.sym+' · '+r.name:r.sym));
-      row.appendChild(td(r.side==='SHORT'?t.short:t.long,r.side==='SHORT'?'dn':'up'));
+      row.appendChild(r.side?td(r.side==='SHORT'?t.short:t.long,r.side==='SHORT'?'dn':'up'):td('-'));
       row.appendChild(td(fmtNum(r.entry),'r'));row.appendChild(td(fmtNum(r.exit),'r'));
+      row.appendChild(td(r.minPnl==null?'-':fmtMoney(r.minPnl,r.cur),'r '+(r.minPnl==null?'':cls(r.minPnl))));
       row.appendChild(td(fmtMoney(r.pnl,r.cur),'r '+cls(r.pnl)));tb.appendChild(row);});}
 
     var pg=document.getElementById('pager'); pg.textContent='';
@@ -311,14 +314,23 @@
   applyLang(currentLang);
 
   var BASE=(location.protocol!=='file:')?location.origin+'/api':'http://localhost:3000/api';
-  fetch(BASE+'/storage/records',{cache:'no-store'})
-    .then(function(r){return r.json();})
-    .then(function(j){
-      var arr=[]; try{arr=j&&j.value?JSON.parse(j.value):[];}catch(e){arr=[];}
-      ALL=(Array.isArray(arr)?arr:[]).map(norm).filter(Boolean);
-      fillSymbols(); render();
-    })
-    .catch(function(){ALL=[];fillSymbols();render();});
+  /* 기록은 두 곳에서 읽는다: 저장소에 함께 배포되는 records.json(매일 갱신)과 관리자 업로드(records 저장 키).
+     같은 거래(날짜·종목·방향·진입·청산·구분)가 양쪽에 있으면 records.json 쪽을 쓴다. */
+  function getJSON(url){return fetch(url,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
+  Promise.all([
+    getJSON('records.json'),
+    getJSON(BASE+'/storage/records')
+  ]).then(function(res){
+    var file=Array.isArray(res[0])?res[0]:((res[0]&&Array.isArray(res[0].records))?res[0].records:[]);
+    var up=[]; try{up=res[1]&&res[1].value?JSON.parse(res[1].value):[];}catch(e){up=[];}
+    if(!Array.isArray(up))up=[];
+    var seen={}, out=[];
+    file.concat(up).map(norm).filter(Boolean).forEach(function(r){
+      var k=[r.date,r.sym,r.side,r.entry,r.exit,r.kind].join('|');
+      if(!seen[k]){seen[k]=1;out.push(r);}
+    });
+    ALL=out; fillSymbols(); render();
+  });
 
   document.getElementById('langToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('langMenu').classList.toggle('open');});
   document.addEventListener('click',function(){document.getElementById('langMenu').classList.remove('open');});

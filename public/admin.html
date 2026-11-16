@@ -4446,13 +4446,14 @@
       },
       records: {
         label: '과거 실적',
-        cols: ['date','sym','name','side','entry','exit','pnl','cur','kind'],
-        required: ['date','sym','side','pnl','kind'],
+        cols: ['date','sym','name','side','entry','exit','pnl','min_pnl','cur','kind'],
+        required: ['date','sym','pnl','kind'],
         hints: {
           date: '거래일 YYYY-MM-DD',
           sym: '종목코드 (예: NQ, K200)',
-          side: 'LONG 또는 SHORT',
+          side: 'LONG 또는 SHORT (모르면 비움)',
           pnl: '손익 금액 (손실은 음수)',
+          min_pnl: '당일 최소기록 (장중 최저 평가손익)',
           cur: 'USD 또는 KRW (비우면 USD)',
           kind: 'live = 실제 신호 기록, backtest = 가상 성과. 반드시 구분해서 입력'
         },
@@ -4468,15 +4469,16 @@
             date: date,
             sym: String(row.sym || '').toUpperCase().trim(),
             name: String(row.name || '').trim(),
-            side: (side === 'SHORT' || side === 'S' || side === 'SELL' || side === '매도') ? 'SHORT' : 'LONG',
+            side: (side === 'SHORT' || side === 'S' || side === 'SELL' || side === '매도') ? 'SHORT' : ((side === 'LONG' || side === 'L' || side === 'BUY' || side === '매수') ? 'LONG' : ''),
             entry: (row.entry === '' || row.entry == null) ? null : Number(row.entry),
             exit: (row.exit === '' || row.exit == null) ? null : Number(row.exit),
             pnl: pnl,
+            min_pnl: (row.min_pnl === '' || row.min_pnl == null || !isFinite(Number(row.min_pnl))) ? null : Number(row.min_pnl),
             cur: String(row.cur || 'USD').toUpperCase().trim(),
             kind: kind
           };
         },
-        displayCols: ['date','sym','name','side','entry','exit','pnl','cur','kind']
+        displayCols: ['date','sym','name','side','entry','exit','pnl','min_pnl','cur','kind']
       }
     };
 
