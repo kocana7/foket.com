@@ -38,10 +38,6 @@
     footer a{color:var(--accent-blue)}
     .container{max-width:1100px}
     .pf-sub{color:var(--text-secondary);font-size:15px;margin:-12px 0 28px}
-    .pf-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-    .pf-tab{background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-secondary);padding:10px 18px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;min-height:44px;font-family:inherit}
-    .pf-tab.on{background:var(--gradient-primary);color:#fff;border-color:transparent}
-    .pf-sim{display:none;background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.45);color:#f5c45e;border-radius:var(--radius-sm);padding:12px 16px;font-size:14px;margin-bottom:16px}
     .pf-filters{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:16px 18px;margin-bottom:20px}
     .pf-filters label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--text-secondary);font-weight:600}
     .pf-filters select,.pf-filters input{background:var(--bg-primary);border:1px solid var(--border-color);color:var(--text-primary);border-radius:var(--radius-sm);padding:9px 12px;font-size:14px;min-height:42px;font-family:inherit;color-scheme:dark}
@@ -102,12 +98,6 @@
     <h1 class="sec-title" data-i18n="pt">과거 실적 조회</h1>
     <p class="pf-sub" data-i18n="sub">공개된 매매 신호의 결과를 손실 포함 그대로 조회할 수 있습니다.</p>
 
-    <div class="pf-tabs" role="tablist">
-      <button class="pf-tab on" type="button" data-kind="live" role="tab" aria-selected="true" data-i18n="tabLive">실제 신호 기록</button>
-      <button class="pf-tab" type="button" data-kind="backtest" role="tab" aria-selected="false" data-i18n="tabBt">백테스트 (가상 성과)</button>
-    </div>
-    <div class="pf-sim" id="pfSim" data-i18n="simNote">이 화면은 과거 데이터로 계산한 가상 성과(백테스트)입니다. 실제 거래 결과가 아니며, 미래 수익을 뜻하지 않습니다.</div>
-
     <div class="pf-filters">
       <label><span data-i18n="fSym">종목</span><select id="fSym"><option value="" data-i18n="all">전체</option></select></label>
       <label><span data-i18n="fFrom">시작일</span><input type="date" id="fFrom"></label>
@@ -157,23 +147,20 @@
 (function(){
   var KO={title:'과거 실적 조회',h:'홈',p:'서비스 구성',f:'자주하는 질문(FAQ)',perf:'실적 조회',c:'문의',j:'텔레그램 문의',risk:'투자위험고지',
     pt:'과거 실적 조회',sub:'공개된 매매 신호의 결과를 손실 포함 그대로 조회할 수 있습니다.',
-    tabLive:'실제 신호 기록',tabBt:'백테스트 (가상 성과)',
-    simNote:'이 화면은 과거 데이터로 계산한 가상 성과(백테스트)입니다. 실제 거래 결과가 아니며, 미래 수익을 뜻하지 않습니다.',
+
     fSym:'종목',all:'전체',fFrom:'시작일',fTo:'종료일',fRange:'빠른 선택',rAll:'전체 기간',r20:'최근 20거래일',rM1:'이번 달',rM3:'최근 3개월',rY1:'최근 1년',
     cTrades:'거래 수',cWin:'승률',cPnl:'누적 손익',cWorst:'최대 손실 거래',
     hMonth:'월별 요약',hTrades:'거래 내역',tMonth:'월',tTrades:'거래 수',tWin:'승률',tPnl:'손익',tDate:'날짜',tSym:'종목',tSide:'방향',tEntry:'진입가',tExit:'청산가',tMin:'당일 최소기록',
     long:'매수',short:'매도',prev:'이전',next:'다음',
-    emptyLive:'아직 공개된 실제 신호 기록이 없습니다.',emptyBt:'등록된 백테스트 결과가 없습니다.',emptyFilter:'조건에 맞는 기록이 없습니다.',loading:'불러오는 중…',
+    emptyLive:'아직 공개된 실제 신호 기록이 없습니다.',emptyFilter:'조건에 맞는 기록이 없습니다.',loading:'불러오는 중…',
     note:'실제 신호 기록은 포켓 자동 시스템이 낸 매매 신호를 1계약 기준으로 계산한 결과이며, 고객 계좌의 실거래 결과가 아닙니다. 모든 기록은 수수료·슬리피지에 따라 실제 계좌 결과와 다를 수 있습니다. 과거 실적은 미래 수익을 보장하지 않으며, 선물 거래는 원금 이상의 손실이 발생할 수 있습니다.'};
   var EN={title:'Past Performance',h:'Home',p:'Service',f:'FAQ',perf:'Performance',c:'Contact',j:'Telegram Inquiry',risk:'Risk Disclosure',
     pt:'Past Performance',sub:'Look up the results of published trading signals, losses included.',
-    tabLive:'Live signal record',tabBt:'Backtest (simulated)',
-    simNote:'This view shows simulated results (backtest) calculated on historical data. They are not real trades and do not indicate future returns.',
     fSym:'Symbol',all:'All',fFrom:'From',fTo:'To',fRange:'Quick range',rAll:'All time',r20:'Last 20 trading days',rM1:'This month',rM3:'Last 3 months',rY1:'Last 12 months',
     cTrades:'Trades',cWin:'Win rate',cPnl:'Total P&L',cWorst:'Largest loss',
     hMonth:'Monthly summary',hTrades:'Trade history',tMonth:'Month',tTrades:'Trades',tWin:'Win rate',tPnl:'P&L',tDate:'Date',tSym:'Symbol',tSide:'Side',tEntry:'Entry',tExit:'Exit',tMin:'Intraday low P&L',
     long:'Long',short:'Short',prev:'Prev',next:'Next',
-    emptyLive:'No live signal records have been published yet.',emptyBt:'No backtest results registered.',emptyFilter:'No records match these filters.',loading:'Loading…',
+    emptyLive:'No live signal records have been published yet.',emptyFilter:'No records match these filters.',loading:'Loading…',
     note:'Live signal records are the results of signals issued by the Foket automated system, calculated for one contract; they are not results of customer accounts. Records may differ from actual account results due to fees and slippage. Past performance does not guarantee future results. Futures trading can lose more than the initial capital.'};
   var T={ko:KO,en:EN};
   var LANG_META={ko:{flag:'fi-kr',name:'한국어'},en:{flag:'fi-us',name:'English'},de:{flag:'fi-de',name:'Deutsch'},ja:{flag:'fi-jp',name:'日本語'},zh:{flag:'fi-cn',name:'中文'},fr:{flag:'fi-fr',name:'Français'},es:{flag:'fi-es',name:'Español'},ru:{flag:'fi-ru',name:'Русский'}};
@@ -229,9 +216,8 @@
 
   function render(){
     var t=tr(), rows=filtered();
-    document.getElementById('pfSim').style.display=kind==='backtest'?'block':'none';
     var any=(ALL||[]).some(function(r){return r.kind===kind;});
-    var emptyMsg=ALL===null?t.loading:(!any?(kind==='live'?t.emptyLive:t.emptyBt):t.emptyFilter);
+    var emptyMsg=ALL===null?t.loading:(!any?t.emptyLive:t.emptyFilter);
 
     /* 요약 카드 */
     var wins=rows.filter(function(r){return r.pnl>0;}).length;
@@ -299,14 +285,6 @@
     fillSymbols(); render();
   }
 
-  document.querySelectorAll('.pf-tab').forEach(function(b){
-    b.addEventListener('click',function(){
-      kind=b.dataset.kind; page=1;
-      document.querySelectorAll('.pf-tab').forEach(function(x){var on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-selected',on?'true':'false');});
-      if(document.getElementById('fRange').value==='20')applyRange('20');
-      fillSymbols(); render();
-    });
-  });
   ['fSym','fFrom','fTo'].forEach(function(id){document.getElementById(id).addEventListener('change',function(){page=1;if(id!=='fSym')document.getElementById('fRange').value='';render();});});
   document.getElementById('fRange').addEventListener('change',function(e){page=1;applyRange(e.target.value);render();});
 
