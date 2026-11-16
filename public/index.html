@@ -846,6 +846,17 @@
     }
 
 
+    /* ── 종목별 최근 30거래일 카드 (8종목) ── */
+    .sym30-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px }
+    .sym30-grid .hpf-card { padding: 16px 16px 12px }
+    .sym30-grid .hpf-last { margin-bottom: 12px; padding: 10px 12px }
+    .sym30-grid .hpf-last .pnl { font-size: 18px }
+    .sym30-grid .hpf-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-bottom: 8px }
+    .sym30-grid .hpf-stats .k { font-size: 11px }
+    .sym30-grid .hpf-stats .v { font-size: 15px }
+    .sym30-chart { display: block; width: 100%; height: auto }
+    @media(max-width:1200px) { .sym30-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+    @media(max-width:560px) { .sym30-grid { grid-template-columns: 1fr } .sym30-grid .hpf-last { grid-template-columns: 1fr auto } .sym30-grid .hpf-last .pnl, .sym30-grid .hpf-last .min { text-align: right } .sym30-grid .hpf-last > * { order: 0 !important } }
     /* ── 부문별 대표 종목 카드 (수익율 현황) ── */
     .best10-hd-r { display: flex; align-items: center; gap: 14px }
     .best10-more { font-size: 13px; font-weight: 600; color: var(--accent-blue); text-decoration: none; white-space: nowrap }
@@ -2409,8 +2420,12 @@
   <!-- ── 30일 수익 변동 차트 ── -->
   <div id="profitChartsWrap" style="display:none; padding-bottom:28px; background:var(--bg-primary); border-bottom:1px solid var(--border-color);">
     <div class="profit-charts-sec">
-      <div class="profit-charts-title" data-i18n="charts.title">종목별 최근 30거래일 월평균 수익율 변동 현황</div>
-      <div class="chart-grid" id="profitChartGrid"></div>
+      <div class="hpf-hd">
+        <div class="hpf-title"><span class="csp-dot"></span><span data-i18n="charts.title">종목별 최근 30거래일 수익 현황</span></div>
+        <a class="hpf-more" href="performance.html" data-i18n="best10.more">전체 실적 조회 →</a>
+      </div>
+      <div class="sym30-grid" id="profitChartGrid"></div>
+      <div class="hpf-note" data-i18n="charts.note">월평균 수익률 상위 8종목의 최근 30거래일 일별 수익률입니다. 과거 실적은 미래 수익을 보장하지 않습니다.</div>
     </div>
   </div>
 
@@ -2795,7 +2810,8 @@
         "markets.agri_cat": "농산물 (Agriculture)", "markets.agri_sub": "농산물 선물", "markets.agri_desc": "밀, 옥수수, 대두 등 기후 변화와 수급 불균형이 만드는 강력한 마진 기회",
         "markets.rates_cat": "금리 (Interest Rates)", "markets.rates_sub": "금리 선물", "markets.rates_desc": "미국채, T-Bond 등 거시경제 정책 변화에 따른 채권 시장의 핵심 선물",
         "best10.calc_title": "수익율 산정 기준 :", "best10.calc_desc": " 해외선물 특성상 증거금(Deposit)이 기초투자금이므로, 수익율 산정에는 증거금의 3배를 기준으로 산정됨.", "best10.calc_ex1": "예: A종목의 증거금 5,000달러 → 초기 투자금 15,000달러(3배) → 월 수익이 1,000달러이면 월 수익율은 1,000달러 / 15,000달러 = ", "best10.calc_ex2": "투자금은 전체 투자금의 1/3만 소요되며, 트레이딩 종목의 증거금 명목으로 활용됩니다.",
-        "charts.title": "종목별 최근 30거래일 월평균 수익율 변동 현황", "charts.days_ago": "30일전", "charts.recent": "최근", "charts.no_data": "데이터 없음",
+        "charts.title": "종목별 최근 30거래일 수익 현황", "charts.days_ago": "30일전", "charts.recent": "최근", "charts.no_data": "데이터 없음",
+        "charts.note": "월평균 수익률 상위 8종목의 최근 30거래일 일별 수익률입니다. 과거 실적은 미래 수익을 보장하지 않습니다.", "charts.last": "최근 거래일", "charts.min30": "30일 최저", "charts.sum30": "30일 합계", "charts.win": "수익일 비율", "charts.days": "거래일", "charts.cap": "일별 수익률(%) · 왼쪽 30거래일 전 → 오른쪽 최근",
       },
       en: {
         "nav.home": "Home", "nav.alerts": "Foket Guide", "nav.pricing": "Service", "nav.faq": "FAQ", "nav.perf": "Performance", "nav.contact": "Contact", "nav.join_free": "Telegram Inquiry", "nav.login": "Log In", "nav.signup": "Sign Up", "nav.mypage": "My Page",
@@ -2835,7 +2851,8 @@
         "markets.agri_cat": "Agriculture", "markets.agri_sub": "Agricultural Futures", "markets.agri_desc": "Wheat, corn, soybeans – powerful margin opportunities created by climate change and supply-demand imbalances",
         "markets.rates_cat": "Interest Rates", "markets.rates_sub": "Interest Rate Futures", "markets.rates_desc": "US Treasuries, T-Bond – key bond market futures driven by macroeconomic policy changes",
         "best10.calc_title": "Return Rate Basis:", "best10.calc_desc": " Since margin (Deposit) is the base investment for overseas futures, returns are calculated at 3× the margin.", "best10.calc_ex1": "Ex: Symbol A margin $5,000 → Initial investment $15,000 (×3) → If monthly profit is $1,000, monthly return = $1,000 / $15,000 = ", "best10.calc_ex2": "Only 1/3 of the total investment is required, used as margin for the trading instrument.",
-        "charts.title": "30-Day Avg Monthly Return Trend by Symbol", "charts.days_ago": "30d ago", "charts.recent": "Recent", "charts.no_data": "No data",
+        "charts.title": "Last 30 trading days by symbol", "charts.days_ago": "30d ago", "charts.recent": "Recent", "charts.no_data": "No data",
+        "charts.note": "Daily returns over the last 30 trading days for the 8 symbols with the highest average monthly return. Past performance does not guarantee future results.", "charts.last": "Latest trading day", "charts.min30": "30-day low", "charts.sum30": "30-day total", "charts.win": "Profitable days", "charts.days": "Days", "charts.cap": "Daily return (%) · left: 30 days ago → right: latest",
       },
       de: {
         "nav.home": "Startseite", "nav.alarms": "Foket Guide", "nav.pricing": "Service", "nav.faq": "Häufige Fragen (FAQ)", "nav.perf": "Performance", "nav.contact": "Kontakt", "nav.join_free": "Telegram Anfrage", "nav.login": "Anmelden", "nav.signup": "Registrieren", "nav.mypage": "Mein Konto",
@@ -2875,7 +2892,8 @@
         "markets.agri_cat": "Landwirtschaft", "markets.agri_sub": "Agrar-Futures", "markets.agri_desc": "Weizen, Mais, Sojabohnen – starke Margen-Chancen durch Klimawandel und Angebot-Nachfrage-Ungleichgewichte",
         "markets.rates_cat": "Zinssätze", "markets.rates_sub": "Zinssatz-Futures", "markets.rates_desc": "US-Treasuries, T-Bond – wichtige Anleihemarkt-Futures, getrieben durch makroökonomische Politikänderungen",
         "best10.calc_title": "Renditeberechnung:", "best10.calc_desc": " Da die Marge (Deposit) als Basisinvestition für Auslands-Futures gilt, wird die Rendite mit dem 3-fachen der Marge berechnet.", "best10.calc_ex1": "Bsp.: Marge Symbol A 5.000 $ → Anfangsinvestition 15.000 $ (×3) → Bei monatl. Gewinn 1.000 $: Rendite = 1.000 $ / 15.000 $ = ", "best10.calc_ex2": "Es wird nur 1/3 des Gesamtinvestments benötigt, als Marge für das Handelsinstrument.",
-        "charts.title": "30-Tage Ø Monatsrendite je Symbol", "charts.days_ago": "vor 30T", "charts.recent": "Aktuell", "charts.no_data": "Keine Daten",
+        "charts.title": "Letzte 30 Handelstage je Symbol", "charts.days_ago": "vor 30T", "charts.recent": "Aktuell", "charts.no_data": "Keine Daten",
+        "charts.note": "Tägliche Renditen der letzten 30 Handelstage für die 8 Symbole mit der höchsten Ø-Monatsrendite. Vergangene Ergebnisse garantieren keine zukünftigen Erträge.", "charts.last": "Letzter Handelstag", "charts.min30": "30-Tage-Tief", "charts.sum30": "30-Tage-Summe", "charts.win": "Gewinntage", "charts.days": "Tage", "charts.cap": "Tagesrendite (%) · links: vor 30 Tagen → rechts: aktuell",
       },
       ja: {
         "nav.home": "ホーム", "nav.signals": "Foket ガイド", "nav.pricing": "サービス", "nav.faq": "よくある質問(FAQ)", "nav.perf": "実績照会", "nav.contact": "お問い合わせ", "nav.join_free": "Telegramでお問い合わせ", "nav.login": "ログイン", "nav.signup": "登録", "nav.mypage": "マイページ",
@@ -2915,7 +2933,8 @@
         "markets.agri_cat": "農産物", "markets.agri_sub": "農産物先物", "markets.agri_desc": "小麦、トウモロコシ、大豆など、気候変動と需給不均衡が生み出す強力な証拠金機会",
         "markets.rates_cat": "金利", "markets.rates_sub": "金利先物", "markets.rates_desc": "米国債、T-Bondなど、マクロ経済政策変化に応じた債券市場の中核先物",
         "best10.calc_title": "収益率算定基準：", "best10.calc_desc": " 海外先物の特性上、証拠金(Deposit)が基礎投資金となるため、収益率は証拠金の3倍を基準に算定します。", "best10.calc_ex1": "例：A銘柄の証拠金5,000ドル → 初期投資15,000ドル(×3) → 月収益1,000ドルの場合、収益率 = 1,000÷15,000 = ", "best10.calc_ex2": "投資金は全体の1/3のみ必要で、取引銘柄の証拠金名目として活用されます。",
-        "charts.title": "銘柄別直近30取引日 月平均収益率推移", "charts.days_ago": "30日前", "charts.recent": "最近", "charts.no_data": "データなし",
+        "charts.title": "銘柄別 直近30取引日の収益", "charts.days_ago": "30日前", "charts.recent": "最近", "charts.no_data": "データなし",
+        "charts.note": "月平均収益率上位8銘柄の直近30取引日の日別収益率です。過去の実績は将来の収益を保証するものではありません。", "charts.last": "最近の取引日", "charts.min30": "30日最低", "charts.sum30": "30日合計", "charts.win": "利益日の割合", "charts.days": "取引日", "charts.cap": "日別収益率(%) · 左:30取引日前 → 右:最近",
       },
       zh: {
         "nav.home": "首页", "nav.signals": "Foket 指南", "nav.pricing": "服务", "nav.faq": "常见问题(FAQ)", "nav.perf": "业绩查询", "nav.contact": "联系我们", "nav.join_free": "Telegram 咨询", "nav.login": "登录", "nav.signup": "注册", "nav.mypage": "我的账户",
@@ -2955,7 +2974,8 @@
         "markets.agri_cat": "农产品", "markets.agri_sub": "农产品期货", "markets.agri_desc": "小麦、玉米、大豆等气候变化与供需失衡带来的强劲保证金机会",
         "markets.rates_cat": "利率", "markets.rates_sub": "利率期货", "markets.rates_desc": "美国国债、T-Bond等随宏观经济政策变化的债券市场核心期货",
         "best10.calc_title": "收益率计算基准：", "best10.calc_desc": " 由于海外期货的特性，保证金(Deposit)是基础投资金，因此收益率以保证金的3倍为基准计算。", "best10.calc_ex1": "例：A品种保证金5,000美元 → 初始投资15,000美元(×3) → 若月收益为1,000美元，月收益率 = 1,000÷15,000 = ", "best10.calc_ex2": "投资金仅需全部投资金的1/3，作为交易品种的保证金使用。",
-        "charts.title": "各标的近30交易日月均收益率变动", "charts.days_ago": "30天前", "charts.recent": "最近", "charts.no_data": "暂无数据",
+        "charts.title": "各品种近30个交易日收益", "charts.days_ago": "30天前", "charts.recent": "最近", "charts.no_data": "暂无数据",
+        "charts.note": "月平均收益率前8品种近30个交易日的每日收益率。过往业绩不代表未来收益。", "charts.last": "最近交易日", "charts.min30": "30日最低", "charts.sum30": "30日合计", "charts.win": "盈利天数占比", "charts.days": "交易日", "charts.cap": "每日收益率(%) · 左:30个交易日前 → 右:最近",
       },
       fr: {
         "nav.home": "Accueil", "nav.signals": "Foket Guide", "nav.pricing": "Service", "nav.faq": "FAQ", "nav.perf": "Performances", "nav.contact": "Contact", "nav.join_free": "Contact Telegram", "nav.login": "Connexion", "nav.signup": "S'inscrire", "nav.mypage": "Mon compte",
@@ -2995,7 +3015,8 @@
         "markets.agri_cat": "Agriculture", "markets.agri_sub": "Futures agricoles", "markets.agri_desc": "Blé, maïs, soja – opportunités de marges puissantes créées par le changement climatique et les déséquilibres offre-demande",
         "markets.rates_cat": "Taux d'intérêt", "markets.rates_sub": "Futures sur taux d'intérêt", "markets.rates_desc": "Bons du Trésor américain, T-Bond – futures clés du marché obligataire liés aux changements de politique macroéconomique",
         "best10.calc_title": "Base de calcul du rendement :", "best10.calc_desc": " Dans les futures étrangers, la marge (Deposit) est l'investissement de base ; le rendement est donc calculé sur 3× la marge.", "best10.calc_ex1": "Ex : Marge symbole A 5 000 $ → Invest. initial 15 000 $ (×3) → Si profit mensuel 1 000 $, rendement = 1 000 $ / 15 000 $ = ", "best10.calc_ex2": "Seul 1/3 de l'investissement total est requis, utilisé comme marge pour l'instrument de trading.",
-        "charts.title": "Variation du rendement mensuel moyen sur 30 jours par symbole", "charts.days_ago": "il y a 30j", "charts.recent": "Récent", "charts.no_data": "Pas de données",
+        "charts.title": "30 derniers jours de bourse par symbole", "charts.days_ago": "il y a 30j", "charts.recent": "Récent", "charts.no_data": "Pas de données",
+        "charts.note": "Rendements quotidiens des 30 derniers jours de bourse pour les 8 symboles au rendement mensuel moyen le plus élevé. Les performances passées ne préjugent pas des résultats futurs.", "charts.last": "Dernière séance", "charts.min30": "Plus bas 30 j", "charts.sum30": "Total 30 j", "charts.win": "Jours gagnants", "charts.days": "Jours", "charts.cap": "Rendement quotidien (%) · gauche : il y a 30 j → droite : récent",
       },
       es: {
         "nav.home": "Inicio", "nav.signals": "Foket Guía", "nav.pricing": "Servicio", "nav.faq": "Preguntas frecuentes (FAQ)", "nav.perf": "Rendimiento", "nav.contact": "Contacto", "nav.join_free": "Consulta por Telegram", "nav.login": "Iniciar sesión", "nav.signup": "Registrarse", "nav.mypage": "Mi cuenta",
@@ -3035,7 +3056,8 @@
         "markets.agri_cat": "Agricultura", "markets.agri_sub": "Futuros agrícolas", "markets.agri_desc": "Trigo, maíz, soja – poderosas oportunidades de margen creadas por el cambio climático y los desequilibrios oferta-demanda",
         "markets.rates_cat": "Tasas de interés", "markets.rates_sub": "Futuros sobre tasas de interés", "markets.rates_desc": "Bonos del Tesoro de EE.UU., T-Bond – futuros clave del mercado de bonos impulsados por cambios en la política macroeconómica",
         "best10.calc_title": "Base de cálculo de rendimiento:", "best10.calc_desc": " En futuros extranjeros el margen (Deposit) es la inversión base; el rendimiento se calcula a 3× el margen.", "best10.calc_ex1": "Ej.: Margen símbolo A $5,000 → Inv. inicial $15,000 (×3) → Si ganancia mensual $1,000, rendimiento = $1,000 / $15,000 = ", "best10.calc_ex2": "Solo se requiere 1/3 de la inversión total, usado como margen para el instrumento de trading.",
-        "charts.title": "Variación de rentabilidad mensual promedio (30 días) por símbolo", "charts.days_ago": "hace 30d", "charts.recent": "Reciente", "charts.no_data": "Sin datos",
+        "charts.title": "Últimas 30 sesiones por símbolo", "charts.days_ago": "hace 30d", "charts.recent": "Reciente", "charts.no_data": "Sin datos",
+        "charts.note": "Rentabilidad diaria de las últimas 30 sesiones de los 8 símbolos con mayor rentabilidad mensual media. La rentabilidad pasada no garantiza resultados futuros.", "charts.last": "Última sesión", "charts.min30": "Mínimo 30 d", "charts.sum30": "Total 30 d", "charts.win": "Días con beneficio", "charts.days": "Días", "charts.cap": "Rentabilidad diaria (%) · izquierda: hace 30 sesiones → derecha: reciente",
       },
       ru: {
         "nav.home": "Главная", "nav.signals": "Foket Гид", "nav.pricing": "Сервис", "nav.faq": "Часто задаваемые вопросы (FAQ)", "nav.perf": "Результаты", "nav.contact": "Контакт", "nav.join_free": "Запрос в Telegram", "nav.login": "Войти", "nav.signup": "Регистрация", "nav.mypage": "Мой аккаунт",
@@ -3075,7 +3097,8 @@
         "markets.agri_cat": "Сельское хозяйство", "markets.agri_sub": "Сельскохозяйственные фьючерсы", "markets.agri_desc": "Пшеница, кукуруза, соевые бобы — мощные возможности для маржи, созданные изменением климата и дисбалансом спроса и предложения",
         "markets.rates_cat": "Процентные ставки", "markets.rates_sub": "Фьючерсы на процентные ставки", "markets.rates_desc": "Казначейские облигации США, T-Bond — ключевые фьючерсы рынка облигаций, движимые изменениями макроэкономической политики",
         "best10.calc_title": "Основа расчёта доходности:", "best10.calc_desc": " В иностранных фьючерсах маржа (Deposit) является базовой инвестицией; доходность рассчитывается как 3× маржи.", "best10.calc_ex1": "Пример: Маржа символа A $5,000 → Начальные инвестиции $15,000 (×3) → При ежемесячной прибыли $1,000: доходность = $1,000 / $15,000 = ", "best10.calc_ex2": "Требуется лишь 1/3 общего объёма инвестиций, используемая в качестве маржи для торгового инструмента.",
-        "charts.title": "Средняя месячная доходность за 30 дней по инструментам", "charts.days_ago": "30д назад", "charts.recent": "Недавно", "charts.no_data": "Нет данных",
+        "charts.title": "Последние 30 торговых дней по инструментам", "charts.days_ago": "30д назад", "charts.recent": "Недавно", "charts.no_data": "Нет данных",
+        "charts.note": "Дневная доходность за последние 30 торговых дней по 8 инструментам с наибольшей средней месячной доходностью. Прошлые результаты не гарантируют будущей доходности.", "charts.last": "Последний торговый день", "charts.min30": "Минимум за 30 дн.", "charts.sum30": "Итог за 30 дн.", "charts.win": "Прибыльные дни", "charts.days": "Дни", "charts.cap": "Дневная доходность (%) · слева 30 дней назад → справа последние",
       }
     };
 
@@ -3473,47 +3496,80 @@
       el.textContent = d + ' ' + (t['best10.date_suffix'] || '현재까지');
     }
 
+    /* 종목별 최근 30거래일: 관리자 입력 데이터(dailyProfits, 단위 %)로 월평균 수익률 상위 8종목 카드를 만든다.
+       dailyProfits[0]이 가장 최근 거래일이다. */
     function renderProfitCharts(markets) {
       const wrap = document.getElementById('profitChartsWrap');
       const grid = document.getElementById('profitChartGrid');
       if (!wrap || !grid) return;
       const t = (typeof TRANSLATIONS !== 'undefined' && TRANSLATIONS[currentLang]) ? TRANSLATIONS[currentLang] : TRANSLATIONS['ko'];
+      const tk = (k, d) => (t[k] !== undefined ? t[k] : (TRANSLATIONS.ko[k] !== undefined ? TRANSLATIONS.ko[k] : d));
+      const isKo = currentLang === 'ko';
 
-      /* 심볼 기준 중복 제거 + dailyProfits 있는 종목 수집 */
       const symMap = {};
       markets.forEach(function(m) {
         (m.instruments || []).forEach(function(inst) {
           if (!inst.dailyProfits || !inst.dailyProfits.length) return;
+          if ((inst.sym || '').toUpperCase() === 'HIS') return;
           const key = (inst.sym || '').toUpperCase();
           const cur = parseFloat(inst.monthlyReturn) || -Infinity;
           const prev = symMap[key] ? (parseFloat(symMap[key].monthlyReturn) || -Infinity) : -Infinity;
-          if (!(key in symMap) || cur > prev) symMap[key] = Object.assign({}, inst, { _catName: m.nameKo });
+          if (!(key in symMap) || cur > prev) symMap[key] = Object.assign({}, inst, { _catName: m.nameKo, _catNameEn: m.nameEn || m.nameKo });
         });
       });
-
-      const sorted = Object.values(symMap).sort(function(a, b) {
+      const top = Object.values(symMap).sort(function(a, b) {
         return (parseFloat(b.monthlyReturn) || -Infinity) - (parseFloat(a.monthlyReturn) || -Infinity);
-      });
-      const top6 = sorted.slice(0, 6);
-      if (!top6.length) { wrap.style.display = 'none'; return; }
+      }).slice(0, 8);
+      if (!top.length) { wrap.style.display = 'none'; return; }
 
-      grid.innerHTML = top6.map(function(inst) {
-        const mr = parseFloat(inst.monthlyReturn) || 0;
-        const cls = mr >= 0 ? 'up' : 'dn';
-        const mrStr = (mr >= 0 ? '+' : '') + mr.toFixed(2) + '%';
-        /* dailyProfits: index 0=최근일, 역순 정렬해서 왼쪽=과거 오른쪽=최근 */
-        const profits = inst.dailyProfits.slice().reverse();
-        return '<div class="chart-card">' +
-          '<div class="chart-card-hd">' +
-            '<div><div class="chart-card-name">' + (currentLang === 'ko' ? (inst.nameKo || inst.sym) : (inst.nameEn || inst.sym)) + '</div>' +
-            '<div class="chart-card-sym">' + (inst.sym || '') + '</div></div>' +
-            '<div class="chart-card-ret ' + cls + '">' + mrStr + '</div>' +
+      const pct = (v, d) => (v >= 0 ? '+' : '') + v.toFixed(d == null ? 2 : d) + '%';
+      const cls = (v) => v >= 0 ? 'hpf-up' : 'hpf-dn';
+      grid.innerHTML = top.map(function(inst) {
+        const vals = inst.dailyProfits.map(Number).filter(function(n) { return !isNaN(n); });
+        const last = vals[0], sum = vals.reduce((a, b) => a + b, 0), minV = Math.min.apply(null, vals);
+        const win = vals.filter(v => v > 0).length / vals.length * 100;
+        const mr = parseFloat(inst.monthlyReturn);
+        const name = isKo ? (inst.nameKo || inst.sym) : (inst.nameEn || inst.nameKo || inst.sym);
+        const cat = isKo ? inst._catName : inst._catNameEn;
+        return '<div class="hpf-card">' +
+          '<div class="hpf-mk"><b>' + name + '</b><span>' + (inst.sym || '') + ' · ' + (cat || '') + '</span></div>' +
+          '<div class="hpf-last">' +
+            '<div class="lbl">' + tk('charts.last', '최근 거래일') + '</div>' +
+            '<div class="min">' + tk('charts.min30', '30일 최저') + ' ' + pct(minV) + '</div>' +
+            '<div class="lbl">' + tk('best10.col_monthly_return', '월평균 수익률') + ' <b class="' + cls(mr || 0) + '">' + (isNaN(mr) ? '—' : pct(mr)) + '</b></div>' +
+            '<div class="pnl ' + cls(last) + '">' + pct(last) + '</div>' +
           '</div>' +
-          makeProfitSVG(profits, t['charts.days_ago'], t['charts.recent'], t['charts.no_data']) +
+          '<div class="hpf-stats">' +
+            '<div><div class="k">' + tk('charts.sum30', '30일 합계') + '</div><div class="v ' + cls(sum) + '">' + pct(sum, 1) + '</div></div>' +
+            '<div><div class="k">' + tk('charts.win', '수익일 비율') + '</div><div class="v">' + win.toFixed(0) + '%</div></div>' +
+            '<div><div class="k">' + tk('charts.days', '거래일') + '</div><div class="v">' + vals.length + '</div></div>' +
+          '</div>' +
+          makeBarSVG(vals.slice().reverse()) +
+          '<div class="hpf-cap">' + tk('charts.cap', '일별 수익률(%) · 왼쪽 30거래일 전 → 오른쪽 최근') + '</div>' +
           '</div>';
       }).join('');
-
       wrap.style.display = 'block';
+    }
+
+    /* 막대 차트: 0 위 초록, 0 아래 빨강, 왼쪽에 % 눈금 */
+    function makeBarSVG(vals) {
+      const W = 300, H = 92, PL = 30, PR = 2, PT = 6, PB = 6;
+      const cW = W - PL - PR, cH = H - PT - PB;
+      const maxV = Math.max.apply(null, vals.concat([0])), minV = Math.min.apply(null, vals.concat([0]));
+      const range = (maxV - minV) || 1;
+      const py = v => PT + (maxV - v) / range * cH;
+      const zy = py(0), n = vals.length, bw = cW / n;
+      const fmt = v => (v > 0 ? '+' : '') + (Math.abs(v) >= 10 ? v.toFixed(0) : v.toFixed(1)) + '%';
+      let bars = '';
+      vals.forEach(function(v, i) {
+        const y = v >= 0 ? py(v) : zy, h = Math.max(1, Math.abs(py(v) - zy));
+        bars += '<rect x="' + (PL + i * bw + bw * .15).toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (bw * .7).toFixed(1) + '" height="' + h.toFixed(1) + '" fill="' + (v >= 0 ? '#00d084' : '#ff4757') + '" rx="1"/>';
+      });
+      const lbl = (y, txt) => '<text x="' + (PL - 4) + '" y="' + (y + 3).toFixed(1) + '" text-anchor="end" font-size="9" fill="rgba(255,255,255,.45)">' + txt + '</text>';
+      return '<svg class="sym30-chart" viewBox="0 0 ' + W + ' ' + H + '" role="img">' +
+        '<line x1="' + PL + '" y1="' + zy.toFixed(1) + '" x2="' + (W - PR) + '" y2="' + zy.toFixed(1) + '" stroke="rgba(255,255,255,.18)" stroke-width="1"/>' +
+        bars + lbl(PT + 2, fmt(maxV)) + lbl(zy, '0%') + (minV < 0 ? lbl(PT + cH - 2, fmt(minV)) : '') +
+        '</svg>';
     }
 
     function makeProfitSVG(data, labelAgo, labelRecent, labelNoData) {
