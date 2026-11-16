@@ -859,6 +859,43 @@
     .chart-card-ret.up { color:var(--accent-green); }
     .chart-card-ret.dn { color:#f85149; }
     .chart-svg { display:block; width:100%; }
+    /* ── 실적 한눈에 보기 ── */
+    .hpf-sec{background:var(--bg-primary);padding:28px 0 32px;border-bottom:1px solid var(--border-color)}
+    .hpf-inner{max-width:1280px;margin:0 auto;padding:0 24px}
+    .hpf-hd{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+    .hpf-title{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:800;color:var(--text-primary)}
+    .hpf-asof{font-size:13px;font-weight:400;color:var(--text-secondary)}
+    .hpf-more{font-size:14px;font-weight:600;color:var(--accent-blue);text-decoration:none;white-space:nowrap}
+    .hpf-more:hover{text-decoration:underline}
+    .hpf-modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .hpf-mode{background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-secondary);padding:9px 16px;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;min-height:42px}
+    .hpf-mode.on{background:var(--gradient-primary);color:#fff;border-color:transparent}
+    .hpf-mode.sim.on{background:rgba(240,165,0,.18);color:#f5c45e;border-color:rgba(240,165,0,.55)}
+    .hpf-sim{background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.45);color:#f5c45e;border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;line-height:1.6;margin-bottom:12px}
+    .hpf-badge{display:inline-block;margin-left:8px;font-size:11px;font-weight:700;color:#f5c45e;background:rgba(240,165,0,.12);border:1px solid rgba(240,165,0,.45);border-radius:100px;padding:1px 8px;vertical-align:middle}
+    .hpf-chips[hidden],.hpf-sim[hidden]{display:none}
+    .hpf-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+    .hpf-chip{background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-secondary);padding:7px 14px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;min-height:36px}
+    .hpf-chip.on{background:var(--gradient-primary);color:#fff;border-color:transparent}
+    .hpf-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .hpf-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:20px 22px;min-width:0}
+    .hpf-mk{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:14px}
+    .hpf-mk b{font-size:16px;color:var(--text-primary)}
+    .hpf-mk span{font-size:12px;color:var(--text-muted)}
+    .hpf-last{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center}
+    .hpf-last .lbl{font-size:12px;color:var(--text-secondary)}
+    .hpf-last .sym{font-size:15px;font-weight:700;color:var(--text-primary)}
+    .hpf-last .pnl{font-size:20px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+    .hpf-last .min{font-size:12px;color:var(--text-secondary);text-align:right;font-variant-numeric:tabular-nums}
+    .hpf-stats{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:10px;margin-bottom:14px}
+    .hpf-stats .k{font-size:12px;color:var(--text-secondary);margin-bottom:4px}
+    .hpf-stats .v{font-size:18px;font-weight:800;color:var(--text-primary);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .hpf-chart{height:64px;width:100%;display:block}
+    .hpf-cap{font-size:11px;color:var(--text-muted);margin-top:4px}
+    .hpf-empty{color:var(--text-secondary);font-size:14px;padding:24px 0;text-align:center}
+    .hpf-note{font-size:12px;color:var(--text-muted);line-height:1.7;margin-top:14px}
+    .hpf-up{color:var(--accent-green)!important}.hpf-dn{color:var(--accent-red)!important}
+    @media(max-width:768px){.hpf-grid{grid-template-columns:1fr}.hpf-inner{padding:0 16px}.hpf-stats .v{font-size:16px}.hpf-last{grid-template-columns:1fr}.hpf-last .pnl,.hpf-last .min{text-align:left}.hpf-last .sym{order:2}.hpf-last .pnl{order:3}.hpf-last .min{order:4}}
     @media(max-width:900px){ .chart-grid { grid-template-columns:repeat(2,1fr); } .profit-charts-sec { padding:0 16px; } }
     @media(max-width:560px){ .chart-grid { grid-template-columns:1fr; } }
 
@@ -2304,6 +2341,21 @@
     </div>
   </div>
 
+  <!-- ── 실적 한눈에 보기 (records.json) ── -->
+  <section class="hpf-sec" id="perfSummary" hidden>
+    <div class="hpf-inner">
+      <div class="hpf-hd">
+        <div class="hpf-title"><div class="csp-dot"></div><span id="hpfTitle">실적 한눈에 보기</span><span class="hpf-asof" id="hpfAsof"></span></div>
+        <a class="hpf-more" href="performance.html" id="hpfMore">전체 실적 조회 →</a>
+      </div>
+      <div class="hpf-modes" id="hpfModes" role="tablist"></div>
+      <div class="hpf-sim" id="hpfSim" hidden></div>
+      <div class="hpf-chips" id="hpfChips" role="group"></div>
+      <div class="hpf-grid" id="hpfGrid"></div>
+      <p class="hpf-note" id="hpfNote"></p>
+    </div>
+  </section>
+
   <!-- ── MAIN IMAGE ── -->
   <div style="width:100%;overflow:hidden;line-height:0;">
     <img src="images/Main_Image3.png" alt="Foket 트레이딩 시스템"
@@ -3581,6 +3633,111 @@
     </a>
   </div>
 
+  <script>
+  /* 실적 한눈에 보기: 실적 조회 페이지와 같은 기록(records.json, research-records.json, 관리자 업로드)을 읽는다.
+     실제 신호 기록과 가상(연구용) 기록은 섞지 않고 탭으로 나눠 따로 계산한다. */
+  (function(){
+    var T={
+      ko:{title:'실적 한눈에 보기',asof:' 기준',more:'전체 실적 조회 →',p20:'최근 20거래일',pM1:'이번 달',pY:'올해',pAll:'전체 기간',mLive:'실제 신호 기록',mSim:'가상 기록 (연구용)',badge:'가상',
+        simNote:'가상(연구용) 기록입니다. 2026-11-13까지 과거 데이터로 계산한 연구용 결과이며, 실제 신호 결과나 실거래 결과가 아닙니다.',
+        noneLive:'실제 신호 기록은 2026-11-16부터 이곳에 쌓입니다.',
+        noteSim:'가상(연구용) 기록은 과거 데이터로 1계약 기준으로 계산한 연구용 결과이며, 실제 신호 결과나 고객 계좌의 실거래 결과가 아닙니다. 과거 실적은 미래 수익을 보장하지 않습니다.',
+        fut:'해외선물',k200:'코스피200',futSub:'매일 엄선한 1종목',k200Sub:'코스피200 선물 1종목',
+        last:'최근 거래일',min:'당일 최소기록 ',pnl:'누적 손익',win:'승률',days:'거래일',capD:'일별 손익',capM:'월별 손익',none:'이 기간에는 기록이 없습니다.',
+        note:'1계약 기준으로 계산한 포켓 자동 시스템 신호 결과이며, 고객 계좌의 실거래 결과가 아닙니다. 수수료·슬리피지에 따라 실제 결과와 다를 수 있고, 과거 실적은 미래 수익을 보장하지 않습니다.'},
+      en:{title:'Performance at a glance',asof:'',more:'Full performance →',p20:'Last 20 trading days',pM1:'This month',pY:'This year',pAll:'All time',mLive:'Live signal record',mSim:'Simulated (research)',badge:'Simulated',
+        simNote:'Simulated (research) records calculated on historical data up to 2026-11-13. They are not live signal results or real trades.',
+        noneLive:'Live signal records will appear here from 2026-11-16.',
+        noteSim:'Simulated (research) records are calculated on historical data for one contract. They are not live signal results or results of customer accounts. Past performance does not guarantee future results.',
+        fut:'Overseas futures',k200:'KOSPI 200',futSub:'One strictly selected symbol a day',k200Sub:'One KOSPI 200 futures contract',
+        last:'Latest trading day',min:'Intraday low ',pnl:'Total P&L',win:'Win rate',days:'Days',capD:'Daily P&L',capM:'Monthly P&L',none:'No records in this period.',
+        note:'Results of signals from the Foket automated system, calculated for one contract; not results of customer accounts. Actual results may differ due to fees and slippage. Past performance does not guarantee future results.'}
+    };
+    var PERIODS=['p20','pM1','pY','pAll'], period='p20', mode='live', ALL=null;
+    function tr(){var l=(typeof currentLang!=='undefined'&&currentLang)||'ko';return l==='ko'?T.ko:T.en;}
+    function fmt(n,cur){var s=Math.abs(n).toLocaleString('en-US',{maximumFractionDigits:cur==='KRW'?0:2});var g=n>0?'+':(n<0?'-':'');return cur==='KRW'?g+s+'원':g+'$'+s;}
+    function cl(n){return n>0?'hpf-up':(n<0?'hpf-dn':'');}
+    function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
+    function norm(r){
+      var kd=String(r&&r.kind||'').toLowerCase();if(kd!=='live'&&kd!=='backtest')return null;
+      var d=String(r.date||'').slice(0,10),p=Number(r.pnl);if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||!isFinite(p))return null;
+      var mp=(r.min_pnl===''||r.min_pnl==null)?null:Number(r.min_pnl);
+      var sym=String(r.sym||'').toUpperCase(),cur=String(r.cur||'USD').toUpperCase();
+      return {date:d,sym:sym,name:String(r.name||''),pnl:p,minPnl:isFinite(mp)?mp:null,cur:cur,kind:kd,mk:(cur==='KRW'||sym==='KOSPI'||sym==='K200')?'k200':'fut',
+        key:[d,sym,r.side||'',r.entry==null?'':r.entry,r.exit==null?'':r.exit,kd].join('|')};
+    }
+    function inPeriod(rows){
+      if(!rows.length)return rows;
+      var last=rows[rows.length-1].date;
+      if(period==='pAll')return rows;
+      if(period==='pM1')return rows.filter(function(r){return r.date.slice(0,7)===last.slice(0,7);});
+      if(period==='pY')return rows.filter(function(r){return r.date.slice(0,4)===last.slice(0,4);});
+      var ds=[];rows.forEach(function(r){if(ds[ds.length-1]!==r.date)ds.push(r.date);});var from=ds[Math.max(0,ds.length-20)];
+      return rows.filter(function(r){return r.date>=from;});
+    }
+    function bars(rows,t){
+      var monthly=rows.length>60,pts=[];
+      if(monthly){var m={},o=[];rows.forEach(function(r){var k=r.date.slice(0,7);if(!(k in m)){m[k]=0;o.push(k);}m[k]+=r.pnl;});o.forEach(function(k){pts.push({k:k,v:m[k]});});}
+      else rows.forEach(function(r){pts.push({k:r.date,v:r.pnl});});
+      var NS='http://www.w3.org/2000/svg',W=600,H=64,mid=H/2,max=0;pts.forEach(function(p){max=Math.max(max,Math.abs(p.v));});
+      var svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('class','hpf-chart');svg.setAttribute('role','img');
+      var base=document.createElementNS(NS,'line');base.setAttribute('x1',0);base.setAttribute('x2',W);base.setAttribute('y1',mid);base.setAttribute('y2',mid);base.setAttribute('stroke','#1e2d4a');svg.appendChild(base);
+      var bw=W/Math.max(pts.length,1),gap=Math.min(2,bw*.25);
+      pts.forEach(function(p,i){if(!max||!p.v)return;var h=Math.max(1.5,Math.abs(p.v)/max*(mid-2));var r=document.createElementNS(NS,'rect');
+        r.setAttribute('x',(i*bw+gap/2).toFixed(2));r.setAttribute('width',Math.max(.8,bw-gap).toFixed(2));r.setAttribute('y',(p.v>0?mid-h:mid).toFixed(2));r.setAttribute('height',h.toFixed(2));
+        r.setAttribute('rx',Math.min(2,bw/4).toFixed(2));r.setAttribute('fill',p.v>0?'#00d084':'#ff4757');var ti=document.createElementNS(NS,'title');ti.textContent=p.k+'  '+fmt(p.v,rows[0].cur);r.appendChild(ti);svg.appendChild(r);});
+      return {svg:svg,cap:monthly?t.capM:t.capD};
+    }
+    function card(mk,all,t){
+      var c=el('div','hpf-card'),hd=el('div','hpf-mk');var nm=el('b',null,t[mk]);if(mode==='backtest')nm.appendChild(el('span','hpf-badge',t.badge));hd.appendChild(nm);hd.appendChild(el('span',null,t[mk+'Sub']));c.appendChild(hd);
+      if(!all.length){c.appendChild(el('div','hpf-empty',mode==='live'?t.noneLive:t.none));return c;}
+      var L=all[all.length-1],box=el('div','hpf-last');
+      box.appendChild(el('div','lbl',t.last+' · '+L.date));box.appendChild(el('div','min',L.minPnl!=null?t.min+fmt(L.minPnl,L.cur):''));
+      box.appendChild(el('div','sym',L.name?L.sym+' · '+L.name:L.sym));box.appendChild(el('div','pnl '+cl(L.pnl),fmt(L.pnl,L.cur)));c.appendChild(box);
+      var rows=inPeriod(all);
+      if(!rows.length){c.appendChild(el('div','hpf-empty',t.none));return c;}
+      var sum=0,w=0;rows.forEach(function(r){sum+=r.pnl;if(r.pnl>0)w++;});
+      var st=el('div','hpf-stats');
+      [[t.pnl,fmt(sum,L.cur),cl(sum)],[t.win,(w/rows.length*100).toFixed(1)+'%',''],[t.days,rows.length.toLocaleString('en-US'),'']].forEach(function(s){
+        var d=el('div');d.appendChild(el('div','k',s[0]));d.appendChild(el('div','v '+s[2],s[1]));st.appendChild(d);});
+      c.appendChild(st);
+      var b=bars(rows,t);c.appendChild(b.svg);c.appendChild(el('div','hpf-cap',b.cap));
+      return c;
+    }
+    function render(){
+      if(!ALL)return;var sec=document.getElementById('perfSummary');
+      if(!ALL.length){sec.hidden=true;return;}sec.hidden=false;
+      var t=tr();
+      var md=document.getElementById('hpfModes');md.textContent='';
+      [['live',t.mLive],['backtest',t.mSim]].forEach(function(m){var b=el('button','hpf-mode'+(m[0]==='backtest'?' sim':'')+(m[0]===mode?' on':''),m[1]);b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',m[0]===mode?'true':'false');
+        b.addEventListener('click',function(){mode=m[0];render();});md.appendChild(b);});
+      var sim=document.getElementById('hpfSim');sim.hidden=mode!=='backtest';sim.textContent=t.simNote;
+      var CUR=ALL.filter(function(r){return r.kind===mode;});
+      document.getElementById('hpfTitle').textContent=t.title;
+      document.getElementById('hpfAsof').textContent=CUR.length?CUR[CUR.length-1].date+t.asof:'';
+      document.getElementById('hpfMore').textContent=t.more;document.getElementById('hpfNote').textContent=mode==='backtest'?t.noteSim:t.note;
+      var ch=document.getElementById('hpfChips');ch.textContent='';
+      document.getElementById('hpfChips').hidden=!CUR.length;
+      PERIODS.forEach(function(p){var b=el('button','hpf-chip'+(p===period?' on':''),t[p]);b.type='button';b.setAttribute('aria-pressed',p===period?'true':'false');
+        b.addEventListener('click',function(){period=p;render();});ch.appendChild(b);});
+      var g=document.getElementById('hpfGrid');g.textContent='';
+      ['fut','k200'].forEach(function(mk){g.appendChild(card(mk,CUR.filter(function(r){return r.mk===mk;}),t));});
+    }
+    function getJSON(u){return fetch(u,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
+    var API=(location.protocol!=='file:')?location.origin+'/api':'http://localhost:3000/api';
+    Promise.all([getJSON('records.json'),getJSON('research-records.json'),getJSON(API+'/storage/records')]).then(function(res){
+      var seen={},out=[];
+      res.forEach(function(d,i){if(!d)return;var v=d.value!==undefined?d.value:d;if(typeof v==='string'){try{v=JSON.parse(v);}catch(e){v=null;}}
+        var list=Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:[]);
+        /* research-records.json(가상·연구용)은 파일 안의 표시와 상관없이 가상으로 취급한다 */
+        if(i===1)list=list.map(function(r){var c={};for(var k in r)c[k]=r[k];c.kind='backtest';return c;});
+        list.forEach(function(r){var n=norm(r);if(n&&!seen[n.key]){seen[n.key]=1;out.push(n);}});});
+      out.sort(function(a,b){return a.date<b.date?-1:(a.date>b.date?1:0);});
+      ALL=out;render();
+    });
+    if(typeof applyLang==='function'){var orig=applyLang;window.applyLang=function(l){orig(l);render();};}
+  })();
+  </script>
 </body>
 
 </html>
