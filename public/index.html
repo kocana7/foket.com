@@ -1447,6 +1447,10 @@
     @media(max-width:1699px) { .wing-pill { display: inline-flex } }
     @media(max-width:480px) { .wing-pill { left: 12px; top: calc(var(--nav-h, 100px) + 10px); padding: 8px 12px; font-size: 12.5px } }
     body.wing-off .wing-banner, body.wing-off .wing-pill { display: none !important }
+    /* 맨 위 전일 기록 섹션이 무료 체험 알약 배너에 가리지 않게 위 여백을 둔다 */
+    @media(max-width:1699px) { .hpf-sec { padding-top: 80px } }
+    @media(max-width:480px) { .hpf-sec { padding-top: 64px } }
+    body.wing-off .hpf-sec { padding-top: 28px }
 
     /* ── COINS ── */
     .coins-grid {
@@ -2424,6 +2428,19 @@
     </div>
   </nav>
 
+  <!-- ── 실적 한눈에 보기 (records.json) ── -->
+  <section class="hpf-sec" id="perfSummary" hidden>
+    <div class="hpf-inner">
+      <div class="hpf-hd">
+        <div class="hpf-title"><div class="csp-dot"></div><span id="hpfTitle">전일 기록</span><span class="hpf-asof" id="hpfAsof"></span></div>
+        <a class="hpf-more" href="performance.html" id="hpfMore">전체 실적 조회 →</a>
+      </div>
+      <div class="hpf-chips" id="hpfChips" role="group"></div>
+      <div class="hpf-grid" id="hpfGrid"></div>
+      <p class="hpf-note fk-basis" id="hpfNote" data-fk-basis="rec"></p>
+    </div>
+  </section>
+
   <!-- ── Foket 수익율 현황 ── -->
   <section class="best10-sec">
     <div class="best10-inner">
@@ -2464,19 +2481,6 @@
       <p class="hpf-note fk-basis" data-fk-basis="sym"></p>
     </div>
   </div>
-
-  <!-- ── 실적 한눈에 보기 (records.json) ── -->
-  <section class="hpf-sec" id="perfSummary" hidden>
-    <div class="hpf-inner">
-      <div class="hpf-hd">
-        <div class="hpf-title"><div class="csp-dot"></div><span id="hpfTitle">전일 기록</span><span class="hpf-asof" id="hpfAsof"></span></div>
-        <a class="hpf-more" href="performance.html" id="hpfMore">전체 실적 조회 →</a>
-      </div>
-      <div class="hpf-chips" id="hpfChips" role="group"></div>
-      <div class="hpf-grid" id="hpfGrid"></div>
-      <p class="hpf-note fk-basis" id="hpfNote" data-fk-basis="rec"></p>
-    </div>
-  </section>
 
   <!-- ── MAIN IMAGE ── -->
   <div style="width:100%;overflow:hidden;line-height:0;">
