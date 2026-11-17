@@ -91,7 +91,7 @@
           <a class="lang-opt" data-lang="ru" href="#"><span class="fi fi-ru"></span> Русский</a>
         </div>
       </div>
-      <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;background:var(--gradient-primary);color:#fff;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;text-decoration:none"><i class="fab fa-telegram-plane"></i> <span data-i18n="j">무료 텔레그램 참여</span></a>
+      <a href="https://t.me/foket_center" data-tg="free" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;background:var(--gradient-primary);color:#fff;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;text-decoration:none"><i class="fab fa-telegram-plane"></i> <span data-i18n="j">무료 텔레그램 참여</span></a>
     </div>
   </div>
 </nav>
@@ -386,7 +386,7 @@
       <i class="fas fa-comment-dots"></i>
       <span data-fk-float="kk">카카오톡 문의</span>
     </a>
-    <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="tg" id="pfTg">
+    <a href="https://t.me/foket_center" data-tg="free" target="_blank" rel="noopener noreferrer" class="tg" id="pfTg">
       <i class="fab fa-telegram-plane"></i>
       <span data-fk-float="tg">텔레그램 문의</span>
     </a>
@@ -396,7 +396,7 @@
   (function(){
     function apply(cfg){
       if(!cfg)return;
-      if(cfg.telegram_free){document.getElementById('pfTg').href=cfg.telegram_free;document.getElementById('pfSvcTg').href=cfg.telegram_free;}
+      var tg=(cfg.telegram_free&&!/foketsignal_lobby/i.test(cfg.telegram_free))?cfg.telegram_free:'https://t.me/foket_center';document.getElementById('pfTg').href=tg;document.getElementById('pfSvcTg').href=tg;
       var k=document.getElementById('pfKakao');
       if(cfg.kakao_consult){k.href=cfg.kakao_consult;k.style.display='';}
     }

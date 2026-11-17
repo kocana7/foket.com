@@ -1534,10 +1534,10 @@
             <div class="ac-hd"><div class="ac-title">텔레그램 링크 관리</div></div>
             <div class="ac-bd">
               <div class="fgrid">
-                <div class="fg"><label class="fl">무료 텔레그램 링크</label><input class="fc" id="tg-telegram_free" placeholder="https://t.me/foketsignal_Lobby"></div>
+                <div class="fg"><label class="fl">무료 텔레그램 링크</label><input class="fc" id="tg-telegram_free" placeholder="https://t.me/foket_center"></div>
                 <div class="fg"><label class="fl">VIP 텔레그램 링크</label><input class="fc" id="tg-telegram_vip" placeholder="https://t.me/foket_vip"></div>
               </div>
-              <div class="fg"><label class="fl">표시용 사용자명</label><input class="fc" id="tg-display_handle" placeholder="@foketsignal_Lobby"></div>
+              <div class="fg"><label class="fl">표시용 사용자명</label><input class="fc" id="tg-display_handle" placeholder="@foket_center"></div>
               <div class="fg"><label class="fl">카카오톡 상담 링크</label><input class="fc" id="tg-kakao_consult" placeholder="https://open.kakao.com/o/XXXXXXXX"></div>
               <div class="fgrid">
                 <div class="fg"><label class="fl">카카오톡 1:1 문의 링크 (처음 방문자 안내)</label><input class="fc" id="tg-kakao_1on1" placeholder="https://pf.kakao.com/_XXXXX/chat"></div>
@@ -2348,7 +2348,7 @@
           { id: 1, name: 'John Smith', email: 'john@example.com', subject: 'Question about VIP', message: 'Hello, I would like to know more about the VIP plan. How do I sign up?', read: false, date: new Date(Date.now() - 3600000 * 2).toISOString() },
           { id: 2, name: 'Emma Watson', email: 'emma@example.com', subject: 'Refund request', message: 'I signed up yesterday but cannot access the Telegram group. Please help.', read: false, date: new Date(Date.now() - 3600000 * 5).toISOString() },
         ]);
-        lsSave('settings', { site_name: 'Foket Signals', site_tagline: '전문 암호화폐 트레이딩 시그널', meta_description: '82% 성공률의 전문 암호화폐 시그널을 받아보세요.', telegram_free: 'https://t.me/foketsignal_Lobby', telegram_vip: 'https://t.me/foket_vip', contact_email: 'support@foket.com', contact_phone: '+82-00-0000-0000', contact_address: '서울특별시 강남구', stat_members: 50000, stat_rate: 82, stat_signals: 15000, stat_years: 10, admin_email: 'admin@foket.com', admin_name: '관리자' });
+        lsSave('settings', { site_name: 'Foket Signals', site_tagline: '전문 암호화폐 트레이딩 시그널', meta_description: '82% 성공률의 전문 암호화폐 시그널을 받아보세요.', telegram_free: 'https://t.me/foket_center', telegram_vip: 'https://t.me/foket_vip', contact_email: 'support@foket.com', contact_phone: '+82-00-0000-0000', contact_address: '서울특별시 강남구', stat_members: 50000, stat_rate: 82, stat_signals: 15000, stat_years: 10, admin_email: 'admin@foket.com', admin_name: '관리자' });
         lsSave('seeded', true);
       }
       /* ── 플랜명·순서 마이그레이션 ── */
@@ -3206,7 +3206,7 @@
       const handleEl = document.getElementById('tg-display_handle');
       if (freeEl) freeEl.value = cfg.telegram_free || '';
       if (vipEl) vipEl.value = cfg.telegram_vip || '';
-      if (handleEl) handleEl.value = cfg.telegram_handle || '@foketsignal_Lobby';
+      if (handleEl) handleEl.value = cfg.telegram_handle || '@foket_center';
       const kakaoEl = document.getElementById('tg-kakao_consult');
       if (kakaoEl) kakaoEl.value = cfg.kakao_consult || '';
       ['kakao_1on1','telegram_1on1'].forEach(function(k){ const el = document.getElementById('tg-' + k); if (el) el.value = cfg[k] || ''; });
@@ -3269,7 +3269,7 @@
       const handleEl = document.getElementById('tg-display_handle');
       if (freeEl) cfg.telegram_free = freeEl.value.trim();
       if (vipEl) cfg.telegram_vip = vipEl.value.trim();
-      if (handleEl) cfg.telegram_handle = handleEl.value.trim() || '@foketsignal_Lobby';
+      if (handleEl) cfg.telegram_handle = handleEl.value.trim() || '@foket_center';
       const kakaoEl = document.getElementById('tg-kakao_consult');
       if (kakaoEl) cfg.kakao_consult = kakaoEl.value.trim();
       ['kakao_1on1','telegram_1on1'].forEach(function(k){ const el = document.getElementById('tg-' + k); if (el) cfg[k] = el.value.trim(); });
@@ -3446,7 +3446,7 @@
     }
     function resetSettings() {
       showConfirm('설정 초기화', '모든 설정이 기본값으로 초기화됩니다.', () => {
-        lsSave('settings', { site_name: 'Foket Signals', site_tagline: '전문 암호화폐 트레이딩 시그널', meta_description: '82% 성공률의 전문 암호화폐 시그널을 받아보세요.', telegram_free: 'https://t.me/foketsignal_Lobby', telegram_vip: 'https://t.me/foket_vip', contact_email: 'support@foket.com', contact_phone: '+82-00-0000-0000', contact_address: '서울특별시 강남구', stat_members: 50000, stat_rate: 82, stat_signals: 15000, stat_years: 10, admin_email: 'admin@foket.com', admin_name: '관리자' });
+        lsSave('settings', { site_name: 'Foket Signals', site_tagline: '전문 암호화폐 트레이딩 시그널', meta_description: '82% 성공률의 전문 암호화폐 시그널을 받아보세요.', telegram_free: 'https://t.me/foket_center', telegram_vip: 'https://t.me/foket_vip', contact_email: 'support@foket.com', contact_phone: '+82-00-0000-0000', contact_address: '서울특별시 강남구', stat_members: 50000, stat_rate: 82, stat_signals: 15000, stat_years: 10, admin_email: 'admin@foket.com', admin_name: '관리자' });
         loadSettings(); showAlert('설정이 기본값으로 초기화되었습니다');
       });
     }

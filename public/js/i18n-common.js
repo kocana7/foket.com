@@ -87,7 +87,25 @@
       el.appendChild(b); el.appendChild(document.createTextNode(pick(BASIS[kind] || BASIS.rec, l)));
     });
   }
-  window.FK_I18N = { lang: lang, symName: symName, money: money, basis: BASIS, refresh: refresh };
+
+  /* Telegram contact links: every [data-tg="free"] follows the admin setting telegram_free.
+     The retired foketsignal_Lobby room is never used; it falls back to foket_center. */
+  var TG_DEFAULT = 'https://t.me/foket_center';
+  function tgUrl(u) { return (u && !/foketsignal_lobby/i.test(u)) ? u : TG_DEFAULT; }
+  function applyTg(cfg) {
+    var u = tgUrl(cfg && cfg.telegram_free);
+    document.querySelectorAll('[data-tg="free"]').forEach(function (el) { el.href = u; });
+  }
+  function loadTg() {
+    var base = location.protocol !== 'file:' ? location.origin + '/api' : 'http://localhost:3000/api';
+    var cached = null;
+    try { cached = JSON.parse(localStorage.getItem('fk_settings') || 'null'); } catch (e) {}
+    applyTg(cached);
+    fetch(base + '/storage/settings', { cache: 'no-store' }).then(function (r) { return r.json(); })
+      .then(function (j) { if (j && j.success && j.value) applyTg(JSON.parse(j.value)); }).catch(function () {});
+  }
+  window.FK_I18N = { lang: lang, symName: symName, money: money, basis: BASIS, refresh: refresh, tgUrl: tgUrl };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadTg); else loadTg();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', refresh); else refresh();
   new MutationObserver(refresh).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
 })();
