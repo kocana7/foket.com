@@ -6,14 +6,15 @@ Attribute VB_Name = "FoketBot"
 '   3행  : 데일리 한국선물 (코스피200)
 '   4행  : 데일리 해외선물. D4 칸에 오늘 고른 종목 이름을 적습니다 (예: 골드). 6~23행의 이름과 똑같이.
 '   6~23행: 셀렉트 18종목
+'   E열 포지션: 매수/매도. 포지션이 없으면 빈칸이나 0 (자동으로 "없음" 처리)
 '   E~I 칸은 로직 시트의 셀을 가리키는 수식으로 채웁니다 (예: E6 칸에 =나스닥로직!$K$5)
 '
 ' [동작]
 '   StartFoketBot 을 한 번 실행하면 10초마다 표 전체를 봇에 보냅니다 (회원의 "현재 포지션" 조회용).
 '   어떤 종목의 E열(포지션)이 바뀌면 그 종목을 받는 회원에게만 즉시 신호를 보냅니다.
 '     데일리 회원 = 코스피200 + D4에 적은 종목,  셀렉트 회원 = 본인이 고른 1종목
-'   예) 골드 E열이 "없음" → "매수"  :  "[GC 골드] 매수 진입 2650 (22:31)"
-'       골드 E열이 "매수" → "없음"  :  "[GC 골드] 매수 청산  청산손익 +$1,000 (23:10)"
+'   예) 골드 E열이 빈칸(0) → "매수"  :  "[GC 골드] 매수 진입 2650 (22:31)"
+'       골드 E열이 "매수" → 빈칸(0)  :  "[GC 골드] 매수 청산  청산손익 +$1,000 (23:10)"
 Option Explicit
 
 Const BOT_URL As String = "https://foket.com/bot-api"
@@ -64,10 +65,24 @@ Private Function CodeOf(ByVal nm As String) As String
     End Select
 End Function
 
+' 포지션 칸 값: 빈칸, 0, "-", "없음", "청산" 은 모두 무포지션("없음")으로 봄
+Private Function PosOf(ws As Worksheet, r As Long) As String
+    Dim v As String
+    v = Trim(CStr(ws.Cells(r, 5).Text))
+    If v = "" Or v = "-" Or v = "없음" Or v = "청산" Then
+        PosOf = "없음"
+    ElseIf IsNumeric(v) Then
+        If CDbl(v) = 0 Then PosOf = "없음" Else PosOf = v
+    Else
+        PosOf = v
+    End If
+End Function
+
 Private Function RowJson(ws As Worksheet, r As Long, code As String, daily As Boolean) As String
     Dim c As Long, s As String
     s = """" & JsonEsc(code) & """,""" & JsonEsc(Trim(ws.Cells(r, 4).Text)) & """"
-    For c = 5 To 9      ' E~I
+    s = s & ",""" & JsonEsc(PosOf(ws, r)) & """"
+    For c = 6 To 9      ' F~I
         s = s & ",""" & JsonEsc(Trim(ws.Cells(r, c).Text)) & """"
     Next c
     RowJson = "[" & s & ",""" & IIf(daily, "Y", "") & """]"
@@ -105,7 +120,7 @@ End Sub
 ' 포지션(E열)이 바뀌면 신호 (엑셀을 처음 켰을 때는 보내지 않음)
 Private Sub CheckSignal(ws As Worksheet, r As Long, code As String, first As Boolean)
     Dim pos As String
-    pos = Trim(CStr(ws.Cells(r, 5).Text))
+    pos = PosOf(ws, r)
     If Not first And lastPos.Exists(code) Then
         If lastPos(code) <> pos Then SendFoketSignal code, SignalText(ws, r, code, lastPos(code), pos)
     End If
@@ -116,9 +131,9 @@ Private Function SignalText(ws As Worksheet, r As Long, code As String, oldPos A
     Dim head As String, t As String
     head = "[" & code & " " & Trim(ws.Cells(r, 4).Text) & "] "
     t = " (" & Format(Now, "hh:nn") & ")"
-    If newPos = "" Or newPos = "없음" Or newPos = "0" Or newPos = "청산" Then
+    If newPos = "없음" Then
         SignalText = head & oldPos & " 청산  청산손익 " & ws.Cells(r, 9).Text & t
-    ElseIf oldPos = "" Or oldPos = "없음" Or oldPos = "0" Or oldPos = "청산" Then
+    ElseIf oldPos = "없음" Then
         SignalText = head & newPos & " 진입 " & ws.Cells(r, 6).Text & t
     Else
         SignalText = head & oldPos & " → " & newPos & " 전환 " & ws.Cells(r, 6).Text & t
