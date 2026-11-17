@@ -22,7 +22,7 @@
 7. 신호: C열 포지션이 바뀌면 엑셀 → `POST /signal` (sym=종목코드) → 그 종목을 받는 이용 중 회원에게만 (전달·저장 제한)
 8. 현재 포지션: 엑셀 → `POST /position` (표 전체) → 회원이 버튼이나 "포지션" 글을 보내면 자기 종목 줄만 보여 줌. 5분 넘게 갱신 없으면 경고
 9. 일반 질문은 AI가 회원 언어로 답변. 결제 문제·환불·제휴 등은 Sean님께 전달, Sean님이 그 메시지에 '답장'하면 회원에게 전달
-10. 매일 07:00(KST) 기간 처리 + Sean님께 회원 현황 요약. Sean님 명령: /stats, /signal 내용, /position, /excel, /notice 공지(미리보기 후 보내기 → 봇 이용자 전원 + @foketcenter 채널)
+10. 매일 07:00(KST) 기간 처리 + Sean님께 회원 현황 요약. Sean님 명령: /stats, /signal 내용, /position, /excel, /notice 공지(미리보기 후 보내기 → 봇 이용자 전원 + /setnotice 로 등록한 단체방)
 
 ## 설치 (홈페이지 배포가 자동으로 설치)
 - GitHub 저장소 Settings → Secrets and variables → Actions 에 아래 값을 넣으면, main 배포 때마다 봇이 설치·갱신됩니다. AWS 로그인 필요 없음.
