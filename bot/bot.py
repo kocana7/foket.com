@@ -171,7 +171,20 @@ T = {
  "ask_phone": ("연락처를 보내 주세요. 아래 버튼을 누르거나 번호를 입력하시면 됩니다.",
                "Please share your phone number with the button below, or type it."),
  "btn_share_phone": ("연락처 보내기", "Share phone number"),
- "ask_service": ("받으실 서비스를 골라 주세요.", "Choose a service."),
+ "ask_service": ("받으실 서비스를 골라 주세요. 언제든 메뉴에서 바꿀 수 있습니다.\n\n"
+                 "• 데일리: 포켓이 매일 고른 해외선물 1종목 + 한국선물(코스피200) 1종목, 모두 2종목\n"
+                 "• 셀렉트: 회원님이 직접 고른 1종목 (매일 바꿀 수 있음)",
+                 "Choose a service. You can change it any time from the menu.\n\n"
+                 "• Daily: one overseas future picked by Foket each day + one Korean future (KOSPI200), 2 products\n"
+                 "• Select: one product of your choice (changeable every day)"),
+ "btn_daily": ("데일리 (포켓 선정 해외 1 + 한국 1)", "Daily (Foket pick + KOSPI200)"),
+ "btn_select": ("셀렉트 (내가 고른 1종목)", "Select (1 product of my choice)"),
+ "now_daily": ("데일리로 설정되었습니다. 포켓이 매일 고른 해외선물 1종목 + 코스피200 신호를 받습니다.",
+               "Set to Daily: Foket's daily overseas pick + KOSPI200."),
+ "now_select": ("셀렉트로 설정되었습니다. 받는 종목: {code}\n다른 종목으로 바꾸려면 메뉴의 '서비스·종목 바꾸기'를 누르세요.",
+                "Set to Select: {code}\nTo change it, tap 'Change service' in the menu."),
+ "no_products": ("종목 목록을 준비 중입니다. 우선 데일리로 설정하고, 준비되면 셀렉트로 바꾸실 수 있습니다.",
+                 "The product list is not ready yet. You are set to Daily for now."),
  "terms": ("[위험 고지 및 약관]\n"
            "1. 포켓 신호는 투자 판단을 돕는 참고 정보이며, 매매 여부와 결과의 책임은 이용자에게 있습니다.\n"
            "2. 선물 거래는 원금 이상의 손실이 날 수 있습니다. 과거 성과는 미래 수익을 보장하지 않습니다.\n"
@@ -225,11 +238,8 @@ T = {
  "position_head": ("[현재 포지션] {at} 기준", "[Current position] as of {at}"),
  "position_none": ("아직 받은 포지션 정보가 없습니다. 잠시 뒤 다시 눌러 주세요.", "No position data yet. Please try again shortly."),
  "position_stale": ("(엑셀 연결이 {min}분째 끊겨 있어 최신 정보가 아닐 수 있습니다)", "(Data may be outdated: no update for {min} min)"),
- "ask_symbols": ("받으실 종목을 눌러 고른 뒤 '선택 완료'를 눌러 주세요. (다시 누르면 취소)",
-                 "Tap the products you want, then tap 'Done'. (Tap again to remove)"),
- "btn_done": ("선택 완료", "Done"),
- "need_symbol": ("종목을 하나 이상 골라 주세요.", "Please choose at least one product."),
- "btn_symbols": ("받는 종목 바꾸기", "Change products"),
+ "ask_symbols": ("받으실 종목 1개를 눌러 주세요.", "Tap the one product you want."),
+ "btn_symbols": ("서비스·종목 바꾸기", "Change service"),
  "my_symbols": ("받는 종목: {codes}", "Products: {codes}"),
  "members_only": ("체험 또는 유료 이용 중인 회원만 볼 수 있습니다.", "Available to trial or paid members only."),
 }
@@ -330,32 +340,32 @@ async def on_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             return await q.message.reply_text(t(lang, "trial_used"), reply_markup=menu(lang))
         upsert_user(uid, step="name")
         return await q.message.reply_text(t(lang, "ask_name"))
+    if data == "symbols":   # 메뉴: 데일리 <-> 셀렉트, 종목 바꾸기 (언제든)
+        upsert_user(uid, step="change")
+        return await q.message.reply_text(t(lang, "ask_service"), reply_markup=service_kb(lang))
     if data.startswith("svc:"):
         svc = data.split(":")[1]
-        if svc == "select" and all_codes():
-            upsert_user(uid, service=svc, step="symbols", symbols="")
-            return await q.message.reply_text(t(lang, "ask_symbols"), reply_markup=symbol_kb(lang, set()))
-        upsert_user(uid, service=svc, step="terms")
-        return await send_terms(q.message, lang)
-    if data == "symbols":
-        upsert_user(uid, step="symbols_edit")
-        return await q.message.reply_text(t(lang, "ask_symbols"),
-                                          reply_markup=symbol_kb(lang, set(split_codes(u["symbols"]))))
+        signup = u["step"] == "service"
+        if svc == "select":
+            if all_codes():
+                upsert_user(uid, step="pick_signup" if signup else "pick")
+                return await q.message.reply_text(t(lang, "ask_symbols"),
+                                                  reply_markup=symbol_kb(lang, split_codes(u["symbols"])))
+            await q.message.reply_text(t(lang, "no_products"))
+        upsert_user(uid, service="daily", step="terms" if signup else None)
+        if signup:
+            return await send_terms(q.message, lang)
+        return await q.message.reply_text(t(lang, "now_daily"), reply_markup=menu(lang))
     if data.startswith("sym:"):
         code = data[4:]
-        chosen = set(split_codes(u["symbols"]))
-        if code == "__done__":
-            if not chosen:
-                return await q.message.reply_text(t(lang, "need_symbol"))
-            if u["step"] == "symbols_edit":
-                upsert_user(uid, step=None)
-                return await q.edit_message_text(t(lang, "my_symbols", codes=", ".join(sorted(chosen))))
-            upsert_user(uid, step="terms")
-            await q.edit_message_text(t(lang, "my_symbols", codes=", ".join(sorted(chosen))))
+        if code not in [c for c, _ in all_codes()]:
+            return
+        signup = u["step"] == "pick_signup"
+        upsert_user(uid, service="select", symbols=code, step="terms" if signup else None)
+        await q.edit_message_text(t(lang, "now_select", code=code_name(code)))
+        if signup:
             return await send_terms(q.message, lang)
-        chosen ^= {code}
-        upsert_user(uid, symbols=",".join(sorted(chosen)))
-        return await q.edit_message_reply_markup(symbol_kb(lang, chosen))
+        return await q.message.reply_text(t(lang, "welcome"), reply_markup=menu(lang))
     if data == "disagree":
         upsert_user(uid, step=None)
         return await q.message.reply_text(t(lang, "welcome"), reply_markup=menu(lang))
@@ -387,13 +397,19 @@ async def send_terms(message, lang):
         [B(t(lang, "btn_disagree"), callback_data="disagree")]]))
 
 
+def service_kb(lang):
+    return KM([[B(t(lang, "btn_daily"), callback_data="svc:daily")],
+               [B(t(lang, "btn_select"), callback_data="svc:select")]])
+
+
+def code_name(code):
+    n = dict(all_codes()).get(code, "")
+    return f"{code} {n}" if n and n != code else code
+
+
 def symbol_kb(lang, chosen):
-    names = all_codes()
-    btns = [B(("✅ " if c in chosen else "") + (f"{c} {n}" if n and n != c else c), callback_data=f"sym:{c}")
-            for c, n in names]
-    rows = [btns[i:i + 2] for i in range(0, len(btns), 2)]
-    rows.append([B(t(lang, "btn_done"), callback_data="sym:__done__")])
-    return KM(rows)
+    btns = [B(("✅ " if c in chosen else "") + code_name(c), callback_data=f"sym:{c}") for c, _ in all_codes()]
+    return KM([btns[i:i + 2] for i in range(0, len(btns), 2)])
 
 
 def status_text(u, lang):
@@ -423,8 +439,7 @@ async def got_phone(update, uid, phone):
     lang = lang_of(uid)
     upsert_user(uid, phone=phone, step="service")
     await update.message.reply_text("✓", reply_markup=ReplyKeyboardRemove())
-    await update.message.reply_text(t(lang, "ask_service"), reply_markup=KM(
-        [[B(v, callback_data=f"svc:{k}") for k, v in SERVICES.items()]]))
+    await update.message.reply_text(t(lang, "ask_service"), reply_markup=service_kb(lang))
 
 
 async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
@@ -480,7 +495,9 @@ def is_position_ask(text):
 FAQ = f"""You are the customer support assistant of Foket.com (포켓닷컴), a Korean system-trading signal service.
 Facts:
 - Signals: one overseas futures product (selected daily) + KOSPI200 futures, sent via this Telegram bot.
-- Services: Daily (데일리) and Select (셀렉트).
+- Services (members can switch any time from the menu button 'Change service'):
+  Daily (데일리) = one overseas futures product Foket selects each day + one Korean future (KOSPI200), 2 products.
+  Select (셀렉트) = exactly one product the member picks from all products Foket covers; can be changed every day.
 - Free trial: {TRIAL_DAYS} trading days, starting the next trading day after approval, once per Telegram account.
   Apply with the 'Free trial' button (name, phone, service, agree to risk disclosure).
 - Paid pass: {PAID_DAYS} trading days, KRW {PRICE_KRW} by Korean bank transfer or USD {PRICE_USD} overseas. Use the 'Pay' button.
@@ -592,7 +609,7 @@ def daily_codes():
 def member_codes(u):
     """회원이 받는 종목. 데일리 = 오늘 G열에 Y 표시된 종목(해외 1 + 한국 1), 셀렉트 = 회원이 고른 종목."""
     if u["service"] == "select":
-        return split_codes(u["symbols"])
+        return split_codes(u["symbols"])[:1]
     return daily_codes()
 
 
