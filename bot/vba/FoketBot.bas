@@ -13,8 +13,8 @@ Attribute VB_Name = "FoketBot"
 '   예) NQ 줄 C열이 "없음" → "매수" 로 바뀌면  "[NQ 미니나스닥] 매수 진입 21000 (22:31)"
 Option Explicit
 
-Const BOT_URL As String = "http://서버주소:8080"   ' 설치 끝에 나오는 BOT_URL
-Const BOT_KEY As String = "설치_끝에_나오는_BOT_KEY"
+Const BOT_URL As String = "https://foket.com/bot-api"
+Const BOT_KEY As String = "봇에_/excel_보내면_나오는_BOT_KEY"
 Const SHEET_NAME As String = "봇"
 Const PUSH_SECONDS As Long = 10
 

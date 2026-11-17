@@ -40,7 +40,9 @@ load_env()
 TOKEN = os.environ.get("BOT_TOKEN", "")
 ADMIN_ID = int(os.environ.get("ADMIN_CHAT_ID", "0") or 0)       # Sean 텔레그램 번호
 SIGNAL_KEY = os.environ.get("SIGNAL_KEY", "")                    # 엑셀이 신호 보낼 때 쓰는 비밀 키
-PORT = int(os.environ.get("PORT", "8080"))
+PORT = int(os.environ.get("PORT", "8091"))
+BIND = os.environ.get("BIND", "127.0.0.1")
+PUBLIC_URL = os.environ.get("PUBLIC_URL", "https://foket.com/bot-api")
 ANTHROPIC_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 AI_MODEL = os.environ.get("AI_MODEL", "claude-haiku-5-5")
 BANK_INFO = os.environ.get("BANK_INFO", "(입금 계좌 미정)")
@@ -783,6 +785,13 @@ async def cmd_stats(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(summary())
 
 
+async def cmd_excel(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """운영자에게만: 엑셀 VBA에 넣을 주소와 키."""
+    if update.effective_user.id == ADMIN_ID:
+        await update.message.reply_text(f"엑셀 FoketBot 모듈에 넣을 값\nBOT_URL = {PUBLIC_URL}\nBOT_KEY = {SIGNAL_KEY}",
+                                        protect_content=True)
+
+
 async def cmd_myid(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"내 텔레그램 번호: {update.effective_user.id}")
 
@@ -814,6 +823,7 @@ async def main():
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("myid", cmd_myid))
+    app.add_handler(CommandHandler("excel", cmd_excel))
     app.add_handler(CommandHandler("stats", cmd_stats))
     app.add_handler(CommandHandler("signal", cmd_signal))
     app.add_handler(CommandHandler("position", cmd_position))
@@ -831,7 +841,7 @@ async def main():
         await app.start()
         await app.updater.start_polling()
         await runner.setup()
-        await web.TCPSite(runner, "0.0.0.0", PORT).start()
+        await web.TCPSite(runner, BIND, PORT).start()
         log.info("포켓 봇 시작 (신호 받는 주소 포트 %s)", PORT)
         await asyncio.Event().wait()
 

@@ -24,12 +24,11 @@
 9. 일반 질문은 AI가 회원 언어로 답변. 결제 문제·환불·제휴 등은 Sean님께 전달, Sean님이 그 메시지에 '답장'하면 회원에게 전달
 10. 매일 07:00(KST) 기간 처리 + Sean님께 회원 현황 요약. Sean님 명령: /stats, /signal 내용, /position
 
-## 설치 (홈페이지 EC2 서버에 같이 설치)
-이 폴더는 홈페이지 배포 때 서버의 `/var/www/foket/bot` 에 같이 올라갑니다. 봇은 `/opt/foket-bot` 에 따로 설치되어 홈페이지 배포(`git clean`)와 섞이지 않습니다.
-```
-cd /var/www/foket/bot && sudo bash install.sh
-```
-- 처음 한 번 토큰·관리자 번호·API 키·입금 계좌를 묻고 `/opt/foket-bot/.env` 에만 저장합니다 (권한 600).
-- EC2 보안 그룹에서 TCP 8080 인바운드를 열어야 엑셀이 신호를 보낼 수 있습니다.
-- 봇 코드를 고친 뒤 다시 반영: 같은 명령을 한 번 더 실행 (설정은 유지).
-- 상태 확인: `sudo systemctl status foket-bot`, 기록 보기: `sudo journalctl -u foket-bot -n 50`
+## 설치 (홈페이지 배포가 자동으로 설치)
+- GitHub 저장소 Settings → Secrets and variables → Actions 에 아래 값을 넣으면, main 배포 때마다 봇이 설치·갱신됩니다. AWS 로그인 필요 없음.
+  - `BOT_TOKEN` (BotFather 토큰, 필수), `BOT_ADMIN_CHAT_ID` (Sean님 텔레그램 Id 숫자, 필수)
+  - `ANTHROPIC_API_KEY` (AI 상담, 선택), `BOT_BANK_INFO` (입금 계좌), `BOT_OVERSEAS_INFO` (해외 결제, 선택)
+- 봇은 서버 안 `127.0.0.1:8091` 에서만 열리고, 엑셀은 `https://foket.com/bot-api/` (nginx) 로 보냅니다. 포트를 따로 열 필요 없음.
+- 엑셀 키(SIGNAL_KEY)는 서버에서 한 번 만들어 유지합니다. Sean님이 봇에 `/excel` 을 보내면 주소와 키가 Sean님께만 보입니다.
+- 수동 설치도 가능: 서버에서 `cd /var/www/foket/bot && sudo bash install.sh`
+- 상태 확인: `sudo systemctl status foket-bot`, 기록: `sudo journalctl -u foket-bot -n 50`
