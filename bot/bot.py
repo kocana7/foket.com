@@ -51,6 +51,9 @@ OVERSEAS_INFO = os.environ.get("OVERSEAS_INFO", "(해외 결제 방법 미정)")
 PRICE_KRW = os.environ.get("PRICE_KRW", "500,000")
 PRICE_USD = os.environ.get("PRICE_USD", "300")
 TRIAL_DAYS = int(os.environ.get("TRIAL_DAYS", "10"))
+EDU_DAYS = int(os.environ.get("EDU_DAYS", "120"))              # ROF 교육회원 신호 기간 (거래일)
+EDU_PRICE_KRW = os.environ.get("EDU_PRICE_KRW", "3,000,000")
+EDU_PRICE_USD = os.environ.get("EDU_PRICE_USD", "2,000")
 PAID_DAYS = int(os.environ.get("PAID_DAYS", "20"))
 TRIAL_NOTICE_DAY = int(os.environ.get("TRIAL_NOTICE_DAY", "8"))
 RENEW_NOTICE_BEFORE = int(os.environ.get("RENEW_NOTICE_BEFORE", "3"))
@@ -140,6 +143,15 @@ def init_db():
         CREATE TABLE IF NOT EXISTS settings(k TEXT PRIMARY KEY, v TEXT);
         CREATE TABLE IF NOT EXISTS relay(admin_msg_id INTEGER PRIMARY KEY, tg_id INTEGER);
         """)
+
+
+def migrate_db():
+    with db() as c:
+        cols = [r[1] for r in c.execute("PRAGMA table_info(users)")]
+        if "plan" not in cols:
+            c.execute("ALTER TABLE users ADD COLUMN plan TEXT DEFAULT ''")      # '' = 신호 이용권, 'edu' = ROF 교육회원
+        if "edu_start_req" not in cols:
+            c.execute("ALTER TABLE users ADD COLUMN edu_start_req TEXT DEFAULT ''")
 
 
 def get_user(uid):
@@ -238,6 +250,22 @@ T = {
  "forwarded": ("담당자에게 전달했습니다. 답변이 오면 이 대화창으로 보내 드립니다.",
                "Your message has been forwarded to our staff. The reply will come here."),
  "signal_head": ("[포켓 신호]", "[Foket signal]"),
+ "btn_edu": ("ROF 교육 신청", "ROF course"),
+ "edu_info": ("[포켓 ROF 이론 교육]\n수강료: {krw}원 (해외 수강생 ${usd})\n"
+              "수강생은 원하시는 날부터 {n}거래일 동안 데일리 또는 셀렉트 시그널을 받습니다.\n\n"
+              "국내 계좌이체: {bank}\n해외: {overseas}\n\n입금하신 뒤 아래 버튼을 눌러 주세요.",
+              "[Foket ROF course]\nFee: KRW {krw} (overseas students USD {usd})\n"
+              "Students receive Daily or Select signals for {n} trading days from the date they choose.\n\n"
+              "Korean bank transfer: {bank}\nOverseas: {overseas}\n\nAfter paying, tap the button below."),
+ "btn_edu_paid": ("교육비 입금했습니다", "I have paid the course fee"),
+ "ask_edu_start": ("신호를 받기 시작할 날짜를 적어 주세요 (예: 2026-12-01). 바로 시작하려면 '바로'라고 적어 주세요.",
+                   "Enter the date to start receiving signals (e.g. 2026-12-01), or type 'now'."),
+ "bad_date": ("날짜를 2026-12-01 처럼 적어 주세요.", "Please enter a date like 2026-12-01."),
+ "edu_ok": ("교육비 입금이 확인되었습니다. ROF 교육회원으로 {start}부터 {end}까지 ({n}거래일) 신호를 보내 드립니다.\n"
+            "데일리/셀렉트는 메뉴의 '서비스·종목 바꾸기'에서 언제든 고르실 수 있습니다.",
+            "Course payment confirmed. As an ROF student you will receive signals from {start} to {end} ({n} trading days).\n"
+            "Choose Daily or Select any time with 'Change service' in the menu."),
+ "status_edu": ("ROF 교육회원: {start} ~ {end}", "ROF student: {start} ~ {end}"),
  "btn_position": ("현재 포지션 보기", "Current position"),
  "position_head": ("[현재 포지션] {at} 기준", "[Current position] as of {at}"),
  "position_none": ("아직 받은 포지션 정보가 없습니다. 잠시 뒤 다시 눌러 주세요.", "No position data yet. Please try again shortly."),
@@ -299,7 +327,7 @@ def menu(lang):
                [B(t(lang, "btn_trial"), callback_data="trial")],
                [B(t(lang, "btn_price"), callback_data="price"), B(t(lang, "btn_pay"), callback_data="pay")],
                [B(t(lang, "btn_status"), callback_data="status"), B(t(lang, "btn_symbols"), callback_data="symbols")],
-               [B(t(lang, "btn_lang"), callback_data="lang")]])
+               [B(t(lang, "btn_edu"), callback_data="edu"), B(t(lang, "btn_lang"), callback_data="lang")]])
 
 
 def fmt_d(s):
@@ -390,6 +418,13 @@ async def on_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         return await q.message.reply_text(
             t(lang, "pay_info", krw=PRICE_KRW, usd=PRICE_USD, bank=BANK_INFO, overseas=OVERSEAS_INFO),
             reply_markup=KM([[B(t(lang, "btn_paid"), callback_data="paid")]]))
+    if data == "edu":
+        return await q.message.reply_text(
+            t(lang, "edu_info", krw=EDU_PRICE_KRW, usd=EDU_PRICE_USD, n=EDU_DAYS, bank=BANK_INFO, overseas=OVERSEAS_INFO),
+            reply_markup=KM([[B(t(lang, "btn_edu_paid"), callback_data="edu_paid")]]))
+    if data == "edu_paid":
+        upsert_user(uid, step="edu_start")
+        return await q.message.reply_text(t(lang, "ask_edu_start"))
     if data == "paid":
         upsert_user(uid, step="depositor")
         return await q.message.reply_text(t(lang, "ask_depositor"))
@@ -419,6 +454,9 @@ def symbol_kb(lang, chosen):
 def status_text(u, lang):
     if u["status"] == "trial":
         return t(lang, "status_trial", start=fmt_d(u["trial_start"]), end=fmt_d(u["trial_end"])) + \
+            "\n" + t(lang, "my_symbols", codes=", ".join(member_codes(u)) or "-")
+    if u["status"] == "paid" and (u["plan"] or "") == "edu":
+        return t(lang, "status_edu", start=fmt_d(u["paid_start"]), end=fmt_d(u["paid_end"])) + \
             "\n" + t(lang, "my_symbols", codes=", ".join(member_codes(u)) or "-")
     if u["status"] == "paid":
         return t(lang, "status_paid", start=fmt_d(u["paid_start"]), end=fmt_d(u["paid_end"])) + \
@@ -470,6 +508,26 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         return await msg.reply_text(t(lang, "ask_phone"), reply_markup=kb)
     if step == "phone":
         return await got_phone(update, uid, msg.text.strip()[:30])
+    if step == "edu_start":
+        txt = msg.text.strip()
+        if txt.lower() in ("바로", "now", "지금", "today"):
+            start = ""
+        else:
+            try:
+                start = dt.date.fromisoformat(txt.replace(".", "-").replace("/", "-")).isoformat()
+            except ValueError:
+                return await msg.reply_text(t(lang, "bad_date"))
+        upsert_user(uid, edu_start_req=start, step="edu_depositor")
+        return await msg.reply_text(t(lang, "ask_depositor"))
+    if step == "edu_depositor":
+        upsert_user(uid, depositor=msg.text.strip()[:50], step=None)
+        u = get_user(uid)
+        await msg.reply_text(t(lang, "pay_requested"))
+        return await admin_send(ctx, f"[ROF 교육비 입금 확인 요청]\n{who(u)}\n입금자명: {msg.text.strip()}\n"
+                                     f"희망 시작일: {u['edu_start_req'] or '바로'}\n"
+                                     f"수강료 {EDU_PRICE_KRW}원 / 해외 ${EDU_PRICE_USD}",
+                                KM([[B("교육비 입금 확인", callback_data=f"adm:edu_ok:{uid}"),
+                                     B("미확인", callback_data=f"adm:edu_no:{uid}")]]))
     if step == "depositor":
         upsert_user(uid, depositor=msg.text.strip()[:50], status="pay_pending" if u["status"] != "paid" else "paid",
                     step=None)
@@ -505,6 +563,8 @@ Facts:
 - Free trial: {TRIAL_DAYS} trading days, starting the next trading day after approval, once per Telegram account.
   Apply with the 'Free trial' button (name, phone, service, agree to risk disclosure).
 - Paid pass: {PAID_DAYS} trading days, KRW {PRICE_KRW} by Korean bank transfer or USD {PRICE_USD} overseas. Use the 'Pay' button.
+- ROF theory course (포켓 ROF 교육): KRW {EDU_PRICE_KRW} (overseas USD {EDU_PRICE_USD}). Students get Daily or Select
+  signals for {EDU_DAYS} trading days from a start date they choose. Apply with the 'ROF course' menu button.
 - Website: https://www.foket.com (track record). Results shown are logic operation records, not real-money trading.
 Rules:
 - Reply in the user's language ({{lang}}), short and polite. Korean replies use the ~니다 style.
@@ -582,6 +642,22 @@ async def admin_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         upsert_user(uid, status="paid", paid_start=start_keep, paid_end=e.isoformat(), notified="")
         await ctx.bot.send_message(uid, t(lang, "paid_ok", start=s, end=e, n=PAID_DAYS), reply_markup=menu(lang))
         return await q.edit_message_text(q.message.text + f"\n\n✅ 입금 확인 ({s} ~ {e})")
+    if act == "edu_ok":
+        s = next_trading(today)
+        if u["edu_start_req"]:
+            want = dt.date.fromisoformat(u["edu_start_req"])
+            if want > today:
+                s = want if is_trading(want) else next_trading(want)
+        e = add_trading(s, EDU_DAYS)
+        # 이용 중인 유료권이 더 늦게 끝나면 그 날짜를 유지
+        if u["status"] == "paid" and u["paid_end"] and dt.date.fromisoformat(u["paid_end"]) > e:
+            e = dt.date.fromisoformat(u["paid_end"])
+        upsert_user(uid, status="paid", plan="edu", paid_start=s.isoformat(), paid_end=e.isoformat(), notified="",
+                    service=u["service"] or "daily")
+        await ctx.bot.send_message(uid, t(lang, "edu_ok", start=s, end=e, n=EDU_DAYS), reply_markup=menu(lang))
+        return await q.edit_message_text(q.message.text + f"\n\n✅ ROF 교육회원 ({s} ~ {e}, {EDU_DAYS}거래일)")
+    if act == "edu_no":
+        return await q.edit_message_text(q.message.text + "\n\n⏸ 미확인 (회원에게는 따로 알리지 않음)")
     if act == "pay_no":
         if u["status"] == "pay_pending":
             upsert_user(uid, status="trial_ended" if u["trial_used"] else "new")
@@ -775,9 +851,10 @@ async def daily_job(ctx: ContextTypes.DEFAULT_TYPE):
 def summary():
     with db() as c:
         cnt = dict(c.execute("SELECT status, COUNT(*) FROM users GROUP BY status").fetchall())
+        edu = c.execute("SELECT COUNT(*) FROM users WHERE status='paid' AND plan='edu'").fetchone()[0]
         soon = c.execute("SELECT name, username, paid_end FROM users WHERE status='paid' ORDER BY paid_end LIMIT 5").fetchall()
     lines = [f"[포켓 봇 회원 현황 {today_kst()}]",
-             f"체험 중 {cnt.get('trial', 0)} · 유료 {cnt.get('paid', 0)} · 체험 종료(미전환) {cnt.get('trial_ended', 0)}",
+             f"체험 중 {cnt.get('trial', 0)} · 유료 {cnt.get('paid', 0)} (그중 ROF 교육회원 {edu}) · 체험 종료(미전환) {cnt.get('trial_ended', 0)}",
              f"승인 대기 {cnt.get('trial_pending', 0)} · 입금 확인 대기 {cnt.get('pay_pending', 0)} · 만료 {cnt.get('expired', 0)}"]
     if soon:
         lines.append("만료 가까운 유료 회원: " + ", ".join(f"{r['name'] or r['username']}({r['paid_end']})" for r in soon))
@@ -937,6 +1014,7 @@ async def main():
     if not TOKEN:
         raise SystemExit("BOT_TOKEN이 없습니다. .env 파일을 확인해 주세요.")
     init_db()
+    migrate_db()
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("myid", cmd_myid))
