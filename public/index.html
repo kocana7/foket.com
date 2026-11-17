@@ -477,6 +477,21 @@
       }
     }
 
+    .hero-slogan {
+      font-size: clamp(30px, 4.2vw, 58px);
+      font-weight: 900;
+      line-height: 1.22;
+      letter-spacing: -.5px;
+      margin: 0 auto 22px;
+      max-width: 1100px;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      background: linear-gradient(90deg, #ffffff 0%, #9fe9ff 55%, var(--accent-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text
+    }
+
     .hero-title {
       font-size: clamp(14px, 2.2vw, 30px);
       font-weight: 800;
@@ -2349,6 +2364,11 @@
         font-size: clamp(15px, 4.5vw, 20px)
       }
 
+      .hero-slogan {
+        font-size: clamp(26px, 7.6vw, 36px);
+        margin-bottom: 16px
+      }
+
       .fmt-grid {
         grid-template-columns: 1fr
       }
@@ -2522,12 +2542,10 @@
   <section class="hero" id="home">
     <div class="hero-wrap">
       <div>
-        <div class="hero-badge">
-          <div class="dot"></div><span data-i18n="hero.badge">무한 반복 검증을 이기는 천재적 아이디어는 없다.</span>
-        </div>
-        <h1 class="hero-title" data-i18n="hero.title">
+        <h1 class="hero-slogan" data-i18n="hero.badge">무한 반복 검증을 이기는 천재적 아이디어는 없다.</h1>
+        <p class="hero-title" data-i18n="hero.title">
           최근 15년간 수치데이터 + 2억 8천만개 트레이딩 로직 딥러닝
-        </h1>
+        </p>
         <p class="hero-sub" data-i18n="hero.subtitle">
           AI 머신러닝 최적화 트레이딩 신호
         </p>
@@ -2937,7 +2955,7 @@
       },
       en: {
         "nav.home": "Home", "nav.alerts": "Foket Guide", "nav.signals": "Foket Guide", "nav.pricing": "Service", "nav.faq": "FAQ", "nav.perf": "Performance", "nav.contact": "Contact", "nav.join_free": "Telegram Inquiry", "nav.login": "Log In", "nav.signup": "Sign Up", "nav.mypage": "My Page",
-        "hero.badge": "No stroke of genius beats endless verification.", "hero.title": "15 years of market data + deep learning on 280 million trading logics", "hero.subtitle": "AI machine learning optimized trading alerts", "hero.free_signals_week": "3 free alerts per week", "hero.vip_signals_day": "2-5 VIP alerts per day", "hero.money_back": "30-day money-back guarantee", "hero.join_free_btn": "Telegram Inquiry", "hero.view_vip_btn": "View Services", "hero.perk2": "Buy/sell alerts for 2 symbols total — one Korean futures and one overseas futures symbol each", "hero.perk3": "Day trading", "hero.perk4": "Delivery via SNS", "hero.perk5": "Asset management delegated trading – application available", "hero.perk6": "Choose between individual trading and delegated trading via alert reception",
+        "hero.badge": "No stroke of genius beats relentless verification.", "hero.title": "15 years of market data + deep learning on 280 million trading logics", "hero.subtitle": "AI machine learning optimized trading alerts", "hero.free_signals_week": "3 free alerts per week", "hero.vip_signals_day": "2-5 VIP alerts per day", "hero.money_back": "30-day money-back guarantee", "hero.join_free_btn": "Telegram Inquiry", "hero.view_vip_btn": "View Services", "hero.perk2": "Buy/sell alerts for 2 symbols total — one Korean futures and one overseas futures symbol each", "hero.perk3": "Day trading", "hero.perk4": "Delivery via SNS", "hero.perk5": "Asset management delegated trading – application available", "hero.perk6": "Choose between individual trading and delegated trading via alert reception",
         "stats.members": "Members", "stats.success_rate": "Success Rate", "stats.alerts": "Alerts Sent", "stats.years": "Years Active",
         "features.title": "Why Foket?", "features.subtitle": "The best trading logic service combining professional trader teams and AI technology", "features.ai_title": "AI-Powered Analysis", "features.ai_desc": "Data-based AI market analysis\nDeep learning on selected profit logic from 280M+ trading logics", "features.expert_title": "Expert Team", "features.expert_desc": "Seasoned trader & analysis team\nverified strategy-based alerts", "features.risk_title": "Risk Management", "features.risk_desc": "Systematic risk management\ncapital-preservation focused trading", "features.instant_title": "Instant Alert Delivery", "features.instant_desc": "Real-time trading alerts via Telegram\naccess anytime anywhere on mobile", "features.support_title": "24/7 Support", "features.support_desc": "8 languages supported\n24-hour automated system trading\n24-hour customer service", "features.education_title": "Trading Delegation", "features.education_desc": "Trading delegation possible to affiliated asset management companies and investment advisory firms",
         "how_it_works.title": "Service Overview", "how_it_works.subtitle": "What's included in each alert", "how_it_works.entry": "SNS Alert Reception", "how_it_works.entry_desc": "Spot buy (Futures includes sell) executed at market price\ne.g. Buy opinion at BTC's current price", "how_it_works.take_profit": "Delegation or Proxy Order", "how_it_works.take_profit_desc": "Take-profit targets are provided by default, but a close alert may also be sent after excess profit.\ne.g. Set +2% from entry price", "how_it_works.stop_loss": "Stop Loss", "how_it_works.stop_loss_desc": "We provide both average and minimum records from past logic. These are unrealized P&L records in the data; past trades were not necessarily closed at those levels.\n-1.2% from entry price", "how_it_works.risk": "Active Trading Close Alert", "how_it_works.risk_desc": "Spot market sell, Futures position close alert.\nClose your current trade and wait for the next entry alert.\ne.g. Close this trade",
