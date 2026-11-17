@@ -6,7 +6,7 @@ Attribute VB_Name = "FoketBot"
 '   3행  : 데일리 한국선물 (코스피200)
 '   4행  : 데일리 해외선물. D4 칸에 오늘 고른 종목 이름을 적습니다 (예: 골드). 6~23행의 이름과 똑같이.
 '   6~23행: 셀렉트 18종목
-'   E열 포지션: 매수/매도. 포지션이 없으면 빈칸이나 0 (자동으로 "없음" 처리)
+'   E열 포지션: 매수 또는 매도. 그 밖의 값(빈칸, 0 등)은 모두 포지션 없음
 '   E~I 칸은 로직 시트의 셀을 가리키는 수식으로 채웁니다 (예: E6 칸에 =나스닥로직!$K$5)
 '
 ' [동작]
@@ -65,16 +65,16 @@ Private Function CodeOf(ByVal nm As String) As String
     End Select
 End Function
 
-' 포지션 칸 값: 빈칸, 0, "-", "없음", "청산" 은 모두 무포지션("없음")으로 봄
+' 포지션 칸 값: "매수" 또는 "매도"만 포지션, 그 밖(빈칸, 0 등)은 모두 "없음"
 Private Function PosOf(ws As Worksheet, r As Long) As String
     Dim v As String
     v = Trim(CStr(ws.Cells(r, 5).Text))
-    If v = "" Or v = "-" Or v = "없음" Or v = "청산" Then
-        PosOf = "없음"
-    ElseIf IsNumeric(v) Then
-        If CDbl(v) = 0 Then PosOf = "없음" Else PosOf = v
+    If InStr(v, "매수") > 0 Then
+        PosOf = "매수"
+    ElseIf InStr(v, "매도") > 0 Then
+        PosOf = "매도"
     Else
-        PosOf = v
+        PosOf = "없음"
     End If
 End Function
 
