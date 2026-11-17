@@ -395,10 +395,10 @@
   /* 메인 페이지와 같은 관리자 설정(settings)에서 카카오톡·텔레그램 링크를 읽는다. 카카오톡 링크가 없으면 버튼을 숨긴다. */
   (function(){
     function apply(cfg){
-      if(!cfg)return;
+      cfg=cfg||{};
       var tg=(cfg.telegram_bot&&!/foketsignal_lobby/i.test(cfg.telegram_bot))?cfg.telegram_bot:'https://t.me/foket_center_bot';document.getElementById('pfTg').href=tg;document.getElementById('pfSvcTg').href=tg;
       var k=document.getElementById('pfKakao');
-      if(cfg.kakao_consult){k.href=cfg.kakao_consult;k.style.display='';}
+      k.href=cfg.kakao_consult||'https://open.kakao.com/o/gyTDkSne';k.style.display='';
     }
     var base=(location.protocol!=='file:')?location.origin+'/api':'http://localhost:3000/api';
     fetch(base+'/storage/settings',{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
