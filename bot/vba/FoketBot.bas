@@ -1,53 +1,81 @@
 Attribute VB_Name = "FoketBot"
-' í¬ì¼“ ë¡œì§ ì—‘ì…€ â†’ í¬ì¼“ ë´‡ ì—°ê²° (ì—‘ì…€ 2007 ì´ìƒ)
-' 1) StartFoketBot ì„ í•œ ë²ˆ ì‹¤í–‰í•˜ë©´ 10ì´ˆë§ˆë‹¤ A1~F1 ê°’ì„ ë´‡ ì„œë²„ë¡œ ë³´ëƒ…ë‹ˆë‹¤.
-' 2) ì‹ í˜¸ê°€ ë‚  ë•Œ SendFoketSignal "NQ ë§¤ìˆ˜ 21000" ì²˜ëŸ¼ ë¶€ë¥´ë©´ ì´ìš© íšŒì› ì „ì²´ì—ê²Œ ë°”ë¡œ ë‚˜ê°‘ë‹ˆë‹¤.
-'    (ì‹ í˜¸ ì…€ì´ ì •í•´ì§€ë©´ ì•„ì´í‹°ê°€ ì´ ë¶€ë¶„ì„ ìžë™ìœ¼ë¡œ ì—°ê²°í•©ë‹ˆë‹¤)
+' Æ÷ÄÏ ·ÎÁ÷ ¿¢¼¿ ¡æ Æ÷ÄÏ º¿ ¿¬°á (¿¢¼¿ 2007 ÀÌ»ó)
+'
+' [º¿ ½ÃÆ® ¸¸µé±â] ½ÃÆ® ÀÌ¸§ "º¿", 1ÇàºÎÅÍ ÇÑ ÁÙ¿¡ ÇÑ Á¾¸ñ (ÃÖ´ë 200Á¾¸ñ)
+'   A¿­ Á¾¸ñÄÚµå (NQ, ES, GC, K200 ...)   ¡ç º¿Àº ÀÌ ÄÚµå·Î Á¾¸ñÀ» ¾Ë¾Æº¾´Ï´Ù
+'   B¿­ Á¾¸ñ¸í   C¿­ Æ÷Áö¼Ç (¸Å¼ö/¸Åµµ/¾øÀ½)   D¿­ ÁøÀÔ°¡   E¿­ ÇöÀç°¡   F¿­ Æò°¡¼ÕÀÍ   G¿­ ÁøÀÔ½Ã°£
+'   H¿­ Y = ¿À´Ã µ¥ÀÏ¸® ½Ã±×³Î Á¾¸ñ (ÇØ¿Ü 1 + ÇÑ±¹ 1, ¸ÅÀÏ ¹Ù²î¸é Y À§Ä¡¸¸ ¿Å±è)
+'   °¢ Ä­Àº ·ÎÁ÷ ½ÃÆ®ÀÇ ¼¿À» °¡¸®Å°´Â ¼ö½ÄÀ¸·Î Ã¤¿ì¸é µË´Ï´Ù (¿¹: C1 Ä­¿¡ =·ÎÁ÷NQ!$K$5)
+'
+' [µ¿ÀÛ]
+'   StartFoketBot À» ÇÑ ¹ø ½ÇÇàÇÏ¸é 10ÃÊ¸¶´Ù Ç¥ ÀüÃ¼¸¦ º¿¿¡ º¸³À´Ï´Ù (È¸¿øÀÇ "ÇöÀç Æ÷Áö¼Ç" Á¶È¸¿ë).
+'   ¾î¶² ÁÙÀÇ C¿­(Æ÷Áö¼Ç)ÀÌ ¹Ù²î¸é ±× Á¾¸ñÀ» ¹Þ´Â È¸¿ø¿¡°Ô Áï½Ã ½ÅÈ£¸¦ º¸³À´Ï´Ù.
+'   ¿¹) NQ ÁÙ C¿­ÀÌ "¾øÀ½" ¡æ "¸Å¼ö" ·Î ¹Ù²î¸é  "[NQ ¹Ì´Ï³ª½º´Ú] ¸Å¼ö ÁøÀÔ 21000 (22:31)"
 Option Explicit
 
-Const BOT_URL As String = "http://ì„œë²„ì£¼ì†Œ:8080"   ' ì„œë²„ ì¤€ë¹„ í›„ ì•„ì´í‹°ê°€ ì±„ì›€
-Const BOT_KEY As String = "SIGNAL_KEYì™€_ê°™ì€_ê°’"
-Const SHEET_NAME As String = ""                    ' ë¹„ìš°ë©´ ì²« ë²ˆì§¸ ì‹œíŠ¸
+Const BOT_URL As String = "http://¼­¹öÁÖ¼Ò:8080"   ' ¼³Ä¡ ³¡¿¡ ³ª¿À´Â BOT_URL
+Const BOT_KEY As String = "¼³Ä¡_³¡¿¡_³ª¿À´Â_BOT_KEY"
+Const SHEET_NAME As String = "º¿"
 Const PUSH_SECONDS As Long = 10
 
 Dim nextRun As Date
-Dim lastPosition As String
+Dim lastPos As Object      ' Á¾¸ñÄÚµå ¡æ Á÷Àü Æ÷Áö¼Ç
 
 Public Sub StartFoketBot()
-    PushPosition
+    Set lastPos = Nothing
+    PushTable
 End Sub
 
 Public Sub StopFoketBot()
     On Error Resume Next
-    Application.OnTime nextRun, "PushPosition", , False
+    Application.OnTime nextRun, "PushTable", , False
 End Sub
 
-Private Function Ws() As Worksheet
-    If SHEET_NAME = "" Then
-        Set Ws = ThisWorkbook.Worksheets(1)
+Public Sub PushTable()
+    On Error Resume Next
+    Dim ws As Worksheet, r As Long, c As Long, code As String, pos As String, rows As String, cells As String
+    Dim first As Boolean
+    Set ws = ThisWorkbook.Worksheets(SHEET_NAME)
+    If lastPos Is Nothing Then
+        Set lastPos = CreateObject("Scripting.Dictionary")
+        first = True
+    End If
+    For r = 1 To 200
+        code = Trim(CStr(ws.Cells(r, 1).Text))
+        If code = "" Then Exit For
+        cells = ""
+        For c = 1 To 8
+            cells = cells & IIf(c > 1, ",", "") & """" & JsonEsc(CStr(ws.Cells(r, c).Text)) & """"
+        Next c
+        rows = rows & IIf(rows = "", "", ",") & "[" & cells & "]"
+
+        ' Æ÷Áö¼ÇÀÌ ¹Ù²î¸é ½ÅÈ£ (¿¢¼¿À» Ã³À½ Ä×À» ¶§´Â º¸³»Áö ¾ÊÀ½)
+        pos = Trim(CStr(ws.Cells(r, 3).Text))
+        If Not first And lastPos.Exists(code) Then
+            If lastPos(code) <> pos Then
+                SendFoketSignal code, SignalText(ws, r, lastPos(code), pos)
+            End If
+        End If
+        lastPos(code) = pos
+    Next r
+    PostJson "/position", "{""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
+    nextRun = Now + TimeSerial(0, 0, PUSH_SECONDS)
+    Application.OnTime nextRun, "PushTable"
+End Sub
+
+Private Function SignalText(ws As Worksheet, r As Long, oldPos As String, newPos As String) As String
+    Dim head As String
+    head = "[" & ws.Cells(r, 1).Text & " " & ws.Cells(r, 2).Text & "] "
+    If newPos = "" Or newPos = "¾øÀ½" Or newPos = "0" Then
+        SignalText = head & oldPos & " Ã»»ê " & ws.Cells(r, 5).Text & "  ¼ÕÀÍ " & ws.Cells(r, 6).Text & _
+                     " (" & Format(Now, "hh:nn") & ")"
     Else
-        Set Ws = ThisWorkbook.Worksheets(SHEET_NAME)
+        SignalText = head & newPos & " ÁøÀÔ " & ws.Cells(r, 4).Text & " (" & Format(Now, "hh:nn") & ")"
     End If
 End Function
 
-Public Sub PushPosition()
-    On Error Resume Next
-    Dim i As Long, v As String, cells As String
-    For i = 1 To 6
-        v = CStr(Ws.Cells(1, i).Text)
-        cells = cells & IIf(i > 1, ",", "") & """" & JsonEsc(v) & """"
-    Next i
-    ' ê°’ì´ ê·¸ëŒ€ë¡œì—¬ë„ 1ë¶„ì— í•œ ë²ˆì€ ë³´ë‚´ì„œ "ì—°ê²° ëŠê¹€" í‘œì‹œê°€ ëœ¨ì§€ ì•Šê²Œ í•¨
-    If cells <> lastPosition Or Second(Now) < PUSH_SECONDS Then
-        PostJson "/position", "{""key"":""" & BOT_KEY & """,""cells"":[" & cells & "]}"
-        lastPosition = cells
-    End If
-    nextRun = Now + TimeSerial(0, 0, PUSH_SECONDS)
-    Application.OnTime nextRun, "PushPosition"
-End Sub
-
-Public Sub SendFoketSignal(ByVal text As String, Optional ByVal service As String = "all")
-    PostJson "/signal", "{""key"":""" & BOT_KEY & """,""service"":""" & service & """,""text"":""" & JsonEsc(text) & """}"
+Public Sub SendFoketSignal(ByVal code As String, ByVal text As String)
+    PostJson "/signal", "{""key"":""" & BOT_KEY & """,""sym"":""" & JsonEsc(code) & """,""text"":""" & JsonEsc(text) & """}"
 End Sub
 
 Private Sub PostJson(ByVal path As String, ByVal body As String)

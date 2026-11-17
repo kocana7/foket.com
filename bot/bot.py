@@ -54,6 +54,7 @@ RENEW_NOTICE_BEFORE = int(os.environ.get("RENEW_NOTICE_BEFORE", "3"))
 DB_PATH = os.environ.get("DB_PATH", os.path.join(HERE, "foket_bot.db"))
 HOLIDAYS_PATH = os.path.join(HERE, "holidays.txt")
 SERVICES = {"daily": "데일리", "select": "셀렉트"}
+DAILY_COL = int(os.environ.get("DAILY_COL", "7"))   # 0=A열 … 7=H열: Y 표시 = 오늘 데일리 종목
 
 LANGS = {"ko": "한국어", "en": "English", "ja": "日本語", "zh": "中文",
          "ru": "Русский", "es": "Español", "de": "Deutsch", "fr": "Français"}
@@ -127,11 +128,12 @@ def init_db():
           status TEXT DEFAULT 'new',      -- new, trial_pending, trial, trial_ended, pay_pending, paid, expired, rejected
           trial_used INTEGER DEFAULT 0,
           trial_start TEXT, trial_end TEXT, paid_start TEXT, paid_end TEXT,
-          depositor TEXT, notified TEXT DEFAULT '', created_at TEXT, step TEXT);
+          depositor TEXT, notified TEXT DEFAULT '', created_at TEXT, step TEXT,
+          symbols TEXT DEFAULT '');      -- 셀렉트 회원이 고른 종목 코드 (쉼표 구분)
         CREATE TABLE IF NOT EXISTS signals(id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT,
           service TEXT, text TEXT, sent INTEGER);
         CREATE TABLE IF NOT EXISTS i18n(lang TEXT, key TEXT, text TEXT, PRIMARY KEY(lang, key));
-        CREATE TABLE IF NOT EXISTS position(id INTEGER PRIMARY KEY, at TEXT, data TEXT);
+        CREATE TABLE IF NOT EXISTS positions(code TEXT PRIMARY KEY, data TEXT, daily INTEGER, at TEXT);
         CREATE TABLE IF NOT EXISTS relay(admin_msg_id INTEGER PRIMARY KEY, tg_id INTEGER);
         """)
 
@@ -223,6 +225,12 @@ T = {
  "position_head": ("[현재 포지션] {at} 기준", "[Current position] as of {at}"),
  "position_none": ("아직 받은 포지션 정보가 없습니다. 잠시 뒤 다시 눌러 주세요.", "No position data yet. Please try again shortly."),
  "position_stale": ("(엑셀 연결이 {min}분째 끊겨 있어 최신 정보가 아닐 수 있습니다)", "(Data may be outdated: no update for {min} min)"),
+ "ask_symbols": ("받으실 종목을 눌러 고른 뒤 '선택 완료'를 눌러 주세요. (다시 누르면 취소)",
+                 "Tap the products you want, then tap 'Done'. (Tap again to remove)"),
+ "btn_done": ("선택 완료", "Done"),
+ "need_symbol": ("종목을 하나 이상 골라 주세요.", "Please choose at least one product."),
+ "btn_symbols": ("받는 종목 바꾸기", "Change products"),
+ "my_symbols": ("받는 종목: {codes}", "Products: {codes}"),
  "members_only": ("체험 또는 유료 이용 중인 회원만 볼 수 있습니다.", "Available to trial or paid members only."),
 }
 
@@ -276,7 +284,8 @@ def menu(lang):
     return KM([[B(t(lang, "btn_position"), callback_data="position")],
                [B(t(lang, "btn_trial"), callback_data="trial")],
                [B(t(lang, "btn_price"), callback_data="price"), B(t(lang, "btn_pay"), callback_data="pay")],
-               [B(t(lang, "btn_status"), callback_data="status"), B(t(lang, "btn_lang"), callback_data="lang")]])
+               [B(t(lang, "btn_status"), callback_data="status"), B(t(lang, "btn_symbols"), callback_data="symbols")],
+               [B(t(lang, "btn_lang"), callback_data="lang")]])
 
 
 def fmt_d(s):
@@ -322,10 +331,31 @@ async def on_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         upsert_user(uid, step="name")
         return await q.message.reply_text(t(lang, "ask_name"))
     if data.startswith("svc:"):
-        upsert_user(uid, service=data.split(":")[1], step="terms")
-        return await q.message.reply_text(t(lang, "terms"), reply_markup=KM([
-            [B(t(lang, "btn_agree"), callback_data="agree")],
-            [B(t(lang, "btn_disagree"), callback_data="disagree")]]))
+        svc = data.split(":")[1]
+        if svc == "select" and all_codes():
+            upsert_user(uid, service=svc, step="symbols", symbols="")
+            return await q.message.reply_text(t(lang, "ask_symbols"), reply_markup=symbol_kb(lang, set()))
+        upsert_user(uid, service=svc, step="terms")
+        return await send_terms(q.message, lang)
+    if data == "symbols":
+        upsert_user(uid, step="symbols_edit")
+        return await q.message.reply_text(t(lang, "ask_symbols"),
+                                          reply_markup=symbol_kb(lang, set(split_codes(u["symbols"]))))
+    if data.startswith("sym:"):
+        code = data[4:]
+        chosen = set(split_codes(u["symbols"]))
+        if code == "__done__":
+            if not chosen:
+                return await q.message.reply_text(t(lang, "need_symbol"))
+            if u["step"] == "symbols_edit":
+                upsert_user(uid, step=None)
+                return await q.edit_message_text(t(lang, "my_symbols", codes=", ".join(sorted(chosen))))
+            upsert_user(uid, step="terms")
+            await q.edit_message_text(t(lang, "my_symbols", codes=", ".join(sorted(chosen))))
+            return await send_terms(q.message, lang)
+        chosen ^= {code}
+        upsert_user(uid, symbols=",".join(sorted(chosen)))
+        return await q.edit_message_reply_markup(symbol_kb(lang, chosen))
     if data == "disagree":
         upsert_user(uid, step=None)
         return await q.message.reply_text(t(lang, "welcome"), reply_markup=menu(lang))
@@ -336,7 +366,8 @@ async def on_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
                     status="trial_pending", step=None)
         await q.message.reply_text(t(lang, "trial_requested"))
         u = get_user(uid)
-        await admin_send(ctx, f"[무료체험 신청]\n{who(u)}\n서비스: {SERVICES.get(u['service'], u['service'])}\n"
+        await admin_send(ctx, f"[무료체험 신청]\n{who(u)}\n서비스: {SERVICES.get(u['service'], u['service'])}"
+                              f"{' (' + u['symbols'] + ')' if u['service'] == 'select' else ''}\n"
                               f"연락처: {u['phone']}\n언어: {LANGS.get(u['lang'])}",
                          KM([[B("승인", callback_data=f"adm:trial_ok:{uid}"),
                               B("거절", callback_data=f"adm:trial_no:{uid}")]]))
@@ -350,11 +381,28 @@ async def on_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         return await q.message.reply_text(t(lang, "ask_depositor"))
 
 
+async def send_terms(message, lang):
+    await message.reply_text(t(lang, "terms"), reply_markup=KM([
+        [B(t(lang, "btn_agree"), callback_data="agree")],
+        [B(t(lang, "btn_disagree"), callback_data="disagree")]]))
+
+
+def symbol_kb(lang, chosen):
+    names = all_codes()
+    btns = [B(("✅ " if c in chosen else "") + (f"{c} {n}" if n and n != c else c), callback_data=f"sym:{c}")
+            for c, n in names]
+    rows = [btns[i:i + 2] for i in range(0, len(btns), 2)]
+    rows.append([B(t(lang, "btn_done"), callback_data="sym:__done__")])
+    return KM(rows)
+
+
 def status_text(u, lang):
     if u["status"] == "trial":
-        return t(lang, "status_trial", start=fmt_d(u["trial_start"]), end=fmt_d(u["trial_end"]))
+        return t(lang, "status_trial", start=fmt_d(u["trial_start"]), end=fmt_d(u["trial_end"])) + \
+            "\n" + t(lang, "my_symbols", codes=", ".join(member_codes(u)) or "-")
     if u["status"] == "paid":
-        return t(lang, "status_paid", start=fmt_d(u["paid_start"]), end=fmt_d(u["paid_end"]))
+        return t(lang, "status_paid", start=fmt_d(u["paid_start"]), end=fmt_d(u["paid_end"])) + \
+            "\n" + t(lang, "my_symbols", codes=", ".join(member_codes(u)) or "-")
     if u["status"] in ("trial_pending", "pay_pending"):
         return t(lang, "status_pending")
     return t(lang, "status_none")
@@ -517,35 +565,35 @@ async def admin_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         return await q.edit_message_text(q.message.text + "\n\n⏸ 미확인 (회원에게는 따로 알리지 않음)")
 
 
-# ---------------------------------------------------------------- 신호 전송
-def active_members(service):
-    today = today_kst().isoformat()
+# ---------------------------------------------------------------- 종목·신호·포지션
+# 엑셀 '봇' 표: 한 줄 = 한 종목. A열 종목코드, B열 종목명, C~G열 정보(포지션, 진입가, 현재가, 평가손익, 진입시간),
+# H열에 Y = 오늘 데일리 시그널 종목 (해외 1 + 한국 1).
+# 봇은 줄 위치가 아니라 A열 코드로 종목을 알아보므로 줄을 더하거나 순서를 바꿔도 됩니다.
+def split_codes(s):
+    return [c.strip().upper() for c in (s or "").split(",") if c.strip()]
+
+
+def all_codes():
+    """[(코드, 종목명)] 엑셀이 보낸 모든 종목."""
     with db() as c:
-        rows = c.execute("SELECT * FROM users WHERE status IN ('trial','paid')").fetchall()
+        rows = c.execute("SELECT code, data FROM positions ORDER BY rowid").fetchall()
     out = []
-    for u in rows:
-        if service not in ("all", None, "") and u["service"] and u["service"] != service:
-            continue
-        s, e = (u["trial_start"], u["trial_end"]) if u["status"] == "trial" else (u["paid_start"], u["paid_end"])
-        if s and e and s <= today <= e:
-            out.append(u)
+    for r in rows:
+        d = json.loads(r["data"])
+        out.append((r["code"], d[1] if len(d) > 1 else ""))
     return out
 
 
-async def broadcast_signal(app, service, text):
-    members = active_members(service)
-    sent = 0
-    for u in members:
-        try:
-            await app.bot.send_message(u["tg_id"], f"{t(u['lang'], 'signal_head')}\n{text}", protect_content=True)
-            sent += 1
-        except Exception as e:
-            log.warning("signal to %s failed: %s", u["tg_id"], e)
-        await asyncio.sleep(0.05)  # 텔레그램 초당 전송 제한
+def daily_codes():
     with db() as c:
-        c.execute("INSERT INTO signals(at, service, text, sent) VALUES(?,?,?,?)",
-                  (dt.datetime.now(KST).isoformat(timespec="seconds"), service, text, sent))
-    return sent
+        return [r["code"] for r in c.execute("SELECT code FROM positions WHERE daily=1 ORDER BY rowid")]
+
+
+def member_codes(u):
+    """회원이 받는 종목. 데일리 = 오늘 G열에 Y 표시된 종목(해외 1 + 한국 1), 셀렉트 = 회원이 고른 종목."""
+    if u["service"] == "select":
+        return split_codes(u["symbols"])
+    return daily_codes()
 
 
 def is_active(u):
@@ -554,45 +602,91 @@ def is_active(u):
     return u["status"] in ("trial", "paid") and bool(s and e and s <= today <= e)
 
 
-def position_text(u, lang):
-    """엑셀 A1~F1 값을 마지막으로 받은 그대로 보여 줌. 체험·유료 이용 중인 회원만."""
-    if u["tg_id"] != ADMIN_ID and not is_active(u):
-        return t(lang, "members_only")
+def active_members(code=None):
+    """code 종목을 받는 이용 중 회원. code가 없거나 ALL이면 이용 중 회원 전체."""
     with db() as c:
-        r = c.execute("SELECT at, data FROM position WHERE id=1").fetchone()
-    if not r:
+        rows = c.execute("SELECT * FROM users WHERE status IN ('trial','paid')").fetchall()
+    code = (code or "").upper()
+    return [u for u in rows if is_active(u) and (code in ("", "ALL") or code in member_codes(u))]
+
+
+async def broadcast_signal(app, code, text):
+    sent = 0
+    for u in active_members(code):
+        try:
+            await app.bot.send_message(u["tg_id"], f"{t(u['lang'], 'signal_head')}\n{text}", protect_content=True)
+            sent += 1
+        except Exception as e:
+            log.warning("signal to %s failed: %s", u["tg_id"], e)
+        await asyncio.sleep(0.05)  # 텔레그램 초당 전송 제한
+    with db() as c:
+        c.execute("INSERT INTO signals(at, service, text, sent) VALUES(?,?,?,?)",
+                  (dt.datetime.now(KST).isoformat(timespec="seconds"), code or "ALL", text, sent))
+    return sent
+
+
+def position_text(u, lang):
+    """회원이 받는 종목의 현재 정보(엑셀 표의 해당 줄)만 보여 줌. 운영자는 전체."""
+    is_admin = u["tg_id"] == ADMIN_ID
+    if not is_admin and not is_active(u):
+        return t(lang, "members_only")
+    codes = [c for c, _ in all_codes()] if is_admin else member_codes(u)
+    with db() as c:
+        rows = {r["code"]: r for r in c.execute("SELECT * FROM positions")}
+    rows = [rows[c] for c in codes if c in rows]
+    if not rows:
         return t(lang, "position_none")
-    at = dt.datetime.fromisoformat(r["at"])
-    cells = json.loads(r["data"])
     labels = json.loads(os.environ.get("POSITION_LABELS", "[]") or "[]")
+    at = max(dt.datetime.fromisoformat(r["at"]) for r in rows)
     lines = [t(lang, "position_head", at=at.strftime("%m-%d %H:%M:%S"))]
-    for i, v in enumerate(cells):
-        lab = labels[i] if i < len(labels) and labels[i] else ""
-        lines.append(f"{lab}: {v}" if lab else str(v))
+    for r in rows:
+        d = json.loads(r["data"])
+        lines.append("")
+        lines.append(f"■ {d[0]}" + (f" {d[1]}" if len(d) > 1 and d[1] else ""))
+        for i in range(2, len(d)):
+            if str(d[i]).strip() == "" or i == DAILY_COL:   # 데일리 표시 열은 회원에게 안 보임
+                continue
+            lab = labels[i] if i < len(labels) and labels[i] else ""
+            lines.append(f"  {lab}: {d[i]}" if lab else f"  {d[i]}")
     age = (dt.datetime.now(KST) - at).total_seconds() / 60
     if age > int(os.environ.get("POSITION_STALE_MIN", "5")):
+        lines.append("")
         lines.append(t(lang, "position_stale", min=int(age)))
     return "\n".join(lines)
 
 
-async def http_position(request):
-    """엑셀이 A1~F1 값을 몇 초마다 보냄: {"key":..., "cells":["..",..]}"""
+async def read_body(request):
     try:
-        d = await request.json()
+        return await request.json()
     except Exception:
-        d = dict(await request.post())
+        return dict(await request.post())
+
+
+async def http_position(request):
+    """엑셀이 표 전체를 몇 초마다 보냄: {"key":..., "rows":[["NQ","미니나스닥","매수",...,"Y"], ...]}"""
+    d = await read_body(request)
     if not SIGNAL_KEY or d.get("key") != SIGNAL_KEY:
         return web.json_response({"ok": False, "error": "bad key"}, status=403)
-    cells = d.get("cells")
-    if isinstance(cells, str):
-        cells = cells.split("|")
-    if not isinstance(cells, list):
-        return web.json_response({"ok": False, "error": "cells"}, status=400)
+    rows = d.get("rows")
+    if rows is None and isinstance(d.get("cells"), list):
+        rows = [d["cells"]]
+    if not isinstance(rows, list):
+        return web.json_response({"ok": False, "error": "rows"}, status=400)
+    now = dt.datetime.now(KST).isoformat(timespec="seconds")
+    n = 0
     with db() as c:
-        c.execute("INSERT OR REPLACE INTO position(id, at, data) VALUES(1,?,?)",
-                  (dt.datetime.now(KST).isoformat(timespec="seconds"),
-                   json.dumps([str(x)[:200] for x in cells[:20]], ensure_ascii=False)))
-    return web.json_response({"ok": True})
+        if d.get("full", True):
+            c.execute("DELETE FROM positions")   # 표에서 지운 종목은 봇에서도 지움
+        for r in rows[:200]:
+            if not isinstance(r, list) or not r or not str(r[0]).strip():
+                continue
+            cells = [str(x)[:200] for x in r[:12]]
+            cells[0] = cells[0].strip().upper()
+            daily = 1 if len(cells) > DAILY_COL and cells[DAILY_COL].strip().upper() in ("Y", "O", "1", "데일리") else 0
+            c.execute("INSERT OR REPLACE INTO positions(code, data, daily, at) VALUES(?,?,?,?)",
+                      (cells[0], json.dumps(cells, ensure_ascii=False), daily, now))
+            n += 1
+    return web.json_response({"ok": True, "rows": n})
 
 
 def signal_text(d):
@@ -605,17 +699,15 @@ def signal_text(d):
 
 
 async def http_signal(request):
+    """{"key":..., "sym":"NQ", "text":"NQ 매수 진입 21000"} → NQ를 받는 회원에게만 보냄."""
     app = request.app["tg"]
-    try:
-        d = await request.json()
-    except Exception:
-        d = dict(await request.post())
+    d = await read_body(request)
     if not SIGNAL_KEY or d.get("key") != SIGNAL_KEY:
         return web.json_response({"ok": False, "error": "bad key"}, status=403)
     text = signal_text(d)
     if not text:
         return web.json_response({"ok": False, "error": "empty"}, status=400)
-    n = await broadcast_signal(app, d.get("service", "all"), text)
+    n = await broadcast_signal(app, d.get("sym", ""), text)
     return web.json_response({"ok": True, "sent": n})
 
 
@@ -679,12 +771,15 @@ async def cmd_myid(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
 
 async def cmd_signal(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    """운영자가 직접 신호 보내기: /signal 텍스트"""
+    """운영자가 직접 신호 보내기: /signal NQ 매수 21000 (첫 단어가 종목코드면 그 종목 회원에게만)"""
     if update.effective_user.id != ADMIN_ID:
         return
     text = update.message.text.partition(" ")[2].strip()
+    code = text.split(" ")[0].upper() if text else ""
+    if code not in [c for c, _ in all_codes()]:
+        code = "ALL"
     if text:
-        n = await broadcast_signal(ctx.application, "all", text)
+        n = await broadcast_signal(ctx.application, code, text)
         await update.message.reply_text(f"{n}명에게 보냈습니다.")
 
 

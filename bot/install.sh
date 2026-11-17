@@ -29,7 +29,7 @@ BANK_INFO=$BANK
 OVERSEAS_INFO=${OVS:-해외 결제는 문의해 주세요}
 PRICE_KRW=500,000
 PRICE_USD=300
-POSITION_LABELS=["종목","포지션","진입가","현재가","평가손익","시간"]
+POSITION_LABELS=["코드","종목","포지션","진입가","현재가","평가손익","진입시간"]
 PORT=8080
 ENV
   chmod 600 $DIR/.env
