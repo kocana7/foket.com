@@ -88,10 +88,10 @@
     });
   }
 
-  /* Telegram links. [data-tg="free"] = inquiry buttons -> support bot (admin telegram_bot, default foket_signal).
+  /* Telegram links. [data-tg="free"] = inquiry buttons -> support bot (admin telegram_bot, default foket_center).
      [data-tg="channel"] = notice channel (admin telegram_channel, default foket_center).
      The retired foketsignal_Lobby room is never used. */
-  var TG_BOT = 'https://t.me/foket_signal', TG_CHANNEL = 'https://t.me/foket_center';
+  var TG_BOT = 'https://t.me/foket_center', TG_CHANNEL = 'https://t.me/foket_center';
   function okUrl(u, d) { return (u && !/foketsignal_lobby/i.test(u)) ? u : d; }
   function tgUrl(cfg) { return okUrl(cfg && cfg.telegram_bot, TG_BOT); }
   function channelUrl(cfg) { return okUrl(cfg && cfg.telegram_channel, TG_CHANNEL); }
