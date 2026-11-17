@@ -421,6 +421,29 @@ window.FOKET_FAQ = {
       }
     },
     {
+      id: 'edu-price', cat: 'edu',
+      q: {
+        ko: '교육 요금은 얼마인가요?',
+        en: 'How much does the education cost?',
+        de: 'Was kostet die Ausbildung?',
+        ja: '教育の料金はいくらですか？',
+        zh: '教育课程费用是多少？',
+        fr: 'Combien coûte la formation ?',
+        es: '¿Cuánto cuesta la formación?',
+        ru: 'Сколько стоит обучение?'
+      },
+      a: {
+        ko: 'ROF 교육은 시그널 서비스와 별도로 300만원입니다.\n교육회원으로 신청하시면 원하시는 날부터 시그널 서비스를 120거래일(20거래일 × 6) 동안 받으실 수 있습니다.',
+        en: 'ROF education costs KRW 3,000,000, separate from the signal services.\nWhen you sign up as an education member, you also receive the signal service for 120 trading days (20 × 6), starting on the day you choose.',
+        de: 'Die ROF-Ausbildung kostet 3.000.000 KRW, getrennt von den Signaldiensten.\nAls Kursteilnehmer erhalten Sie zusätzlich 120 Handelstage (20 × 6) Signaldienst ab einem Tag Ihrer Wahl.',
+        ja: 'ROF教育はシグナルサービスとは別に300万ウォンです。\n教育会員としてお申し込みいただくと、ご希望の日からシグナルサービスを120取引日（20取引日×6）ご利用いただけます。',
+        zh: 'ROF 教育与信号服务分开收费，为 300 万韩元。\n报名成为教育会员后，可从您选择的日期起享受 120 个交易日（20 × 6）的信号服务。',
+        fr: 'La formation ROF coûte 3 000 000 KRW, indépendamment des services de signaux.\nEn vous inscrivant comme membre de la formation, vous recevez aussi le service de signaux pendant 120 jours de bourse (20 × 6), à partir du jour de votre choix.',
+        es: 'La formación ROF cuesta 3.000.000 KRW, aparte de los servicios de señales.\nAl inscribirse como alumno, recibe además el servicio de señales durante 120 días hábiles (20 × 6), desde el día que elija.',
+        ru: 'Обучение ROF стоит 3 000 000 KRW отдельно от сигнальных сервисов.\nЗаписавшись на обучение, вы также получаете сигнальный сервис на 120 торговых дней (20 × 6) с выбранной вами даты.'
+      }
+    },
+    {
       id: 'edu-global', cat: 'edu',
       q: {
         ko: '해외에 살아도 교육을 받을 수 있나요?',
