@@ -433,14 +433,14 @@ window.FOKET_FAQ = {
         ru: 'Сколько стоит обучение?'
       },
       a: {
-        ko: 'ROF 교육은 시그널 서비스와 별도로 300만원입니다.\n교육회원으로 신청하시면 원하시는 날부터 시그널 서비스를 120거래일(20거래일 × 6) 동안 받으실 수 있습니다.',
-        en: 'ROF education costs KRW 3,000,000, separate from the signal services.\nWhen you sign up as an education member, you also receive the signal service for 120 trading days (20 × 6), starting on the day you choose.',
-        de: 'Die ROF-Ausbildung kostet 3.000.000 KRW, getrennt von den Signaldiensten.\nAls Kursteilnehmer erhalten Sie zusätzlich 120 Handelstage (20 × 6) Signaldienst ab einem Tag Ihrer Wahl.',
-        ja: 'ROF教育はシグナルサービスとは別に300万ウォンです。\n教育会員としてお申し込みいただくと、ご希望の日からシグナルサービスを120取引日（20取引日×6）ご利用いただけます。',
-        zh: 'ROF 教育与信号服务分开收费，为 300 万韩元。\n报名成为教育会员后，可从您选择的日期起享受 120 个交易日（20 × 6）的信号服务。',
-        fr: 'La formation ROF coûte 3 000 000 KRW, indépendamment des services de signaux.\nEn vous inscrivant comme membre de la formation, vous recevez aussi le service de signaux pendant 120 jours de bourse (20 × 6), à partir du jour de votre choix.',
-        es: 'La formación ROF cuesta 3.000.000 KRW, aparte de los servicios de señales.\nAl inscribirse como alumno, recibe además el servicio de señales durante 120 días hábiles (20 × 6), desde el día que elija.',
-        ru: 'Обучение ROF стоит 3 000 000 KRW отдельно от сигнальных сервисов.\nЗаписавшись на обучение, вы также получаете сигнальный сервис на 120 торговых дней (20 × 6) с выбранной вами даты.'
+        ko: 'ROF 교육은 시그널 서비스와 별도로 300만원입니다. 해외 수강생은 $2,000입니다.\n교육회원으로 신청하시면 원하시는 날부터 데일리 시그널과 셀렉트 시그널 중 원하는 서비스를 120거래일(20거래일 × 6) 동안 받으실 수 있습니다.',
+        en: 'ROF education costs KRW 3,000,000, separate from the signal services. For overseas students it is $2,000.\nWhen you sign up as an education member, you also receive Daily Signal or Select Signal, whichever you prefer, for 120 trading days (20 × 6), starting on the day you choose.',
+        de: 'Die ROF-Ausbildung kostet 3.000.000 KRW, getrennt von den Signaldiensten. Für Teilnehmer im Ausland kostet sie 2.000 $.\nAls Kursteilnehmer erhalten Sie zusätzlich 120 Handelstage (20 × 6) lang Daily Signal oder Select Signal nach Wahl, ab einem Tag Ihrer Wahl.',
+        ja: 'ROF教育はシグナルサービスとは別に300万ウォンです。海外の受講生は$2,000です。\n教育会員としてお申し込みいただくと、ご希望の日からデイリーシグナルとセレクトシグナルのうちお好きなサービスを120取引日（20取引日×6）ご利用いただけます。',
+        zh: 'ROF 教育与信号服务分开收费，为 300 万韩元；海外学员为 2,000 美元。\n报名成为教育会员后，可从您选择的日期起，在每日信号和精选信号中任选其一，享受 120 个交易日（20 × 6）。',
+        fr: 'La formation ROF coûte 3 000 000 KRW, indépendamment des services de signaux. Pour les élèves à l’étranger, elle coûte 2 000 $.\nEn vous inscrivant comme membre de la formation, vous recevez aussi Daily Signal ou Select Signal, au choix, pendant 120 jours de bourse (20 × 6), à partir du jour de votre choix.',
+        es: 'La formación ROF cuesta 3.000.000 KRW, aparte de los servicios de señales. Para alumnos en el extranjero cuesta 2.000 $.\nAl inscribirse como alumno, recibe además Daily Signal o Select Signal, a su elección, durante 120 días hábiles (20 × 6), desde el día que elija.',
+        ru: 'Обучение ROF стоит 3 000 000 KRW отдельно от сигнальных сервисов. Для зарубежных учеников — $2 000.\nЗаписавшись на обучение, вы также получаете Daily Signal или Select Signal на выбор на 120 торговых дней (20 × 6) с выбранной вами даты.'
       }
     },
     {
