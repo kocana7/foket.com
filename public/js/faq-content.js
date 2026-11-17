@@ -8,6 +8,7 @@ window.FOKET_FAQ = {
     { id: 'trial', icon: 'fa-gift' },
     { id: 'pricing', icon: 'fa-receipt' },
     { id: 'signals', icon: 'fa-bolt' },
+    { id: 'edu', icon: 'fa-graduation-cap' },
     { id: 'risk', icon: 'fa-shield-halved' }
   ],
   catNames: {
@@ -16,6 +17,7 @@ window.FOKET_FAQ = {
     trial:   { ko: '무료 체험', en: 'Free trial', de: 'Gratis-Test', ja: '無料体験', zh: '免费体验', fr: 'Essai gratuit', es: 'Prueba gratis', ru: 'Пробный период' },
     pricing: { ko: '요금·결제', en: 'Pricing', de: 'Preise', ja: '料金・お支払い', zh: '费用与支付', fr: 'Tarifs', es: 'Precios', ru: 'Стоимость' },
     signals: { ko: '신호·포지션', en: 'Signals', de: 'Signale', ja: 'シグナル・ポジション', zh: '信号与持仓', fr: 'Signaux', es: 'Señales', ru: 'Сигналы' },
+    edu:     { ko: 'ROF 교육', en: 'Education', de: 'Ausbildung', ja: 'ROF教育', zh: 'ROF 教育', fr: 'Formation', es: 'Formación', ru: 'Обучение' },
     risk:    { ko: '위험·책임', en: 'Risk', de: 'Risiko', ja: 'リスク・責任', zh: '风险与责任', fr: 'Risques', es: 'Riesgos', ru: 'Риски' },
     more:    { ko: '추가 안내', en: 'More', de: 'Weiteres', ja: 'その他', zh: '其他', fr: 'Autres', es: 'Más', ru: 'Другое' }
   },
@@ -370,6 +372,75 @@ window.FOKET_FAQ = {
         fr: 'Consultez la page [Performances](performance.html) pour les résultats par date. Les signaux réels et les résultats simulés sur données passées (backtests) sont indiqués séparément, et les pertes sont publiées telles quelles.',
         es: 'Consulte la página de [Rendimiento](performance.html) para ver los resultados por fecha. Los registros de señales reales y los resultados simulados con datos pasados (backtests) se muestran por separado, y las pérdidas se publican tal cual.',
         ru: 'Результаты по датам — на странице [Результаты](performance.html). Реальные сигналы и смоделированные на исторических данных результаты (бэктесты) отмечены отдельно, убытки показаны как есть.'
+      }
+    },
+    {
+      id: 'edu-what', cat: 'edu',
+      q: {
+        ko: '교육도 하나요?',
+        en: 'Do you offer education too?',
+        de: 'Bieten Sie auch Ausbildung an?',
+        ja: '教育もありますか？',
+        zh: '有教育课程吗？',
+        fr: 'Proposez-vous aussi des formations ?',
+        es: '¿También ofrecen formación?',
+        ru: 'Есть ли у вас обучение?'
+      },
+      a: {
+        ko: '네. 데일리·셀렉트 시그널과 함께 포켓의 ROF(Regulations Of FutureOption) 이론 교육을 진행합니다. 교육은 주로 포켓 [네이버 카페](https://cafe.naver.com/rof114)에서 진행되며, 자세한 내용은 상담 텔레그램 [@foket_center_bot](https://t.me/foket_center_bot)으로 문의해 주십시오.',
+        en: 'Yes. Alongside Daily and Select Signal, we teach Foket’s ROF (Regulations Of FutureOption) theory. Classes are held mainly on our [Naver Cafe](https://cafe.naver.com/rof114). For details, ask us on Telegram at [@foket_center_bot](https://t.me/foket_center_bot).',
+        de: 'Ja. Neben Daily und Select Signal unterrichten wir Foket’s ROF-Theorie (Regulations Of FutureOption). Der Unterricht findet hauptsächlich in unserem [Naver Cafe](https://cafe.naver.com/rof114) statt. Details erhalten Sie per Telegram über [@foket_center_bot](https://t.me/foket_center_bot).',
+        ja: 'はい。デイリー・セレクトシグナルとあわせて、FoketのROF（Regulations Of FutureOption）理論の教育を行っています。教育は主にFoketの[Naver Cafe](https://cafe.naver.com/rof114)で行います。詳しくはTelegram [@foket_center_bot](https://t.me/foket_center_bot) でお問い合わせください。',
+        zh: '有。在每日信号和精选信号之外，我们还讲授 Foket 的 ROF（Regulations Of FutureOption）理论。课程主要在 Foket 的 [Naver Cafe](https://cafe.naver.com/rof114) 进行，详情请通过 Telegram [@foket_center_bot](https://t.me/foket_center_bot) 咨询。',
+        fr: 'Oui. En plus de Daily et Select Signal, nous enseignons la théorie ROF (Regulations Of FutureOption) de Foket. Les cours ont lieu principalement sur notre [Naver Cafe](https://cafe.naver.com/rof114). Pour en savoir plus, écrivez-nous sur Telegram via [@foket_center_bot](https://t.me/foket_center_bot).',
+        es: 'Sí. Además de Daily y Select Signal, enseñamos la teoría ROF (Regulations Of FutureOption) de Foket. Las clases se imparten principalmente en nuestro [Naver Cafe](https://cafe.naver.com/rof114). Para más detalles, escríbanos por Telegram a [@foket_center_bot](https://t.me/foket_center_bot).',
+        ru: 'Да. Помимо Daily и Select Signal, мы обучаем теории ROF (Regulations Of FutureOption) от Foket. Занятия проходят в основном в нашем [Naver Cafe](https://cafe.naver.com/rof114). Подробности — в Telegram: [@foket_center_bot](https://t.me/foket_center_bot).'
+      }
+    },
+    {
+      id: 'edu-level', cat: 'edu',
+      q: {
+        ko: '완전 초보도 들을 수 있나요? 어디까지 배우나요?',
+        en: 'Can complete beginners join? How far does it go?',
+        de: 'Können absolute Anfänger teilnehmen? Wie weit geht es?',
+        ja: 'まったくの初心者でも受講できますか？どこまで学べますか？',
+        zh: '零基础也能学吗？能学到什么程度？',
+        fr: 'Les grands débutants peuvent-ils suivre ? Jusqu’où va la formation ?',
+        es: '¿Pueden participar principiantes absolutos? ¿Hasta dónde llega?',
+        ru: 'Подойдёт ли обучение полным новичкам? Чему можно научиться?'
+      },
+      a: {
+        ko: '네. 기초부터 철저하게 가르치기 때문에 선물·옵션을 처음 접하는 분도 시작하실 수 있습니다.\n• 완전 초보부터 전문가 수준까지 단계별로 진행합니다.\n• 자동 트레이딩 시스템 설계까지 커리큘럼에 포함되어 있습니다.',
+        en: 'Yes. We teach thoroughly from the basics, so you can start even if futures and options are new to you.\n• Levels run step by step from complete beginner to expert.\n• The curriculum goes all the way to designing automated trading systems.',
+        de: 'Ja. Wir unterrichten gründlich von Grund auf, sodass Sie auch ohne Vorkenntnisse in Futures und Optionen beginnen können.\n• Die Stufen führen schrittweise vom Anfänger bis zum Profi.\n• Der Lehrplan reicht bis zum Entwurf automatischer Handelssysteme.',
+        ja: 'はい。基礎から徹底的にお教えするので、先物・オプションが初めての方でも始められます。\n• まったくの初心者から専門家レベルまで段階的に進めます。\n• 自動トレーディングシステムの設計までカリキュラムに含まれています。',
+        zh: '可以。我们从基础开始扎实讲授，即使第一次接触期货和期权也能开始学习。\n• 从零基础到专业水平分阶段进行。\n• 课程一直涵盖到自动交易系统的设计。',
+        fr: 'Oui. Nous enseignons rigoureusement dès les bases : vous pouvez commencer même sans connaître les futures et les options.\n• Le parcours progresse pas à pas du grand débutant à l’expert.\n• Le programme va jusqu’à la conception de systèmes de trading automatisés.',
+        es: 'Sí. Enseñamos a fondo desde la base, así que puede empezar aunque los futuros y las opciones sean nuevos para usted.\n• Los niveles avanzan paso a paso de principiante absoluto a experto.\n• El temario llega hasta el diseño de sistemas de trading automatizados.',
+        ru: 'Да. Мы основательно учим с самых основ, поэтому начать можно, даже если фьючерсы и опционы для вас в новинку.\n• Уровни идут шаг за шагом — от полного новичка до эксперта.\n• Программа доходит до проектирования автоматических торговых систем.'
+      }
+    },
+    {
+      id: 'edu-global', cat: 'edu',
+      q: {
+        ko: '해외에 살아도 교육을 받을 수 있나요?',
+        en: 'Can I take the classes from outside Korea?',
+        de: 'Kann ich auch aus dem Ausland teilnehmen?',
+        ja: '海外に住んでいても受講できますか？',
+        zh: '住在海外也能上课吗？',
+        fr: 'Puis-je suivre la formation depuis l’étranger ?',
+        es: '¿Puedo tomar las clases desde fuera de Corea?',
+        ru: 'Можно ли учиться, если я живу не в Корее?'
+      },
+      a: {
+        ko: '네. 교육은 언어별로 진행되기 때문에 해외에서도 문제없이 수강하실 수 있습니다.',
+        en: 'Yes. Classes are run in each language, so you can join from anywhere in the world without any problem.',
+        de: 'Ja. Der Unterricht findet in den jeweiligen Sprachen statt, sodass Sie problemlos von überall auf der Welt teilnehmen können.',
+        ja: 'はい。教育は言語別に行うため、海外からでも問題なく受講できます。',
+        zh: '可以。课程按语言分别进行，在海外也可以顺利参加。',
+        fr: 'Oui. Les cours sont donnés dans chaque langue, vous pouvez donc les suivre sans difficulté depuis n’importe quel pays.',
+        es: 'Sí. Las clases se imparten en cada idioma, así que puede seguirlas sin problema desde cualquier país.',
+        ru: 'Да. Обучение ведётся на разных языках, поэтому участвовать можно без проблем из любой страны.'
       }
     },
 
