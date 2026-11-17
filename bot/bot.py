@@ -861,26 +861,56 @@ async def notice_button(q, ctx, act, nid):
         return await q.edit_message_text(q.message.text + "\n\n❌ 취소")
     with db() as c:
         c.execute("UPDATE notices SET sent=0 WHERE id=?", (int(nid),))
-        users = [row["tg_id"] for row in c.execute("SELECT tg_id FROM users")]
     await q.edit_message_text(q.message.text + "\n\n⏳ 보내는 중...")
+    await send_notice(ctx.bot, int(nid), r["text"], "all", "Sean님")
+
+
+async def send_notice(bot, nid, text, audience="all", by=""):
+    """공지 발송. audience: all(봇 이용자 전원+단체방) / members(체험·유료 이용 중만) / group(단체방만)"""
+    if audience == "group":
+        users = []
+    else:
+        with db() as c:
+            rows = c.execute("SELECT * FROM users").fetchall()
+        users = [u["tg_id"] for u in rows if audience == "all" or is_active(u)]
     sent = 0
     for uid in users:
         try:
-            await ctx.bot.send_message(uid, f"[포켓 공지]\n{r['text']}")
+            await bot.send_message(uid, f"[포켓 공지]\n{text}")
             sent += 1
         except Exception:
             pass
         await asyncio.sleep(0.05)
     ch = ""
-    for target in notice_targets():
+    for target in ([] if audience == "members" else notice_targets()):
         try:
-            await ctx.bot.send_message(int(target) if target.lstrip("-").isdigit() else target, r["text"])
-            ch += f", {target} 게시"
+            await bot.send_message(int(target) if target.lstrip("-").isdigit() else target, text)
+            ch += ", 단체방 게시"
         except Exception as e:
-            ch += f", {target} 게시 실패({e})"
+            ch += f", 단체방 게시 실패({e})"
     with db() as c:
-        c.execute("UPDATE notices SET sent=? WHERE id=?", (sent, int(nid)))
-    await ctx.bot.send_message(ADMIN_ID, f"공지 완료: {sent}명{ch}")
+        c.execute("UPDATE notices SET sent=? WHERE id=?", (sent, nid))
+    if ADMIN_ID:
+        await bot.send_message(ADMIN_ID, f"[공지 완료{' · ' + by if by else ''}] {sent}명{ch}\n\n{text[:300]}")
+    return sent
+
+
+async def http_notice(request):
+    """자동 공지: {"key":..., "text":"...", "audience":"all|members|group"}. 키는 서버 안에만 있음."""
+    d = await read_body(request)
+    key = request.headers.get("X-Key") or d.get("key")
+    if not SIGNAL_KEY or key != SIGNAL_KEY:
+        return web.json_response({"ok": False, "error": "bad key"}, status=403)
+    text = str(d.get("text", "")).strip()[:3500]
+    audience = d.get("audience", "all")
+    if not text or audience not in ("all", "members", "group"):
+        return web.json_response({"ok": False, "error": "text/audience"}, status=400)
+    with db() as c:
+        c.execute("CREATE TABLE IF NOT EXISTS notices(id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT, text TEXT, sent INTEGER)")
+        nid = c.execute("INSERT INTO notices(at, text, sent) VALUES(?,?,0)",
+                        (dt.datetime.now(KST).isoformat(timespec="seconds"), text)).lastrowid
+    n = await send_notice(request.app["tg"].bot, nid, text, audience, str(d.get("by", "자동"))[:40])
+    return web.json_response({"ok": True, "sent": n})
 
 
 async def cmd_signal(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
@@ -923,7 +953,7 @@ async def main():
 
     web_app = web.Application()
     web_app["tg"] = app
-    web_app.add_routes([web.post("/signal", http_signal), web.post("/position", http_position), web.get("/health", http_health)])
+    web_app.add_routes([web.post("/signal", http_signal), web.post("/position", http_position), web.post("/notice", http_notice), web.get("/health", http_health)])
     runner = web.AppRunner(web_app)
 
     async with app:
