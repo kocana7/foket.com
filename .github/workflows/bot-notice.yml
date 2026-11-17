@@ -1,0 +1,43 @@
+name: Bot notice
+
+# 포켓 텔레그램 봇(foket_center_bot)으로 공지를 보냅니다.
+# Claude 스레드·루틴이 GitHub에서 이 워크플로를 실행해 공지를 올립니다. Sean님 손을 거치지 않습니다.
+# 봇 키는 서버 밖으로 나오지 않고, 서버 안에서 봇에 바로 전달합니다.
+on:
+  workflow_dispatch:
+    inputs:
+      text:
+        description: 공지 내용
+        required: true
+        type: string
+      audience:
+        description: "all = 봇 이용자 전원 + 단체방, members = 체험·유료 이용 중인 회원만, group = 단체방만"
+        required: true
+        default: all
+        type: choice
+        options: [all, members, group]
+      by:
+        description: 보낸 곳 (예 운영팀 루틴)
+        required: false
+        default: 자동
+        type: string
+
+concurrency: bot-notice
+
+jobs:
+  notice:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notice
+        env:
+          SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          TEXT: ${{ inputs.text }}
+          AUDIENCE: ${{ inputs.audience }}
+          BY: ${{ inputs.by }}
+        run: |
+          mkdir -p ~/.ssh && printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          python3 -c 'import json,os;print(json.dumps({"text":os.environ["TEXT"].replace("\\n","\n"),"audience":os.environ["AUDIENCE"],"by":os.environ.get("BY","")},ensure_ascii=False))' > notice.json
+          out=$(ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ubuntu@34.212.176.114 \
+            'curl -sS -X POST -H "Content-Type: application/json" -H "X-Key: $(sudo cat /opt/foket-bot/signal_key)" --data-binary @- http://127.0.0.1:8091/notice' < notice.json)
+          echo "$out"
+          echo "$out" | grep -q '"ok": true'

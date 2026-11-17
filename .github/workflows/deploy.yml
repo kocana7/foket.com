@@ -85,3 +85,22 @@ jobs:
             sudo cp /var/www/foket/scripts/nginx-foket.conf /etc/nginx/sites-enabled/foket
           fi
           sudo nginx -t && sudo systemctl reload nginx'
+
+      # ── 포켓 텔레그램 봇 (GitHub Secrets 에 BOT_TOKEN 이 있을 때만) ──
+      - name: Deploy Telegram bot
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          BOT_ADMIN_CHAT_ID: ${{ secrets.BOT_ADMIN_CHAT_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BOT_BANK_INFO: ${{ secrets.BOT_BANK_INFO }}
+          BOT_OVERSEAS_INFO: ${{ secrets.BOT_OVERSEAS_INFO }}
+        run: |
+          if [ -z "$BOT_TOKEN" ]; then echo "BOT_TOKEN secret 없음: 봇 설치 건너뜀"; exit 0; fi
+          # 값은 명령줄에 넣지 않고 표준입력으로 서버에 보냄 (서버에서 읽은 뒤 바로 삭제)
+          umask 077
+          for v in BOT_TOKEN BOT_ADMIN_CHAT_ID ANTHROPIC_API_KEY BOT_BANK_INFO BOT_OVERSEAS_INFO; do
+            printf "%s=%q\n" "$v" "${!v}"
+          done > bot.env
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ubuntu@34.212.176.114 \
+            'umask 077; cat > /tmp/foket-bot.env && sudo bash /var/www/foket/bot/install.sh --env /tmp/foket-bot.env' < bot.env
+          rm -f bot.env

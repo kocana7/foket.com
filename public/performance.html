@@ -91,7 +91,7 @@
           <a class="lang-opt" data-lang="ru" href="#"><span class="fi fi-ru"></span> Русский</a>
         </div>
       </div>
-      <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;background:var(--gradient-primary);color:#fff;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;text-decoration:none"><i class="fab fa-telegram-plane"></i> <span data-i18n="j">무료 텔레그램 참여</span></a>
+      <a href="https://t.me/foket_center_bot" data-tg="free" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;background:var(--gradient-primary);color:#fff;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;text-decoration:none"><i class="fab fa-telegram-plane"></i> <span data-i18n="j">무료 텔레그램 참여</span></a>
     </div>
   </div>
 </nav>
@@ -146,7 +146,7 @@
       <div class="pf-svc-grid">
         <div class="pf-svc-card"><div class="n" data-i18n="svcA">포켓 데일리 시그널</div><div class="d" data-i18n="svcAd">매일 선정된 해외선물 1종목 + 한국선물 1종목</div></div>
         <div class="pf-svc-card"><div class="n" data-i18n="svcB">포켓 셀렉트 시그널</div><div class="d" data-i18n="svcBd">해외·한국선물 중 원하는 1종목 선택 (이용 중 변경 가능)</div></div>
-        <a class="pf-svc-cta" id="pfSvcTg" href="https://t.me/foket_center" target="_blank" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i> <span data-i18n="svcC">무료 체험 신청</span></a>
+        <a class="pf-svc-cta" id="pfSvcTg" href="https://t.me/foket_center_bot" target="_blank" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i> <span data-i18n="svcC">무료 체험 신청</span></a>
       </div>
     </section>
     <p class="pf-note" data-i18n="note">신호 기록은 포켓 자동 시스템이 낸 매매 신호를 1계약 기준으로 계산한 결과입니다. 모든 기록은 수수료·슬리피지에 따라 실제 계좌 결과와 다를 수 있습니다. 과거 실적은 미래 수익을 보장하지 않으며, 선물 거래는 원금 이상의 손실이 발생할 수 있습니다.</p>
@@ -386,7 +386,7 @@
       <i class="fas fa-comment-dots"></i>
       <span data-fk-float="kk">카카오톡 문의</span>
     </a>
-    <a href="https://t.me/foketsignal_Lobby" target="_blank" rel="noopener noreferrer" class="tg" id="pfTg">
+    <a href="https://t.me/foket_center_bot" data-tg="free" target="_blank" rel="noopener noreferrer" class="tg" id="pfTg">
       <i class="fab fa-telegram-plane"></i>
       <span data-fk-float="tg">텔레그램 문의</span>
     </a>
@@ -395,10 +395,10 @@
   /* 메인 페이지와 같은 관리자 설정(settings)에서 카카오톡·텔레그램 링크를 읽는다. 카카오톡 링크가 없으면 버튼을 숨긴다. */
   (function(){
     function apply(cfg){
-      if(!cfg)return;
-      if(cfg.telegram_free){document.getElementById('pfTg').href=cfg.telegram_free;document.getElementById('pfSvcTg').href=cfg.telegram_free;}
+      cfg=cfg||{};
+      var tg=(cfg.telegram_bot&&!/foketsignal_lobby/i.test(cfg.telegram_bot))?cfg.telegram_bot:'https://t.me/foket_center_bot';document.getElementById('pfTg').href=tg;document.getElementById('pfSvcTg').href=tg;
       var k=document.getElementById('pfKakao');
-      if(cfg.kakao_consult){k.href=cfg.kakao_consult;k.style.display='';}
+      k.href=cfg.kakao_consult||'https://open.kakao.com/o/gyTDkSne';k.style.display='';
     }
     var base=(location.protocol!=='file:')?location.origin+'/api':'http://localhost:3000/api';
     fetch(base+'/storage/settings',{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
