@@ -896,6 +896,7 @@ async def main():
 
     async with app:
         await app.start()
+        await app.bot.delete_webhook()   # 예전에 다른 곳에 연결돼 있던 봇이어도 이 서버가 받도록
         await app.updater.start_polling()
         await runner.setup()
         await web.TCPSite(runner, BIND, PORT).start()
