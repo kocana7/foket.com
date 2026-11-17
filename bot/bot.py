@@ -42,6 +42,7 @@ ADMIN_ID = int(os.environ.get("ADMIN_CHAT_ID", "0") or 0)       # Sean 텔레그
 SIGNAL_KEY = os.environ.get("SIGNAL_KEY", "")                    # 엑셀이 신호 보낼 때 쓰는 비밀 키
 PORT = int(os.environ.get("PORT", "8091"))
 BIND = os.environ.get("BIND", "127.0.0.1")
+NOTICE_CHANNEL = os.environ.get("NOTICE_CHANNEL", "@foketcenter")   # 봇을 이 채널 관리자로 넣으면 공지도 같이 게시
 PUBLIC_URL = os.environ.get("PUBLIC_URL", "https://foket.com/bot-api")
 ANTHROPIC_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 AI_MODEL = os.environ.get("AI_MODEL", "claude-haiku-5-5")
@@ -503,6 +504,7 @@ Facts:
 - Free trial: {TRIAL_DAYS} trading days, starting the next trading day after approval, once per Telegram account.
   Apply with the 'Free trial' button (name, phone, service, agree to risk disclosure).
 - Paid pass: {PAID_DAYS} trading days, KRW {PRICE_KRW} by Korean bank transfer or USD {PRICE_USD} overseas. Use the 'Pay' button.
+- Announcements: Telegram channel https://t.me/foketcenter
 - Website: https://www.foket.com (track record). Results shown are logic operation records, not real-money trading.
 Rules:
 - Reply in the user's language ({{lang}}), short and polite. Korean replies use the ~니다 style.
@@ -550,6 +552,8 @@ async def admin_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if q.from_user.id != ADMIN_ID:
         return
     _, act, uid = q.data.split(":")
+    if act in ("notice_go", "notice_no"):
+        return await notice_button(q, ctx, act, uid)
     uid = int(uid)
     u = get_user(uid)
     lang = lang_of(uid)
@@ -796,6 +800,58 @@ async def cmd_myid(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"내 텔레그램 번호: {update.effective_user.id}")
 
 
+# ---------------------------------------------------------------- 전체 공지
+async def cmd_notice(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """운영자: /notice 공지 내용 → 미리보기 + [보내기][취소] → 봇을 쓴 모든 사람 + 공지 채널"""
+    if update.effective_user.id != ADMIN_ID:
+        return
+    text = update.message.text.partition(" ")[2].strip()
+    if not text:
+        return await update.message.reply_text("사용법: /notice 공지 내용 (여러 줄 가능)")
+    with db() as c:
+        c.execute("CREATE TABLE IF NOT EXISTS notices(id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT, text TEXT, sent INTEGER)")
+        nid = c.execute("INSERT INTO notices(at, text, sent) VALUES(?,?,NULL)",
+                        (dt.datetime.now(KST).isoformat(timespec="seconds"), text)).lastrowid
+        n = c.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+    await update.message.reply_text(
+        f"[공지 미리보기] 받는 사람: 봇 이용자 {n}명" + (f" + 채널 {NOTICE_CHANNEL}" if NOTICE_CHANNEL else "") +
+        f"\n\n{text}", reply_markup=KM([[B("보내기", callback_data=f"adm:notice_go:{nid}"),
+                                          B("취소", callback_data=f"adm:notice_no:{nid}")]]))
+
+
+async def notice_button(q, ctx, act, nid):
+    with db() as c:
+        r = c.execute("SELECT text, sent FROM notices WHERE id=?", (int(nid),)).fetchone()
+    if not r or r["sent"] is not None:
+        return await q.edit_message_text(q.message.text + "\n\n(이미 처리됨)")
+    if act == "notice_no":
+        with db() as c:
+            c.execute("UPDATE notices SET sent=-1 WHERE id=?", (int(nid),))
+        return await q.edit_message_text(q.message.text + "\n\n❌ 취소")
+    with db() as c:
+        c.execute("UPDATE notices SET sent=0 WHERE id=?", (int(nid),))
+        users = [row["tg_id"] for row in c.execute("SELECT tg_id FROM users")]
+    await q.edit_message_text(q.message.text + "\n\n⏳ 보내는 중...")
+    sent = 0
+    for uid in users:
+        try:
+            await ctx.bot.send_message(uid, f"[포켓 공지]\n{r['text']}")
+            sent += 1
+        except Exception:
+            pass
+        await asyncio.sleep(0.05)
+    ch = ""
+    if NOTICE_CHANNEL:
+        try:
+            await ctx.bot.send_message(NOTICE_CHANNEL, r["text"])
+            ch = f", 채널 {NOTICE_CHANNEL} 게시"
+        except Exception as e:
+            ch = f", 채널 게시 실패(봇을 채널 관리자로 넣어 주세요: {e})"
+    with db() as c:
+        c.execute("UPDATE notices SET sent=? WHERE id=?", (sent, int(nid)))
+    await ctx.bot.send_message(ADMIN_ID, f"공지 완료: {sent}명{ch}")
+
+
 async def cmd_signal(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     """운영자가 직접 신호 보내기: /signal NQ 매수 21000 (첫 단어가 종목코드면 그 종목 회원에게만)"""
     if update.effective_user.id != ADMIN_ID:
@@ -824,6 +880,7 @@ async def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("myid", cmd_myid))
     app.add_handler(CommandHandler("excel", cmd_excel))
+    app.add_handler(CommandHandler("notice", cmd_notice))
     app.add_handler(CommandHandler("stats", cmd_stats))
     app.add_handler(CommandHandler("signal", cmd_signal))
     app.add_handler(CommandHandler("position", cmd_position))
