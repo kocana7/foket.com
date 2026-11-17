@@ -42,6 +42,7 @@ ADMIN_ID = int(os.environ.get("ADMIN_CHAT_ID", "0") or 0)       # Sean 텔레그
 SIGNAL_KEY = os.environ.get("SIGNAL_KEY", "")                    # 엑셀이 신호 보낼 때 쓰는 비밀 키
 PORT = int(os.environ.get("PORT", "8091"))
 BIND = os.environ.get("BIND", "127.0.0.1")
+NOTICE_CHANNEL = os.environ.get("NOTICE_CHANNEL", "")   # 비우면 운영자가 단체방에서 /setnotice 한 곳을 씀
 PUBLIC_URL = os.environ.get("PUBLIC_URL", "https://foket.com/bot-api")
 ANTHROPIC_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 AI_MODEL = os.environ.get("AI_MODEL", "claude-haiku-5-5")
@@ -136,6 +137,7 @@ def init_db():
           service TEXT, text TEXT, sent INTEGER);
         CREATE TABLE IF NOT EXISTS i18n(lang TEXT, key TEXT, text TEXT, PRIMARY KEY(lang, key));
         CREATE TABLE IF NOT EXISTS positions(code TEXT PRIMARY KEY, data TEXT, daily INTEGER, at TEXT);
+        CREATE TABLE IF NOT EXISTS settings(k TEXT PRIMARY KEY, v TEXT);
         CREATE TABLE IF NOT EXISTS relay(admin_msg_id INTEGER PRIMARY KEY, tg_id INTEGER);
         """)
 
@@ -550,6 +552,8 @@ async def admin_button(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if q.from_user.id != ADMIN_ID:
         return
     _, act, uid = q.data.split(":")
+    if act in ("notice_go", "notice_no"):
+        return await notice_button(q, ctx, act, uid)
     uid = int(uid)
     u = get_user(uid)
     lang = lang_of(uid)
@@ -796,6 +800,89 @@ async def cmd_myid(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"내 텔레그램 번호: {update.effective_user.id}")
 
 
+# ---------------------------------------------------------------- 전체 공지
+def notice_targets():
+    """공지를 같이 올릴 단체방·채널 목록: 환경설정 + /setnotice 로 등록한 곳."""
+    out = [c.strip() for c in NOTICE_CHANNEL.split(",") if c.strip()]
+    with db() as c:
+        r = c.execute("SELECT v FROM settings WHERE k='notice_chats'").fetchone()
+    for x in (r["v"].split(",") if r and r["v"] else []):
+        if x and x not in out:
+            out.append(x)
+    return out
+
+
+async def cmd_setnotice(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """운영자가 단체방(또는 채널)에서 /setnotice → 그 방을 공지 게시 대상으로 등록. /unsetnotice 로 해제."""
+    if update.effective_user is None or update.effective_user.id != ADMIN_ID:
+        return
+    chat = update.effective_chat
+    if chat.type == "private":
+        return await update.message.reply_text("공지를 올릴 단체방에 봇을 넣은 뒤, 그 단체방에서 /setnotice 를 보내 주세요.")
+    cur = [x for x in notice_targets() if x not in NOTICE_CHANNEL.split(",")]
+    cid = str(chat.id)
+    unset = update.message.text.startswith("/unsetnotice")
+    cur = [x for x in cur if x != cid] + ([] if unset else [cid])
+    with db() as c:
+        c.execute("INSERT OR REPLACE INTO settings VALUES('notice_chats', ?)", (",".join(cur),))
+    await ctx.bot.send_message(ADMIN_ID, f"공지 게시 대상 {'해제' if unset else '등록'}: {chat.title}")
+    try:
+        await update.message.delete()
+    except Exception:
+        pass
+
+
+async def cmd_notice(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """운영자: /notice 공지 내용 → 미리보기 + [보내기][취소] → 봇을 쓴 모든 사람 + 공지 채널"""
+    if update.effective_user.id != ADMIN_ID:
+        return
+    text = update.message.text.partition(" ")[2].strip()
+    if not text:
+        return await update.message.reply_text("사용법: /notice 공지 내용 (여러 줄 가능)")
+    with db() as c:
+        c.execute("CREATE TABLE IF NOT EXISTS notices(id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT, text TEXT, sent INTEGER)")
+        nid = c.execute("INSERT INTO notices(at, text, sent) VALUES(?,?,NULL)",
+                        (dt.datetime.now(KST).isoformat(timespec="seconds"), text)).lastrowid
+        n = c.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+    await update.message.reply_text(
+        f"[공지 미리보기] 받는 사람: 봇 이용자 {n}명" + (f" + 단체방·채널 {len(notice_targets())}곳" if notice_targets() else "") +
+        f"\n\n{text}", reply_markup=KM([[B("보내기", callback_data=f"adm:notice_go:{nid}"),
+                                          B("취소", callback_data=f"adm:notice_no:{nid}")]]))
+
+
+async def notice_button(q, ctx, act, nid):
+    with db() as c:
+        r = c.execute("SELECT text, sent FROM notices WHERE id=?", (int(nid),)).fetchone()
+    if not r or r["sent"] is not None:
+        return await q.edit_message_text(q.message.text + "\n\n(이미 처리됨)")
+    if act == "notice_no":
+        with db() as c:
+            c.execute("UPDATE notices SET sent=-1 WHERE id=?", (int(nid),))
+        return await q.edit_message_text(q.message.text + "\n\n❌ 취소")
+    with db() as c:
+        c.execute("UPDATE notices SET sent=0 WHERE id=?", (int(nid),))
+        users = [row["tg_id"] for row in c.execute("SELECT tg_id FROM users")]
+    await q.edit_message_text(q.message.text + "\n\n⏳ 보내는 중...")
+    sent = 0
+    for uid in users:
+        try:
+            await ctx.bot.send_message(uid, f"[포켓 공지]\n{r['text']}")
+            sent += 1
+        except Exception:
+            pass
+        await asyncio.sleep(0.05)
+    ch = ""
+    for target in notice_targets():
+        try:
+            await ctx.bot.send_message(int(target) if target.lstrip("-").isdigit() else target, r["text"])
+            ch += f", {target} 게시"
+        except Exception as e:
+            ch += f", {target} 게시 실패({e})"
+    with db() as c:
+        c.execute("UPDATE notices SET sent=? WHERE id=?", (sent, int(nid)))
+    await ctx.bot.send_message(ADMIN_ID, f"공지 완료: {sent}명{ch}")
+
+
 async def cmd_signal(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     """운영자가 직접 신호 보내기: /signal NQ 매수 21000 (첫 단어가 종목코드면 그 종목 회원에게만)"""
     if update.effective_user.id != ADMIN_ID:
@@ -824,6 +911,8 @@ async def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("myid", cmd_myid))
     app.add_handler(CommandHandler("excel", cmd_excel))
+    app.add_handler(CommandHandler("notice", cmd_notice))
+    app.add_handler(CommandHandler(["setnotice", "unsetnotice"], cmd_setnotice))
     app.add_handler(CommandHandler("stats", cmd_stats))
     app.add_handler(CommandHandler("signal", cmd_signal))
     app.add_handler(CommandHandler("position", cmd_position))
@@ -839,6 +928,7 @@ async def main():
 
     async with app:
         await app.start()
+        await app.bot.delete_webhook()   # 예전에 다른 곳에 연결돼 있던 봇이어도 이 서버가 받도록
         await app.updater.start_polling()
         await runner.setup()
         await web.TCPSite(runner, BIND, PORT).start()
