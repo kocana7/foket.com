@@ -30,7 +30,7 @@ write_env() {  # $1=토큰 $2=관리자번호 $3=API키 $4=계좌 $5=해외결�
     echo "OVERSEAS_INFO=${5:-해외 결제는 문의해 주세요}"
     echo "PRICE_KRW=500,000"
     echo "PRICE_USD=300"
-    echo 'POSITION_LABELS=["코드","종목","포지션","진입가","현재가","평가손익","진입시간"]'
+    echo 'POSITION_LABELS=["코드","종목","포지션","진입가","현재 평가손익","진입시간","청산손익"]'
     echo "PORT=$PORT"
     echo "BIND=127.0.0.1"
     echo "PUBLIC_URL=https://foket.com/bot-api"
