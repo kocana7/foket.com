@@ -23,6 +23,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 KST = ZoneInfo("Asia/Seoul")
 logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s", level=logging.INFO)
 log = logging.getLogger("foket")
+logging.getLogger("httpx").setLevel(logging.WARNING)   # 요청 주소에 봇 토큰이 들어가므로 기록하지 않음
 
 
 # ---------------------------------------------------------------- 설정
