@@ -153,6 +153,9 @@ def migrate_db():
             c.execute("ALTER TABLE users ADD COLUMN plan TEXT DEFAULT ''")      # '' = 신호 이용권, 'edu' = ROF 교육회원
         if "edu_start_req" not in cols:
             c.execute("ALTER TABLE users ADD COLUMN edu_start_req TEXT DEFAULT ''")
+        if not c.execute("SELECT 1 FROM settings WHERE k='i18n_v2'").fetchone():   # 문구가 바뀐 번역은 다시 만들기
+            c.execute("DELETE FROM i18n WHERE key IN ('price','trial_used')")
+            c.execute("INSERT INTO settings VALUES('i18n_v2','1')")
 
 
 def get_user(uid):
@@ -181,13 +184,21 @@ T = {
  "btn_status": ("내 이용 현황", "My status"),
  "btn_pay": ("결제하기", "Pay"),
  "btn_lang": ("언어 변경", "Language"),
- "price": ("유료 이용권: 20거래일 {krw}원 (계좌이체) 또는 해외 ${usd}.\n무료체험: 10거래일, 텔레그램 계정당 1회.",
+ "price": ("유료 이용권: 20거래일 {krw}원 (계좌이체) 또는 해외 ${usd}.\n무료체험: 10거래일, 1인(휴대폰 번호) 1회.",
            "Paid pass: 20 trading days for KRW {krw} (bank transfer) or USD {usd} overseas.\n"
-           "Free trial: 10 trading days, once per Telegram account."),
+           "Free trial: 10 trading days, once per person (phone number)."),
  "ask_name": ("이름을 입력해 주세요.", "Please enter your name."),
  "ask_phone": ("연락처를 보내 주세요. 아래 버튼을 누르거나 번호를 입력하시면 됩니다.",
                "Please share your phone number with the button below, or type it."),
  "btn_share_phone": ("연락처 보내기", "Share phone number"),
+ "ask_phone_btn": ("본인 확인을 위해 아래 '연락처 보내기' 버튼을 눌러 주세요. 이 텔레그램 계정의 번호가 전달됩니다.",
+                   "To verify, please tap the 'Share phone number' button below. It sends this Telegram account's number."),
+ "phone_button_only": ("번호를 직접 입력하실 수 없습니다. 아래 '연락처 보내기' 버튼을 눌러 주세요.",
+                       "Typing the number is not accepted. Please tap the 'Share phone number' button below."),
+ "phone_not_own": ("본인 계정의 연락처만 받을 수 있습니다. 아래 버튼을 눌러 주세요.",
+                   "Only your own account's number can be accepted. Please tap the button below."),
+ "phone_used": ("이 휴대폰 번호로 이미 무료체험을 이용하셨습니다. 무료체험은 1인 1회입니다. 유료 이용을 원하시면 '결제하기'를 눌러 주세요.",
+                "This phone number has already used the free trial (one per person). Tap 'Pay' to subscribe."),
  "ask_service": ("받으실 서비스를 골라 주세요. 언제든 메뉴에서 바꿀 수 있습니다.\n\n"
                  "• 데일리: 포켓이 매일 고른 해외선물 1종목 + 한국선물(코스피200) 1종목, 모두 2종목\n"
                  "• 셀렉트: 회원님이 직접 고른 1종목 (매일 바꿀 수 있음)",
@@ -218,8 +229,8 @@ T = {
            "Do you agree?"),
  "btn_agree": ("동의합니다", "I agree"),
  "btn_disagree": ("동의하지 않습니다", "I do not agree"),
- "trial_used": ("무료체험은 계정당 한 번만 가능합니다. 유료 이용을 원하시면 '결제하기'를 눌러 주세요.",
-                "The free trial is available only once per account. Tap 'Pay' to subscribe."),
+ "trial_used": ("무료체험은 1인 1회만 가능합니다. 유료 이용을 원하시면 '결제하기'를 눌러 주세요.",
+                "The free trial is available only once per person. Tap 'Pay' to subscribe."),
  "trial_requested": ("신청이 접수되었습니다. 승인되면 바로 알려 드립니다.",
                      "Your request has been received. We will notify you once it is approved."),
  "trial_approved": ("무료체험이 승인되었습니다. {start}부터 {end}까지 ({n}거래일) 신호를 보내 드립니다.",
@@ -471,15 +482,47 @@ def who(u):
     return f"{u['name'] or '(이름 없음)'} @{u['username'] or '-'} (번호 {u['tg_id']})"
 
 
+def phone_kb(lang):
+    return ReplyKeyboardMarkup([[KeyboardButton(t(lang, "btn_share_phone"), request_contact=True)]],
+                               resize_keyboard=True, one_time_keyboard=True)
+
+
+def norm_phone(p):
+    """번호 비교용: 숫자만, 한국 국가번호 82 는 0 으로 (+82 10-1234-5678 → 01012345678)."""
+    d = "".join(ch for ch in str(p or "") if ch.isdigit())
+    if d.startswith("82") and len(d) >= 11:
+        d = "0" + d[2:].lstrip("0")
+    return d
+
+
+def phone_trial_used(uid, phone):
+    """같은 번호로 다른 텔레그램 계정이 이미 체험을 받았거나 신청 중인지."""
+    with db() as c:
+        rows = c.execute("SELECT phone FROM users WHERE tg_id<>? AND phone IS NOT NULL AND phone<>'' AND "
+                         "(trial_used=1 OR status IN ('trial_pending','trial','trial_ended'))", (uid,)).fetchall()
+    return any(norm_phone(r["phone"]) == phone for r in rows)
+
+
 async def on_contact(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     uid = update.effective_user.id
     u = get_user(uid)
-    if u and u["step"] == "phone":
-        await got_phone(update, uid, update.message.contact.phone_number)
+    if not (u and u["step"] == "phone"):
+        return
+    ct = update.message.contact
+    if ct.user_id != uid:       # 다른 사람 연락처를 보낸 경우 (버튼은 항상 본인 번호를 보냄)
+        lang = lang_of(uid)
+        return await update.message.reply_text(t(lang, "phone_not_own"), reply_markup=phone_kb(lang))
+    await got_phone(update, uid, ct.phone_number)
 
 
 async def got_phone(update, uid, phone):
     lang = lang_of(uid)
+    phone = norm_phone(phone)
+    if phone_trial_used(uid, phone):
+        upsert_user(uid, phone=phone, trial_used=1, step=None)
+        await update.message.reply_text(t(lang, "phone_used"), reply_markup=ReplyKeyboardRemove())
+        await update.message.reply_text(t(lang, "welcome"), reply_markup=menu(lang))
+        return
     upsert_user(uid, phone=phone, step="service")
     await update.message.reply_text("✓", reply_markup=ReplyKeyboardRemove())
     await update.message.reply_text(t(lang, "ask_service"), reply_markup=service_kb(lang))
@@ -504,11 +547,9 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     step = u["step"]
     if step == "name":
         upsert_user(uid, name=msg.text.strip()[:50], step="phone")
-        kb = ReplyKeyboardMarkup([[KeyboardButton(t(lang, "btn_share_phone"), request_contact=True)]],
-                                 resize_keyboard=True, one_time_keyboard=True)
-        return await msg.reply_text(t(lang, "ask_phone"), reply_markup=kb)
-    if step == "phone":
-        return await got_phone(update, uid, msg.text.strip()[:30])
+        return await msg.reply_text(t(lang, "ask_phone_btn"), reply_markup=phone_kb(lang))
+    if step == "phone":     # 직접 입력한 번호는 본인 확인이 안 되므로 받지 않음
+        return await msg.reply_text(t(lang, "phone_button_only"), reply_markup=phone_kb(lang))
     if step == "edu_start":
         txt = msg.text.strip()
         if txt.lower() in ("바로", "now", "지금", "today"):
