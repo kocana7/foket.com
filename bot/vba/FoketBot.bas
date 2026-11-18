@@ -140,6 +140,33 @@ Private Function SignalText(ws As Worksheet, r As Long, code As String, oldPos A
     End If
 End Function
 
+' 연결 시험: Alt+F8 → TestFoketBot. 봇 서버에 표를 한 번 보내고 결과를 창으로 보여 줌
+Public Sub TestFoketBot()
+    Dim ws As Worksheet, h As Object, body As String, r As Long, code As String, rows As String
+    On Error GoTo Fail
+    Set ws = ThisWorkbook.Worksheets(SHEET_NAME)
+    code = CodeOf(Trim(ws.Cells(3, 4).Text))
+    rows = RowJson(ws, 3, code, True)
+    For r = FIRST_SELECT_ROW To LAST_SELECT_ROW
+        If Trim(ws.Cells(r, 4).Text) <> "" Then
+            code = CodeOf(Trim(ws.Cells(r, 4).Text))
+            rows = rows & "," & RowJson(ws, r, code, (code = CodeOf(Trim(ws.Cells(4, 4).Text))))
+        End If
+    Next r
+    body = "{""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
+    Set h = CreateObject("MSXML2.ServerXMLHTTP.6.0")
+    h.setTimeouts 5000, 5000, 10000, 10000
+    h.Open "POST", BOT_URL & "/position", False
+    h.setRequestHeader "Content-Type", "application/json; charset=utf-8"
+    h.send body
+    MsgBox "응답 " & h.Status & vbCrLf & h.responseText & vbCrLf & vbCrLf & _
+           "200 + ok true = 성공 / 403 = BOT_KEY 틀림", vbInformation, "포켓 봇 연결 시험"
+    Exit Sub
+Fail:
+    MsgBox "연결 실패: " & Err.Number & " " & Err.Description & vbCrLf & vbCrLf & _
+           "시트 이름이 '봇'인지, 인터넷 연결, 보안 프로그램을 확인해 주세요. 이 창을 캡처해 보내 주세요.", vbExclamation, "포켓 봇 연결 시험"
+End Sub
+
 Public Sub SendFoketSignal(ByVal code As String, ByVal text As String)
     PostJson "/signal", "{""key"":""" & BOT_KEY & """,""sym"":""" & JsonEsc(code) & """,""text"":""" & JsonEsc(text) & """}"
 End Sub
