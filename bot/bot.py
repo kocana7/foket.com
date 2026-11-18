@@ -10,7 +10,7 @@
 
 실행: python3 bot.py   (설정은 같은 폴더의 .env 또는 환경변수)
 """
-import asyncio, datetime as dt, json, logging, os, sqlite3
+import asyncio, datetime as dt, json, logging, os, secrets, sqlite3, string
 from zoneinfo import ZoneInfo
 
 from aiohttp import web
@@ -874,6 +874,31 @@ async def cmd_excel(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
                                         protect_content=True)
 
 
+async def cmd_newkey(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """운영자에게만: 엑셀 키를 새로 만들어 바로 적용 (이전 키는 즉시 무효)."""
+    global SIGNAL_KEY
+    if update.effective_user.id != ADMIN_ID:
+        return
+    key = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(32))
+    old = os.umask(0o077)
+    try:
+        with open(os.path.join(HERE, "signal_key"), "w") as f:          # 다음 배포 때도 이 키를 유지
+            f.write(key)
+        envp = os.path.join(HERE, ".env")
+        if os.path.exists(envp):                 # 봇이 다시 켜져도 이 키를 사용
+            lines = open(envp, encoding="utf-8").read().splitlines()
+            lines = [f"SIGNAL_KEY={key}" if l.startswith("SIGNAL_KEY=") else l for l in lines]
+            open(envp, "w", encoding="utf-8").write("\n".join(lines) + "\n")
+    finally:
+        os.umask(old)
+    SIGNAL_KEY = key
+    log.info("엑셀 키 교체됨")
+    await update.message.reply_text(
+        "엑셀 키를 새로 만들었습니다. 이전 키는 지금부터 쓸 수 없습니다.\n"
+        "엑셀 FoketBot 모듈의 BOT_KEY 를 아래 값으로 바꾸고 저장해 주세요.\n\n"
+        f"BOT_KEY = {key}", protect_content=True)
+
+
 async def cmd_myid(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"내 텔레그램 번호: {update.effective_user.id}")
 
@@ -1020,6 +1045,7 @@ async def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("myid", cmd_myid))
     app.add_handler(CommandHandler("excel", cmd_excel))
+    app.add_handler(CommandHandler("newkey", cmd_newkey))
     app.add_handler(CommandHandler("notice", cmd_notice))
     app.add_handler(CommandHandler(["setnotice", "unsetnotice"], cmd_setnotice))
     app.add_handler(CommandHandler("stats", cmd_stats))

@@ -26,6 +26,6 @@
   - `BOT_TOKEN` (BotFather 토큰, 필수), `BOT_ADMIN_CHAT_ID` (Sean님 텔레그램 Id 숫자, 필수)
   - `ANTHROPIC_API_KEY` (AI 상담, 선택), `BOT_BANK_INFO` (입금 계좌), `BOT_OVERSEAS_INFO` (해외 결제, 선택)
 - 봇은 서버 안 `127.0.0.1:8091` 에서만 열리고, 엑셀은 `https://foket.com/bot-api/` (nginx) 로 보냅니다. 포트를 따로 열 필요 없음.
-- 엑셀 키(SIGNAL_KEY)는 서버에서 한 번 만들어 유지합니다. Sean님이 봇에 `/excel` 을 보내면 주소와 키가 Sean님께만 보입니다.
+- 엑셀 키(SIGNAL_KEY)는 서버에서 한 번 만들어 유지합니다. Sean님이 봇에 `/excel` 을 보내면 주소와 키가 Sean님께만 보입니다. 키가 노출되면 `/newkey` 를 보내면 새 키로 바로 바뀌고 이전 키는 무효가 됩니다(엑셀 BOT_KEY 도 새 값으로 바꿔야 함).
 - 수동 설치도 가능: 서버에서 `cd /var/www/foket/bot && sudo bash install.sh`
 - 상태 확인: `sudo systemctl status foket-bot`, 기록: `sudo journalctl -u foket-bot -n 50`
