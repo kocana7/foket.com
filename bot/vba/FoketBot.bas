@@ -11,7 +11,8 @@ Attribute VB_Name = "FoketBot"
 '
 ' [동작]
 '   StartFoketBot 을 한 번 실행하면 10초마다 표 전체를 봇에 보냅니다 (회원의 "현재 포지션" 조회용).
-'   어떤 종목의 E열(포지션)이 바뀌면 그 종목을 받는 회원에게만 즉시 신호를 보냅니다.
+'   E열(포지션)은 2초마다 읽고, 바뀐 값이 STABLE_SECONDS(12초) 동안 그대로 유지될 때만 신호를 보냅니다.
+'   (계산 중 4초 간격으로 빈칸 → 매수 → 빈칸 → 매도 처럼 깜빡이는 값은 신호로 보내지 않음)
 '     데일리 회원 = 코스피200 + D4에 적은 종목,  셀렉트 회원 = 본인이 고른 1종목
 '   예) 골드 E열이 빈칸(0) → "매수"  :  "[GC 골드] 매수 진입 2650 (22:31)"
 '       골드 E열이 "매수" → 빈칸(0)  :  "[GC 골드] 매수 청산  청산손익 +$1,000 (23:10)"
@@ -20,16 +21,23 @@ Option Explicit
 Const BOT_URL As String = "https://foket.com/bot-api"
 Const BOT_KEY As String = "봇에_/excel_보내면_나오는_BOT_KEY"
 Const SHEET_NAME As String = "봇"
-Const PUSH_SECONDS As Long = 10
+Const PUSH_SECONDS As Long = 10        ' 표 전체를 봇에 보내는 간격
+Const CHECK_SECONDS As Long = 2        ' 포지션(E열)을 읽는 간격
+Const STABLE_SECONDS As Long = 12      ' 바뀐 포지션이 이만큼 그대로여야 신호 (깜빡임 무시)
 Const FIRST_SELECT_ROW As Long = 6
 Const LAST_SELECT_ROW As Long = 30      ' 종목을 더 넣어도 30행까지 읽음 (빈 줄은 건너뜀)
 
 Dim nextRun As Date
 Dim lastPos As Object      ' 종목코드 → 직전 포지션
+Dim candPos As Object      ' 종목코드 → 바뀌는 중인 새 포지션 (아직 확정 전)
+Dim candSince As Object    ' 종목코드 → 그 새 포지션이 처음 보인 시각
+Dim lastPush As Date
 Dim goodMethod As Long     ' 이 PC에서 되는 전송 방식 (처음 한 번 찾아서 기억)
 
 Public Sub StartFoketBot()
+    StopFoketBot
     Set lastPos = Nothing
+    lastPush = 0
     PushTable
 End Sub
 
@@ -89,12 +97,15 @@ Private Function RowJson(ws As Worksheet, r As Long, code As String, daily As Bo
     RowJson = "[" & s & ",""" & IIf(daily, "Y", "") & """]"
 End Function
 
+' 2초마다 실행: 포지션 확인, 10초마다 표 전체 전송
 Public Sub PushTable()
     On Error Resume Next
     Dim ws As Worksheet, r As Long, code As String, rows As String, dailyCode As String, first As Boolean
     Set ws = ThisWorkbook.Worksheets(SHEET_NAME)
     If lastPos Is Nothing Then
         Set lastPos = CreateObject("Scripting.Dictionary")
+        Set candPos = CreateObject("Scripting.Dictionary")
+        Set candSince = CreateObject("Scripting.Dictionary")
         first = True
     End If
     dailyCode = CodeOf(Trim(ws.Cells(4, 4).Text))      ' D4 = 오늘 데일리 해외 종목
@@ -113,19 +124,36 @@ Public Sub PushTable()
         End If
     Next r
 
-    PostJson "/position", "{""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
-    nextRun = Now + TimeSerial(0, 0, PUSH_SECONDS)
+    If (Now - lastPush) * 86400 >= PUSH_SECONDS - 1 Then
+        PostJson "/position", "{""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
+        lastPush = Now
+    End If
+    nextRun = Now + TimeSerial(0, 0, CHECK_SECONDS)
     Application.OnTime nextRun, "PushTable"
 End Sub
 
-' 포지션(E열)이 바뀌면 신호 (엑셀을 처음 켰을 때는 보내지 않음)
+' 포지션(E열)이 바뀌고 STABLE_SECONDS 동안 그대로면 신호 (엑셀을 처음 켰을 때는 보내지 않음)
 Private Sub CheckSignal(ws As Worksheet, r As Long, code As String, first As Boolean)
     Dim pos As String
     pos = PosOf(ws, r)
-    If Not first And lastPos.Exists(code) Then
-        If lastPos(code) <> pos Then SendFoketSignal code, SignalText(ws, r, code, lastPos(code), pos)
+    If first Or Not lastPos.Exists(code) Then
+        lastPos(code) = pos
+        candPos(code) = pos
+        Exit Sub
     End If
-    lastPos(code) = pos
+    If pos = lastPos(code) Then             ' 원래 값으로 돌아옴 = 깜빡임, 무시
+        candPos(code) = pos
+        Exit Sub
+    End If
+    If candPos(code) <> pos Then            ' 새 값이 처음 보임: 시각만 기록
+        candPos(code) = pos
+        candSince(code) = Now
+        Exit Sub
+    End If
+    If (Now - candSince(code)) * 86400 >= STABLE_SECONDS Then
+        SendFoketSignal code, SignalText(ws, r, code, lastPos(code), pos)
+        lastPos(code) = pos
+    End If
 End Sub
 
 Private Function SignalText(ws As Worksheet, r As Long, code As String, oldPos As String, newPos As String) As String
