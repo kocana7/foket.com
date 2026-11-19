@@ -24,6 +24,7 @@ Const SHEET_NAME As String = "봇"
 Const PUSH_SECONDS As Long = 10        ' 표 전체를 봇에 보내는 간격
 Const CHECK_SECONDS As Long = 2        ' 포지션(E열)을 읽는 간격
 Const STABLE_SECONDS As Long = 12      ' 바뀐 포지션이 이만큼 그대로여야 신호 (깜빡임 무시)
+Const VALUE_WAIT_SECONDS As Long = 30  ' 진입가·청산손익 칸이 #N/A 같은 오류면 값이 나올 때까지 더 기다리는 시간
 Const FIRST_SELECT_ROW As Long = 6
 Const LAST_SELECT_ROW As Long = 30      ' 종목을 더 넣어도 30행까지 읽음 (빈 줄은 건너뜀)
 
@@ -74,9 +75,19 @@ Private Function CodeOf(ByVal nm As String) As String
     End Select
 End Function
 
-' 포지션 칸 값: "매수" 또는 "매도"만 포지션, 그 밖(빈칸, 0 등)은 모두 "없음"
+' 칸 글자. #N/A 같은 오류값이면 빈칸으로
+Private Function CellText(ws As Worksheet, r As Long, c As Long) As String
+    If IsError(ws.Cells(r, c).Value) Then
+        CellText = ""
+    Else
+        CellText = Trim(CStr(ws.Cells(r, c).Text))
+    End If
+End Function
+
+' 포지션 칸 값: "매수" 또는 "매도"만 포지션, 그 밖(빈칸, 0 등)은 모두 "없음". 오류값(#N/A 등)은 "?" = 모름
 Private Function PosOf(ws As Worksheet, r As Long) As String
     Dim v As String
+    If IsError(ws.Cells(r, 5).Value) Then PosOf = "?": Exit Function
     v = Trim(CStr(ws.Cells(r, 5).Text))
     If InStr(v, "매수") > 0 Then
         PosOf = "매수"
@@ -89,10 +100,10 @@ End Function
 
 Private Function RowJson(ws As Worksheet, r As Long, code As String, daily As Boolean) As String
     Dim c As Long, s As String
-    s = """" & JsonEsc(code) & """,""" & JsonEsc(Trim(ws.Cells(r, 4).Text)) & """"
-    s = s & ",""" & JsonEsc(PosOf(ws, r)) & """"
+    s = """" & JsonEsc(code) & """,""" & JsonEsc(CellText(ws, r, 4)) & """"
+    s = s & ",""" & JsonEsc(Replace(PosOf(ws, r), "?", "")) & """"
     For c = 6 To 9      ' F~I
-        s = s & ",""" & JsonEsc(Trim(ws.Cells(r, c).Text)) & """"
+        s = s & ",""" & JsonEsc(CellText(ws, r, c)) & """"
     Next c
     RowJson = "[" & s & ",""" & IIf(daily, "Y", "") & """]"
 End Function
@@ -136,6 +147,7 @@ End Sub
 Private Sub CheckSignal(ws As Worksheet, r As Long, code As String, first As Boolean)
     Dim pos As String
     pos = PosOf(ws, r)
+    If pos = "?" Then Exit Sub              ' 포지션 칸이 오류값: 판단 보류
     If first Or Not lastPos.Exists(code) Then
         lastPos(code) = pos
         candPos(code) = pos
@@ -151,6 +163,9 @@ Private Sub CheckSignal(ws As Worksheet, r As Long, code As String, first As Boo
         Exit Sub
     End If
     If (Now - candSince(code)) * 86400 >= STABLE_SECONDS Then
+        ' 신호에 넣을 값(진입가 F 또는 청산손익 I)이 아직 오류값이면 조금 더 기다림
+        If IsError(ws.Cells(r, IIf(pos = "없음", 9, 6)).Value) And _
+           (Now - candSince(code)) * 86400 < STABLE_SECONDS + VALUE_WAIT_SECONDS Then Exit Sub
         SendFoketSignal code, SignalText(ws, r, code, lastPos(code), pos)
         lastPos(code) = pos
     End If
@@ -158,14 +173,17 @@ End Sub
 
 Private Function SignalText(ws As Worksheet, r As Long, code As String, oldPos As String, newPos As String) As String
     Dim head As String, t As String
-    head = "[" & code & " " & Trim(ws.Cells(r, 4).Text) & "] "
+    Dim px As String, pl As String
+    head = "[" & code & " " & CellText(ws, r, 4) & "] "
     t = " (" & Format(Now, "hh:nn") & ")"
+    px = CellText(ws, r, 6): If px = "" Then px = "-"
+    pl = CellText(ws, r, 9): If pl = "" Then pl = "-"
     If newPos = "없음" Then
-        SignalText = head & oldPos & " 청산  청산손익 " & ws.Cells(r, 9).Text & t
+        SignalText = head & oldPos & " 청산  청산손익 " & pl & t
     ElseIf oldPos = "없음" Then
-        SignalText = head & newPos & " 진입 " & ws.Cells(r, 6).Text & t
+        SignalText = head & newPos & " 진입 " & px & t
     Else
-        SignalText = head & oldPos & " → " & newPos & " 전환 " & ws.Cells(r, 6).Text & t
+        SignalText = head & oldPos & " → " & newPos & " 전환 " & px & t
     End If
 End Function
 
