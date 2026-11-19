@@ -10,7 +10,7 @@
 
 실행: python3 bot.py   (설정은 같은 폴더의 .env 또는 환경변수)
 """
-import asyncio, datetime as dt, json, logging, os, sqlite3
+import asyncio, datetime as dt, json, logging, os, secrets, sqlite3, string
 from zoneinfo import ZoneInfo
 
 from aiohttp import web
@@ -23,6 +23,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 KST = ZoneInfo("Asia/Seoul")
 logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s", level=logging.INFO)
 log = logging.getLogger("foket")
+logging.getLogger("httpx").setLevel(logging.WARNING)   # 요청 주소에 봇 토큰이 들어가므로 기록하지 않음
 
 
 # ---------------------------------------------------------------- 설정
@@ -152,6 +153,9 @@ def migrate_db():
             c.execute("ALTER TABLE users ADD COLUMN plan TEXT DEFAULT ''")      # '' = 신호 이용권, 'edu' = ROF 교육회원
         if "edu_start_req" not in cols:
             c.execute("ALTER TABLE users ADD COLUMN edu_start_req TEXT DEFAULT ''")
+        if not c.execute("SELECT 1 FROM settings WHERE k='i18n_v2'").fetchone():   # 문구가 바뀐 번역은 다시 만들기
+            c.execute("DELETE FROM i18n WHERE key IN ('price','trial_used')")
+            c.execute("INSERT INTO settings VALUES('i18n_v2','1')")
 
 
 def get_user(uid):
@@ -180,13 +184,21 @@ T = {
  "btn_status": ("내 이용 현황", "My status"),
  "btn_pay": ("결제하기", "Pay"),
  "btn_lang": ("언어 변경", "Language"),
- "price": ("유료 이용권: 20거래일 {krw}원 (계좌이체) 또는 해외 ${usd}.\n무료체험: 10거래일, 텔레그램 계정당 1회.",
+ "price": ("유료 이용권: 20거래일 {krw}원 (계좌이체) 또는 해외 ${usd}.\n무료체험: 10거래일, 1인(휴대폰 번호) 1회.",
            "Paid pass: 20 trading days for KRW {krw} (bank transfer) or USD {usd} overseas.\n"
-           "Free trial: 10 trading days, once per Telegram account."),
+           "Free trial: 10 trading days, once per person (phone number)."),
  "ask_name": ("이름을 입력해 주세요.", "Please enter your name."),
  "ask_phone": ("연락처를 보내 주세요. 아래 버튼을 누르거나 번호를 입력하시면 됩니다.",
                "Please share your phone number with the button below, or type it."),
  "btn_share_phone": ("연락처 보내기", "Share phone number"),
+ "ask_phone_btn": ("본인 확인을 위해 아래 '연락처 보내기' 버튼을 눌러 주세요. 이 텔레그램 계정의 번호가 전달됩니다.",
+                   "To verify, please tap the 'Share phone number' button below. It sends this Telegram account's number."),
+ "phone_button_only": ("번호를 직접 입력하실 수 없습니다. 아래 '연락처 보내기' 버튼을 눌러 주세요.",
+                       "Typing the number is not accepted. Please tap the 'Share phone number' button below."),
+ "phone_not_own": ("본인 계정의 연락처만 받을 수 있습니다. 아래 버튼을 눌러 주세요.",
+                   "Only your own account's number can be accepted. Please tap the button below."),
+ "phone_used": ("이 휴대폰 번호로 이미 무료체험을 이용하셨습니다. 무료체험은 1인 1회입니다. 유료 이용을 원하시면 '결제하기'를 눌러 주세요.",
+                "This phone number has already used the free trial (one per person). Tap 'Pay' to subscribe."),
  "ask_service": ("받으실 서비스를 골라 주세요. 언제든 메뉴에서 바꿀 수 있습니다.\n\n"
                  "• 데일리: 포켓이 매일 고른 해외선물 1종목 + 한국선물(코스피200) 1종목, 모두 2종목\n"
                  "• 셀렉트: 회원님이 직접 고른 1종목 (매일 바꿀 수 있음)",
@@ -217,8 +229,8 @@ T = {
            "Do you agree?"),
  "btn_agree": ("동의합니다", "I agree"),
  "btn_disagree": ("동의하지 않습니다", "I do not agree"),
- "trial_used": ("무료체험은 계정당 한 번만 가능합니다. 유료 이용을 원하시면 '결제하기'를 눌러 주세요.",
-                "The free trial is available only once per account. Tap 'Pay' to subscribe."),
+ "trial_used": ("무료체험은 1인 1회만 가능합니다. 유료 이용을 원하시면 '결제하기'를 눌러 주세요.",
+                "The free trial is available only once per person. Tap 'Pay' to subscribe."),
  "trial_requested": ("신청이 접수되었습니다. 승인되면 바로 알려 드립니다.",
                      "Your request has been received. We will notify you once it is approved."),
  "trial_approved": ("무료체험이 승인되었습니다. {start}부터 {end}까지 ({n}거래일) 신호를 보내 드립니다.",
@@ -470,15 +482,47 @@ def who(u):
     return f"{u['name'] or '(이름 없음)'} @{u['username'] or '-'} (번호 {u['tg_id']})"
 
 
+def phone_kb(lang):
+    return ReplyKeyboardMarkup([[KeyboardButton(t(lang, "btn_share_phone"), request_contact=True)]],
+                               resize_keyboard=True, one_time_keyboard=True)
+
+
+def norm_phone(p):
+    """번호 비교용: 숫자만, 한국 국가번호 82 는 0 으로 (+82 10-1234-5678 → 01012345678)."""
+    d = "".join(ch for ch in str(p or "") if ch.isdigit())
+    if d.startswith("82") and len(d) >= 11:
+        d = "0" + d[2:].lstrip("0")
+    return d
+
+
+def phone_trial_used(uid, phone):
+    """같은 번호로 다른 텔레그램 계정이 이미 체험을 받았거나 신청 중인지."""
+    with db() as c:
+        rows = c.execute("SELECT phone FROM users WHERE tg_id<>? AND phone IS NOT NULL AND phone<>'' AND "
+                         "(trial_used=1 OR status IN ('trial_pending','trial','trial_ended'))", (uid,)).fetchall()
+    return any(norm_phone(r["phone"]) == phone for r in rows)
+
+
 async def on_contact(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     uid = update.effective_user.id
     u = get_user(uid)
-    if u and u["step"] == "phone":
-        await got_phone(update, uid, update.message.contact.phone_number)
+    if not (u and u["step"] == "phone"):
+        return
+    ct = update.message.contact
+    if ct.user_id != uid:       # 다른 사람 연락처를 보낸 경우 (버튼은 항상 본인 번호를 보냄)
+        lang = lang_of(uid)
+        return await update.message.reply_text(t(lang, "phone_not_own"), reply_markup=phone_kb(lang))
+    await got_phone(update, uid, ct.phone_number)
 
 
 async def got_phone(update, uid, phone):
     lang = lang_of(uid)
+    phone = norm_phone(phone)
+    if phone_trial_used(uid, phone):
+        upsert_user(uid, phone=phone, trial_used=1, step=None)
+        await update.message.reply_text(t(lang, "phone_used"), reply_markup=ReplyKeyboardRemove())
+        await update.message.reply_text(t(lang, "welcome"), reply_markup=menu(lang))
+        return
     upsert_user(uid, phone=phone, step="service")
     await update.message.reply_text("✓", reply_markup=ReplyKeyboardRemove())
     await update.message.reply_text(t(lang, "ask_service"), reply_markup=service_kb(lang))
@@ -503,11 +547,9 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     step = u["step"]
     if step == "name":
         upsert_user(uid, name=msg.text.strip()[:50], step="phone")
-        kb = ReplyKeyboardMarkup([[KeyboardButton(t(lang, "btn_share_phone"), request_contact=True)]],
-                                 resize_keyboard=True, one_time_keyboard=True)
-        return await msg.reply_text(t(lang, "ask_phone"), reply_markup=kb)
-    if step == "phone":
-        return await got_phone(update, uid, msg.text.strip()[:30])
+        return await msg.reply_text(t(lang, "ask_phone_btn"), reply_markup=phone_kb(lang))
+    if step == "phone":     # 직접 입력한 번호는 본인 확인이 안 되므로 받지 않음
+        return await msg.reply_text(t(lang, "phone_button_only"), reply_markup=phone_kb(lang))
     if step == "edu_start":
         txt = msg.text.strip()
         if txt.lower() in ("바로", "now", "지금", "today"):
@@ -721,6 +763,11 @@ async def broadcast_signal(app, code, text):
     with db() as c:
         c.execute("INSERT INTO signals(at, service, text, sent) VALUES(?,?,?,?)",
                   (dt.datetime.now(KST).isoformat(timespec="seconds"), code or "ALL", text, sent))
+    if ADMIN_ID:   # Sean님께도 사본: 신호가 실제로 나갔는지 바로 확인
+        try:
+            await app.bot.send_message(ADMIN_ID, f"[신호 발송 · {code or 'ALL'} · {sent}명]\n{text}")
+        except Exception as e:
+            log.warning("signal copy to admin failed: %s", e)
     return sent
 
 
@@ -873,6 +920,43 @@ async def cmd_excel(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
                                         protect_content=True)
 
 
+async def cmd_newkey(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """운영자에게만: 엑셀 키를 새로 만들어 바로 적용 (이전 키는 즉시 무효)."""
+    global SIGNAL_KEY
+    if update.effective_user.id != ADMIN_ID:
+        return
+    key = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(32))
+    old = os.umask(0o077)
+    try:
+        with open(os.path.join(HERE, "signal_key"), "w") as f:          # 다음 배포 때도 이 키를 유지
+            f.write(key)
+        envp = os.path.join(HERE, ".env")
+        if os.path.exists(envp):                 # 봇이 다시 켜져도 이 키를 사용
+            lines = open(envp, encoding="utf-8").read().splitlines()
+            lines = [f"SIGNAL_KEY={key}" if l.startswith("SIGNAL_KEY=") else l for l in lines]
+            open(envp, "w", encoding="utf-8").write("\n".join(lines) + "\n")
+    finally:
+        os.umask(old)
+    SIGNAL_KEY = key
+    log.info("엑셀 키 교체됨")
+    await update.message.reply_text(
+        "엑셀 키를 새로 만들었습니다. 이전 키는 지금부터 쓸 수 없습니다.\n"
+        "엑셀 FoketBot 모듈의 BOT_KEY 를 아래 값으로 바꾸고 저장해 주세요.\n\n"
+        f"BOT_KEY = {key}", protect_content=True)
+
+
+async def cmd_signals(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """운영자에게만: 최근 발송 신호 20건."""
+    if update.effective_user.id != ADMIN_ID:
+        return
+    with db() as c:
+        rows = c.execute("SELECT at, service, text, sent FROM signals ORDER BY id DESC LIMIT 20").fetchall()
+    if not rows:
+        return await update.message.reply_text("아직 발송된 신호가 없습니다.")
+    lines = [f"{r['at'][5:16].replace('T', ' ')} {r['service']} ({r['sent']}명) {r['text'][:80]}" for r in rows]
+    await update.message.reply_text("최근 발송 신호\n" + "\n".join(lines))
+
+
 async def cmd_myid(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"내 텔레그램 번호: {update.effective_user.id}")
 
@@ -1019,6 +1103,8 @@ async def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("myid", cmd_myid))
     app.add_handler(CommandHandler("excel", cmd_excel))
+    app.add_handler(CommandHandler("newkey", cmd_newkey))
+    app.add_handler(CommandHandler("signals", cmd_signals))
     app.add_handler(CommandHandler("notice", cmd_notice))
     app.add_handler(CommandHandler(["setnotice", "unsetnotice"], cmd_setnotice))
     app.add_handler(CommandHandler("stats", cmd_stats))

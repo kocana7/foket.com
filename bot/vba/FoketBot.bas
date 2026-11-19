@@ -26,6 +26,7 @@ Const LAST_SELECT_ROW As Long = 30      ' 종목을 더 넣어도 30행까지 읽음 (빈 줄�
 
 Dim nextRun As Date
 Dim lastPos As Object      ' 종목코드 → 직전 포지션
+Dim goodMethod As Long     ' 이 PC에서 되는 전송 방식 (처음 한 번 찾아서 기억)
 
 Public Sub StartFoketBot()
     Set lastPos = Nothing
@@ -140,18 +141,89 @@ Private Function SignalText(ws As Worksheet, r As Long, code As String, oldPos A
     End If
 End Function
 
+' 연결 시험: Alt+F8 → TestFoketBot. 접속 방법 3가지를 차례로 시험해 결과를 창으로 보여 줌
+Public Sub TestFoketBot()
+    Dim ws As Worksheet, body As String, r As Long, code As String, rows As String, i As Long, msg As String, res As String
+    On Error Resume Next
+    Set ws = ThisWorkbook.Worksheets(SHEET_NAME)
+    If ws Is Nothing Then
+        MsgBox "'" & SHEET_NAME & "' 시트를 찾지 못했습니다. 시트 이름을 확인해 주세요.", vbExclamation, "포켓 봇 연결 시험"
+        Exit Sub
+    End If
+    On Error GoTo 0
+    code = CodeOf(Trim(ws.Cells(3, 4).Text))
+    rows = RowJson(ws, 3, code, True)
+    For r = FIRST_SELECT_ROW To LAST_SELECT_ROW
+        If Trim(ws.Cells(r, 4).Text) <> "" Then
+            code = CodeOf(Trim(ws.Cells(r, 4).Text))
+            rows = rows & "," & RowJson(ws, r, code, (code = CodeOf(Trim(ws.Cells(4, 4).Text))))
+        End If
+    Next r
+    body = "{""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
+    For i = 1 To 3
+        res = TryPost(i, BOT_URL & "/position", body)
+        msg = msg & MethodName(i) & ": " & res & vbCrLf
+    Next i
+    MsgBox msg & vbCrLf & "200 + ok true = 성공 / 403 = BOT_KEY 틀림 / 오류 = 그 방법은 이 PC에서 안 됨", _
+           vbInformation, "포켓 봇 연결 시험"
+End Sub
+
+Private Function MethodName(ByVal i As Long) As String
+    MethodName = Choose(i, "WinHttp", "MSXML XMLHTTP", "MSXML ServerXMLHTTP")
+End Function
+
+' 한글이 깨지지 않도록 UTF-8 바이트로 바꿔서 보냄
+Private Function Utf8Bytes(ByVal s As String) As Variant
+    Dim st As Object
+    Set st = CreateObject("ADODB.Stream")
+    st.Type = 2: st.Charset = "utf-8": st.Open
+    st.WriteText s
+    st.Position = 0: st.Type = 1: st.Position = 3     ' 앞의 BOM 3바이트 건너뜀
+    Utf8Bytes = st.Read
+    st.Close
+End Function
+
+' i번째 방법으로 보내고 "응답코드 내용" 또는 "오류 …" 를 돌려줌
+Private Function TryPost(ByVal i As Long, ByVal url As String, ByVal body As String) As String
+    Dim h As Object
+    On Error GoTo Fail
+    Select Case i
+        Case 1
+            Set h = CreateObject("WinHttp.WinHttpRequest.5.1")
+            On Error Resume Next
+            h.Option(9) = 2048 Or 512          ' TLS 1.2 / 1.1 사용
+            On Error GoTo Fail
+            h.SetTimeouts 5000, 5000, 10000, 10000
+        Case 2
+            Set h = CreateObject("MSXML2.XMLHTTP.6.0")
+        Case 3
+            Set h = CreateObject("MSXML2.ServerXMLHTTP.6.0")
+    End Select
+    h.Open "POST", url, False
+    h.setRequestHeader "Content-Type", "application/json; charset=utf-8"
+    h.send Utf8Bytes(body)
+    TryPost = h.Status & " " & Left(h.responseText, 80)
+    Exit Function
+Fail:
+    TryPost = "오류 " & Err.Number & " " & Err.Description
+End Function
+
 Public Sub SendFoketSignal(ByVal code As String, ByVal text As String)
     PostJson "/signal", "{""key"":""" & BOT_KEY & """,""sym"":""" & JsonEsc(code) & """,""text"":""" & JsonEsc(text) & """}"
 End Sub
 
+
 Private Sub PostJson(ByVal path As String, ByVal body As String)
+    Dim i As Long, res As String
     On Error Resume Next
-    Dim h As Object
-    Set h = CreateObject("MSXML2.ServerXMLHTTP.6.0")
-    h.setTimeouts 3000, 3000, 5000, 5000
-    h.Open "POST", BOT_URL & path, False
-    h.setRequestHeader "Content-Type", "application/json; charset=utf-8"
-    h.send body
+    If goodMethod > 0 Then
+        res = TryPost(goodMethod, BOT_URL & path, body)
+        If Left(res, 2) <> "오류" Then Exit Sub
+    End If
+    For i = 1 To 3
+        res = TryPost(i, BOT_URL & path, body)
+        If Left(res, 2) <> "오류" Then goodMethod = i: Exit Sub
+    Next i
 End Sub
 
 Private Function JsonEsc(ByVal s As String) As String

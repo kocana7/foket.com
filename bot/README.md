@@ -19,13 +19,13 @@
 8. 현재 포지션: 엑셀 → `POST /position` (표 전체) → 회원이 버튼이나 "포지션" 글을 보내면 자기 종목 줄만 보여 줌. 5분 넘게 갱신 없으면 경고
 9. 일반 질문은 AI가 회원 언어로 답변. 결제 문제·환불·제휴 등은 Sean님께 전달, Sean님이 그 메시지에 '답장'하면 회원에게 전달
 10. ROF 교육회원: 메뉴 "ROF 교육 신청" → 수강료 안내(300만원 / 해외 $2,000) → 희망 시작일·입금자명 → Sean님 [교육비 입금 확인] → 시작일부터 120거래일 데일리/셀렉트 신호 (EDU_DAYS, EDU_PRICE_KRW, EDU_PRICE_USD)
-11. 매일 07:00(KST) 기간 처리 + Sean님께 회원 현황 요약. Sean님 명령: /stats, /signal 내용, /position, /excel, /notice 공지(미리보기 후 보내기 → 봇 이용자 전원 + /setnotice 로 등록한 단체방)
+11. 매일 07:00(KST) 기간 처리 + Sean님께 회원 현황 요약. Sean님 명령: /stats, /signal 내용, /signals(최근 발송 신호), /position, /excel, /newkey, /notice 공지(미리보기 후 보내기 → 봇 이용자 전원 + /setnotice 로 등록한 단체방)
 
 ## 설치 (홈페이지 배포가 자동으로 설치)
 - GitHub 저장소 Settings → Secrets and variables → Actions 에 아래 값을 넣으면, main 배포 때마다 봇이 설치·갱신됩니다. AWS 로그인 필요 없음.
   - `BOT_TOKEN` (BotFather 토큰, 필수), `BOT_ADMIN_CHAT_ID` (Sean님 텔레그램 Id 숫자, 필수)
   - `ANTHROPIC_API_KEY` (AI 상담, 선택), `BOT_BANK_INFO` (입금 계좌), `BOT_OVERSEAS_INFO` (해외 결제, 선택)
 - 봇은 서버 안 `127.0.0.1:8091` 에서만 열리고, 엑셀은 `https://foket.com/bot-api/` (nginx) 로 보냅니다. 포트를 따로 열 필요 없음.
-- 엑셀 키(SIGNAL_KEY)는 서버에서 한 번 만들어 유지합니다. Sean님이 봇에 `/excel` 을 보내면 주소와 키가 Sean님께만 보입니다.
+- 엑셀 키(SIGNAL_KEY)는 서버에서 한 번 만들어 유지합니다. Sean님이 봇에 `/excel` 을 보내면 주소와 키가 Sean님께만 보입니다. 키가 노출되면 `/newkey` 를 보내면 새 키로 바로 바뀌고 이전 키는 무효가 됩니다(엑셀 BOT_KEY 도 새 값으로 바꿔야 함).
 - 수동 설치도 가능: 서버에서 `cd /var/www/foket/bot && sudo bash install.sh`
 - 상태 확인: `sudo systemctl status foket-bot`, 기록: `sudo journalctl -u foket-bot -n 50`
