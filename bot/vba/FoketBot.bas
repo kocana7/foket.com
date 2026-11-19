@@ -24,7 +24,7 @@ Const SHEET_NAME As String = "봇"
 Const PUSH_SECONDS As Long = 10        ' 표 전체를 봇에 보내는 간격
 Const CHECK_SECONDS As Long = 2        ' 포지션(E열)을 읽는 간격
 Const STABLE_SECONDS As Long = 12      ' 바뀐 포지션이 이만큼 그대로여야 신호 (깜빡임 무시)
-Const KRW_PER_USD As Double = 1420     ' 코스피200 손익(달러로 나옴)을 원화로 바꿀 때 쓰는 고정 환율 (Sean, 11-19)
+Const KRW_PER_USD As Double = 1420     ' 손익(달러로 나옴)을 원화로 바꿀 때 쓰는 고정 환율 (Sean, 11-19)
 Const VALUE_WAIT_SECONDS As Long = 30  ' 진입가·청산손익 칸이 #N/A 같은 오류면 값이 나올 때까지 더 기다리는 시간
 Const FIRST_SELECT_ROW As Long = 6
 Const LAST_SELECT_ROW As Long = 30      ' 종목을 더 넣어도 30행까지 읽음 (빈 줄은 건너뜀)
@@ -85,13 +85,14 @@ Private Function CellText(ws As Worksheet, r As Long, c As Long) As String
     End If
 End Function
 
-' 손익 칸 글자. 코스피200은 달러 → 원화(고정 환율), 1,000원 단위 반올림. 예) -832.59 → -1,182,000원
+' 손익 칸 글자 (엑셀 값은 달러). 원화(고정 환율, 1,000원 단위)와 달러(정수)를 함께. 예) -832.59 → -1,182,000원 (-$833)
 Private Function MoneyText(ws As Worksheet, r As Long, c As Long, code As String) As String
-    Dim v As Variant, w As Double
+    Dim v As Variant, w As Double, d As Double
     v = ws.Cells(r, c).Value
-    If code = "K200" And Not IsError(v) And Not IsEmpty(v) And IsNumeric(v) Then
+    If Not IsError(v) And Not IsEmpty(v) And IsNumeric(v) Then
         w = Int(CDbl(v) * KRW_PER_USD / 1000 + 0.5) * 1000
-        MoneyText = Format(w, "#,##0") & "원"
+        d = Int(CDbl(v) + 0.5)
+        MoneyText = Format(w, "#,##0") & "원 (" & IIf(d < 0, "-$", "$") & Format(Abs(d), "#,##0") & ")"
     Else
         MoneyText = CellText(ws, r, c)
     End If
@@ -115,7 +116,7 @@ Private Function RowJson(ws As Worksheet, r As Long, code As String, daily As Bo
     Dim c As Long, s As String
     s = """" & JsonEsc(code) & """,""" & JsonEsc(CellText(ws, r, 4)) & """"
     s = s & ",""" & JsonEsc(Replace(PosOf(ws, r), "?", "")) & """"
-    For c = 6 To 9      ' F~I (손익 G·I는 코스피200이면 원화로)
+    For c = 6 To 9      ' F~I (손익 G·I는 원화와 달러 함께)
         If c = 7 Or c = 9 Then
             s = s & ",""" & JsonEsc(MoneyText(ws, r, c, code)) & """"
         Else
