@@ -85,14 +85,16 @@ Private Function CellText(ws As Worksheet, r As Long, c As Long) As String
     End If
 End Function
 
-' 손익 칸 글자 (엑셀 값은 달러). 원화(고정 환율, 1,000원 단위)와 달러(정수)를 함께. 예) -832.59 → -1,182,000원 (-$833)
+' 손익 칸 글자 (엑셀 값은 달러). 해외는 달러 정수: -$833
+' 코스피200은 원화(고정 환율, 1,000원 단위)와 달러를 함께: -1,182,000원 (-$833)
 Private Function MoneyText(ws As Worksheet, r As Long, c As Long, code As String) As String
     Dim v As Variant, w As Double, d As Double
     v = ws.Cells(r, c).Value
     If Not IsError(v) And Not IsEmpty(v) And IsNumeric(v) Then
         w = Int(CDbl(v) * KRW_PER_USD / 1000 + 0.5) * 1000
         d = Int(CDbl(v) + 0.5)
-        MoneyText = Format(w, "#,##0") & "원 (" & IIf(d < 0, "-$", "$") & Format(Abs(d), "#,##0") & ")"
+        MoneyText = IIf(d < 0, "-$", "$") & Format(Abs(d), "#,##0")
+        If code = "K200" Then MoneyText = Format(w, "#,##0") & "원 (" & MoneyText & ")"
     Else
         MoneyText = CellText(ws, r, c)
     End If
@@ -116,7 +118,7 @@ Private Function RowJson(ws As Worksheet, r As Long, code As String, daily As Bo
     Dim c As Long, s As String
     s = """" & JsonEsc(code) & """,""" & JsonEsc(CellText(ws, r, 4)) & """"
     s = s & ",""" & JsonEsc(Replace(PosOf(ws, r), "?", "")) & """"
-    For c = 6 To 9      ' F~I (손익 G·I는 원화와 달러 함께)
+    For c = 6 To 9      ' F~I (손익 G·I: 해외는 달러, 코스피200은 원화와 달러)
         If c = 7 Or c = 9 Then
             s = s & ",""" & JsonEsc(MoneyText(ws, r, c, code)) & """"
         Else
