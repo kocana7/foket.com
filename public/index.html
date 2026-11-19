@@ -962,6 +962,7 @@
     .hpf-chart{height:64px;width:100%;display:block}
     .hpf-cap{font-size:11px;color:var(--text-muted);margin-top:4px}
     .hpf-empty{color:var(--text-secondary);font-size:14px;padding:24px 0;text-align:center}
+    .hpf-pcsys{margin:-4px 0 8px}.hpf-pcsys .hpf-systag{margin-left:0}
     .hpf-systag{display:inline-block;margin-left:8px;font-size:11px;font-weight:700;color:var(--text-secondary);border:1px solid var(--border-color);border-radius:100px;padding:1px 8px}
     .hpf-sysnote{font-size:12.5px;color:var(--text-secondary);line-height:1.6;margin:0 0 12px}
     .hpf-sysnote[hidden]{display:none}
@@ -2553,7 +2554,7 @@
         <a class="hpf-more" href="performance.html" data-i18n="best10.more">전체 실적 조회 →</a>
       </div>
       <div class="sym30-grid" id="profitChartGrid"></div>
-      <div class="hpf-note" data-i18n="charts.note">월평균 수익률 상위 8종목의 최근 30거래일 일별 수익률입니다. 과거 실적은 미래 수익을 보장하지 않습니다.</div>
+      <div class="hpf-note" data-i18n="charts.note">실적 조회와 같은 기록(1계약)으로 계산한 종목별 최근 30거래일 일별 수익률이며, 증거금 3배를 기준으로 합니다. 2026-11-18까지는 회원에게 신호를 보내기 전의 시스템 결과입니다. 과거 실적은 미래 수익을 보장하지 않습니다.</div>
       <p class="hpf-note fk-basis" data-fk-basis="sym"></p>
     </div>
   </div>
@@ -3020,7 +3021,7 @@
         "markets.rates_cat": "금리", "markets.rates_sub": "금리 선물", "markets.rates_desc": "미국 장기 국채 선물. 통화정책과 경기 전망을 반영합니다.",
         "best10.calc_title": "수익율 산정 기준 :", "best10.calc_desc": " 해외선물 특성상 증거금(Deposit)이 기초투자금이므로, 수익율 산정에는 증거금의 3배를 기준으로 산정됨.", "best10.calc_ex1": "예: A종목의 증거금 5,000달러 → 초기 투자금 15,000달러(3배) → 월 수익이 1,000달러이면 월 수익율은 1,000달러 / 15,000달러 = ", "best10.calc_ex2": "투자금은 전체 투자금의 1/3만 소요되며, 트레이딩 종목의 증거금 명목으로 활용됩니다.",
         "charts.title": "종목별 최근 30거래일 수익 현황", "charts.days_ago": "30일전", "charts.recent": "최근", "charts.no_data": "데이터 없음",
-        "charts.note": "월평균 수익률 상위 8종목의 최근 30거래일 일별 수익률입니다. 과거 실적은 미래 수익을 보장하지 않습니다.", "charts.last": "최근 거래일", "charts.min30": "30일 최저", "charts.sum30": "30일 합계", "charts.win": "수익일 비율", "charts.days": "거래일", "charts.cap": "일별 수익률(%) · 왼쪽 30거래일 전 → 오른쪽 최근",
+        "charts.note": "실적 조회와 같은 기록(1계약)으로 계산한 종목별 최근 30거래일 일별 수익률이며, 증거금 3배를 기준으로 합니다. 2026-11-18까지는 회원에게 신호를 보내기 전의 시스템 결과입니다. 과거 실적은 미래 수익을 보장하지 않습니다.", "charts.sys": "시스템 결과 (신호 발송 전)", "charts.last": "최근 거래일", "charts.min30": "30일 최저", "charts.sum30": "30일 합계", "charts.win": "수익일 비율", "charts.days": "거래일", "charts.cap": "일별 수익률(%) · 왼쪽 30거래일 전 → 오른쪽 최근",
       },
       en: {
         "nav.home": "Home", "nav.alerts": "Foket Guide", "nav.signals": "Foket Guide", "nav.pricing": "Service", "nav.faq": "FAQ", "nav.perf": "Performance", "nav.contact": "Contact", "nav.join_free": "Telegram Inquiry", "nav.login": "Log In", "nav.signup": "Sign Up", "nav.mypage": "My Page",
@@ -3062,7 +3063,7 @@
         "markets.rates_cat": "Interest rates", "markets.rates_sub": "Interest Rate Futures", "markets.rates_desc": "Long-term US Treasury futures, reflecting monetary policy and the economic outlook.",
         "best10.calc_title": "Return Rate Basis:", "best10.calc_desc": " Since margin (Deposit) is the base investment for overseas futures, returns are calculated at 3× the margin.", "best10.calc_ex1": "Ex: Symbol A margin $5,000 → Initial investment $15,000 (×3) → If monthly profit is $1,000, monthly return = $1,000 / $15,000 = ", "best10.calc_ex2": "Only 1/3 of the total investment is required, used as margin for the trading instrument.",
         "charts.title": "Last 30 trading days by symbol", "charts.days_ago": "30d ago", "charts.recent": "Recent", "charts.no_data": "No data",
-        "charts.note": "Daily returns over the last 30 trading days for the 8 symbols with the highest average monthly return. Past performance does not guarantee future results.", "charts.last": "Latest trading day", "charts.min30": "30-day low", "charts.sum30": "30-day total", "charts.win": "Profitable days", "charts.days": "Days", "charts.cap": "Daily return (%) · left: 30 days ago → right: latest",
+        "charts.note": "Daily returns per symbol over the last 30 trading days, from the same records as the performance page (1 contract), measured against 3× margin. Up to 2026-11-18 these are system results recorded before signals were sent to members. Past performance does not guarantee future results.", "charts.sys": "System result (before signals were sent)", "charts.last": "Latest trading day", "charts.min30": "30-day low", "charts.sum30": "30-day total", "charts.win": "Profitable days", "charts.days": "Days", "charts.cap": "Daily return (%) · left: 30 days ago → right: latest",
       },
       de: {
         "nav.home": "Startseite", "nav.alarms": "Foket Guide", "nav.signals": "Foket Leitfaden", "nav.pricing": "Service", "nav.faq": "Häufige Fragen (FAQ)", "nav.perf": "Performance", "nav.contact": "Kontakt", "nav.join_free": "Telegram Anfrage", "nav.login": "Anmelden", "nav.signup": "Registrieren", "nav.mypage": "Mein Konto",
@@ -3104,7 +3105,7 @@
         "markets.rates_cat": "Zinsen", "markets.rates_sub": "Zinssatz-Futures", "markets.rates_desc": "Langfristige US-Staatsanleihe-Futures; spiegeln Geldpolitik und Konjunkturausblick.",
         "best10.calc_title": "Renditeberechnung:", "best10.calc_desc": " Da die Marge (Deposit) als Basisinvestition für Auslands-Futures gilt, wird die Rendite mit dem 3-fachen der Marge berechnet.", "best10.calc_ex1": "Bsp.: Marge Symbol A 5.000 $ → Anfangsinvestition 15.000 $ (×3) → Bei monatl. Gewinn 1.000 $: Rendite = 1.000 $ / 15.000 $ = ", "best10.calc_ex2": "Es wird nur 1/3 des Gesamtinvestments benötigt, als Marge für das Handelsinstrument.",
         "charts.title": "Letzte 30 Handelstage je Symbol", "charts.days_ago": "vor 30T", "charts.recent": "Aktuell", "charts.no_data": "Keine Daten",
-        "charts.note": "Tägliche Renditen der letzten 30 Handelstage für die 8 Symbole mit der höchsten Ø-Monatsrendite. Vergangene Ergebnisse garantieren keine zukünftigen Erträge.", "charts.last": "Letzter Handelstag", "charts.min30": "30-Tage-Tief", "charts.sum30": "30-Tage-Summe", "charts.win": "Gewinntage", "charts.days": "Tage", "charts.cap": "Tagesrendite (%) · links: vor 30 Tagen → rechts: aktuell",
+        "charts.note": "Tägliche Renditen je Symbol der letzten 30 Handelstage aus denselben Aufzeichnungen wie die Ergebnisseite (1 Kontrakt), bezogen auf 3× Margin. Bis 18.11.2026 Systemergebnisse vor dem Signalversand an Mitglieder. Vergangene Ergebnisse garantieren keine zukünftigen Erträge.", "charts.sys": "Systemergebnis (vor Signalversand)", "charts.last": "Letzter Handelstag", "charts.min30": "30-Tage-Tief", "charts.sum30": "30-Tage-Summe", "charts.win": "Gewinntage", "charts.days": "Tage", "charts.cap": "Tagesrendite (%) · links: vor 30 Tagen → rechts: aktuell",
       },
       ja: {
         "nav.home": "ホーム", "nav.signals": "Foket ガイド", "nav.pricing": "サービス", "nav.faq": "よくある質問(FAQ)", "nav.perf": "実績照会", "nav.contact": "お問い合わせ", "nav.join_free": "Telegramでお問い合わせ", "nav.login": "ログイン", "nav.signup": "登録", "nav.mypage": "マイページ",
@@ -3146,7 +3147,7 @@
         "markets.rates_cat": "金利", "markets.rates_sub": "金利先物", "markets.rates_desc": "米国長期国債先物。金融政策と景気見通しを反映します。",
         "best10.calc_title": "収益率算定基準：", "best10.calc_desc": " 海外先物の特性上、証拠金(Deposit)が基礎投資金となるため、収益率は証拠金の3倍を基準に算定します。", "best10.calc_ex1": "例：A銘柄の証拠金5,000ドル → 初期投資15,000ドル(×3) → 月収益1,000ドルの場合、収益率 = 1,000÷15,000 = ", "best10.calc_ex2": "投資金は全体の1/3のみ必要で、取引銘柄の証拠金名目として活用されます。",
         "charts.title": "銘柄別 直近30取引日の収益", "charts.days_ago": "30日前", "charts.recent": "最近", "charts.no_data": "データなし",
-        "charts.note": "月平均収益率上位8銘柄の直近30取引日の日別収益率です。過去の実績は将来の収益を保証するものではありません。", "charts.last": "最近の取引日", "charts.min30": "30日最低", "charts.sum30": "30日合計", "charts.win": "利益日の割合", "charts.days": "取引日", "charts.cap": "日別収益率(%) · 左:30取引日前 → 右:最近",
+        "charts.note": "実績照会と同じ記録(1枚)による銘柄別の直近30取引日の日別収益率で、証拠金の3倍を基準とします。2026-11-18までは会員へシグナルを送る前のシステム結果です。過去の実績は将来の収益を保証するものではありません。", "charts.sys": "システム結果(シグナル送信前)", "charts.last": "最近の取引日", "charts.min30": "30日最低", "charts.sum30": "30日合計", "charts.win": "利益日の割合", "charts.days": "取引日", "charts.cap": "日別収益率(%) · 左:30取引日前 → 右:最近",
       },
       zh: {
         "nav.home": "首页", "nav.signals": "Foket 指南", "nav.pricing": "服务", "nav.faq": "常见问题(FAQ)", "nav.perf": "业绩查询", "nav.contact": "联系我们", "nav.join_free": "Telegram 咨询", "nav.login": "登录", "nav.signup": "注册", "nav.mypage": "我的账户",
@@ -3188,7 +3189,7 @@
         "markets.rates_cat": "利率", "markets.rates_sub": "利率期货", "markets.rates_desc": "美国长期国债期货，反映货币政策与经济前景。",
         "best10.calc_title": "收益率计算基准：", "best10.calc_desc": " 由于海外期货的特性，保证金(Deposit)是基础投资金，因此收益率以保证金的3倍为基准计算。", "best10.calc_ex1": "例：A品种保证金5,000美元 → 初始投资15,000美元(×3) → 若月收益为1,000美元，月收益率 = 1,000÷15,000 = ", "best10.calc_ex2": "投资金仅需全部投资金的1/3，作为交易品种的保证金使用。",
         "charts.title": "各品种近30个交易日收益", "charts.days_ago": "30天前", "charts.recent": "最近", "charts.no_data": "暂无数据",
-        "charts.note": "月平均收益率前8品种近30个交易日的每日收益率。过往业绩不代表未来收益。", "charts.last": "最近交易日", "charts.min30": "30日最低", "charts.sum30": "30日合计", "charts.win": "盈利天数占比", "charts.days": "交易日", "charts.cap": "每日收益率(%) · 左:30个交易日前 → 右:最近",
+        "charts.note": "基于与业绩查询相同记录(1手)的各品种近30个交易日每日收益率，以保证金的3倍为基准。2026-11-18 及之前为向会员发送信号前的系统结果。过往业绩不代表未来收益。", "charts.sys": "系统结果(信号发送前)", "charts.last": "最近交易日", "charts.min30": "30日最低", "charts.sum30": "30日合计", "charts.win": "盈利天数占比", "charts.days": "交易日", "charts.cap": "每日收益率(%) · 左:30个交易日前 → 右:最近",
       },
       fr: {
         "nav.home": "Accueil", "nav.signals": "Foket Guide", "nav.pricing": "Service", "nav.faq": "FAQ", "nav.perf": "Performances", "nav.contact": "Contact", "nav.join_free": "Contact Telegram", "nav.login": "Connexion", "nav.signup": "S'inscrire", "nav.mypage": "Mon compte",
@@ -3230,7 +3231,7 @@
         "markets.rates_cat": "Taux", "markets.rates_sub": "Futures sur taux d'intérêt", "markets.rates_desc": "Contrats à terme sur les bons du Trésor américain à long terme, reflétant la politique monétaire et les perspectives économiques.",
         "best10.calc_title": "Base de calcul du rendement :", "best10.calc_desc": " Dans les futures étrangers, la marge (Deposit) est l'investissement de base ; le rendement est donc calculé sur 3× la marge.", "best10.calc_ex1": "Ex : Marge symbole A 5 000 $ → Invest. initial 15 000 $ (×3) → Si profit mensuel 1 000 $, rendement = 1 000 $ / 15 000 $ = ", "best10.calc_ex2": "Seul 1/3 de l'investissement total est requis, utilisé comme marge pour l'instrument de trading.",
         "charts.title": "30 derniers jours de bourse par symbole", "charts.days_ago": "il y a 30j", "charts.recent": "Récent", "charts.no_data": "Pas de données",
-        "charts.note": "Rendements quotidiens des 30 derniers jours de bourse pour les 8 symboles au rendement mensuel moyen le plus élevé. Les performances passées ne préjugent pas des résultats futurs.", "charts.last": "Dernière séance", "charts.min30": "Plus bas 30 j", "charts.sum30": "Total 30 j", "charts.win": "Jours gagnants", "charts.days": "Jours", "charts.cap": "Rendement quotidien (%) · gauche : il y a 30 j → droite : récent",
+        "charts.note": "Rendements quotidiens par symbole sur les 30 dernières séances, issus des mêmes relevés que la page des résultats (1 contrat), rapportés à 3× la marge. Jusqu’au 18/11/2026 : résultats système avant l’envoi des signaux aux membres. Les performances passées ne préjugent pas des résultats futurs.", "charts.sys": "Résultat système (avant envoi des signaux)", "charts.last": "Dernière séance", "charts.min30": "Plus bas 30 j", "charts.sum30": "Total 30 j", "charts.win": "Jours gagnants", "charts.days": "Jours", "charts.cap": "Rendement quotidien (%) · gauche : il y a 30 j → droite : récent",
       },
       es: {
         "nav.home": "Inicio", "nav.signals": "Foket Guía", "nav.pricing": "Servicio", "nav.faq": "Preguntas frecuentes (FAQ)", "nav.perf": "Rendimiento", "nav.contact": "Contacto", "nav.join_free": "Consulta por Telegram", "nav.login": "Iniciar sesión", "nav.signup": "Registrarse", "nav.mypage": "Mi cuenta",
@@ -3272,7 +3273,7 @@
         "markets.rates_cat": "Tipos de interés", "markets.rates_sub": "Futuros sobre tasas de interés", "markets.rates_desc": "Futuros del Tesoro de EE. UU. a largo plazo, que reflejan la política monetaria y las perspectivas económicas.",
         "best10.calc_title": "Base de cálculo de rendimiento:", "best10.calc_desc": " En futuros extranjeros el margen (Deposit) es la inversión base; el rendimiento se calcula a 3× el margen.", "best10.calc_ex1": "Ej.: Margen símbolo A $5,000 → Inv. inicial $15,000 (×3) → Si ganancia mensual $1,000, rendimiento = $1,000 / $15,000 = ", "best10.calc_ex2": "Solo se requiere 1/3 de la inversión total, usado como margen para el instrumento de trading.",
         "charts.title": "Últimas 30 sesiones por símbolo", "charts.days_ago": "hace 30d", "charts.recent": "Reciente", "charts.no_data": "Sin datos",
-        "charts.note": "Rentabilidad diaria de las últimas 30 sesiones de los 8 símbolos con mayor rentabilidad mensual media. La rentabilidad pasada no garantiza resultados futuros.", "charts.last": "Última sesión", "charts.min30": "Mínimo 30 d", "charts.sum30": "Total 30 d", "charts.win": "Días con beneficio", "charts.days": "Días", "charts.cap": "Rentabilidad diaria (%) · izquierda: hace 30 sesiones → derecha: reciente",
+        "charts.note": "Rentabilidad diaria por símbolo de las últimas 30 sesiones, con los mismos registros que la página de resultados (1 contrato), sobre 3× el margen. Hasta el 18/11/2026: resultados del sistema antes de enviar señales a los miembros. La rentabilidad pasada no garantiza resultados futuros.", "charts.sys": "Resultado del sistema (antes del envío de señales)", "charts.last": "Última sesión", "charts.min30": "Mínimo 30 d", "charts.sum30": "Total 30 d", "charts.win": "Días con beneficio", "charts.days": "Días", "charts.cap": "Rentabilidad diaria (%) · izquierda: hace 30 sesiones → derecha: reciente",
       },
       ru: {
         "nav.home": "Главная", "nav.signals": "Foket Гид", "nav.pricing": "Сервис", "nav.faq": "Часто задаваемые вопросы (FAQ)", "nav.perf": "Результаты", "nav.contact": "Контакт", "nav.join_free": "Запрос в Telegram", "nav.login": "Войти", "nav.signup": "Регистрация", "nav.mypage": "Мой аккаунт",
@@ -3314,7 +3315,7 @@
         "markets.rates_cat": "Процентные ставки", "markets.rates_sub": "Фьючерсы на процентные ставки", "markets.rates_desc": "Фьючерсы на долгосрочные казначейские облигации США, отражающие денежную политику и прогноз экономики.",
         "best10.calc_title": "Основа расчёта доходности:", "best10.calc_desc": " В иностранных фьючерсах маржа (Deposit) является базовой инвестицией; доходность рассчитывается как 3× маржи.", "best10.calc_ex1": "Пример: Маржа символа A $5,000 → Начальные инвестиции $15,000 (×3) → При ежемесячной прибыли $1,000: доходность = $1,000 / $15,000 = ", "best10.calc_ex2": "Требуется лишь 1/3 общего объёма инвестиций, используемая в качестве маржи для торгового инструмента.",
         "charts.title": "Последние 30 торговых дней по инструментам", "charts.days_ago": "30д назад", "charts.recent": "Недавно", "charts.no_data": "Нет данных",
-        "charts.note": "Дневная доходность за последние 30 торговых дней по 8 инструментам с наибольшей средней месячной доходностью. Прошлые результаты не гарантируют будущей доходности.", "charts.last": "Последний торговый день", "charts.min30": "Минимум за 30 дн.", "charts.sum30": "Итог за 30 дн.", "charts.win": "Прибыльные дни", "charts.days": "Дни", "charts.cap": "Дневная доходность (%) · слева 30 дней назад → справа последние",
+        "charts.note": "Дневная доходность по инструментам за последние 30 торговых дней по тем же записям, что и на странице результатов (1 контракт), относительно 3× маржи. До 18.11.2026 — результаты системы до отправки сигналов участникам. Прошлые результаты не гарантируют будущей доходности.", "charts.sys": "Результат системы (до отправки сигналов)", "charts.last": "Последний торговый день", "charts.min30": "Минимум за 30 дн.", "charts.sum30": "Итог за 30 дн.", "charts.win": "Прибыльные дни", "charts.days": "Дни", "charts.cap": "Дневная доходность (%) · слева 30 дней назад → справа последние",
       }
     };
 
@@ -3362,7 +3363,7 @@
       // Re-render stats panels so Korean shows nameKo first, others show sym first
       if (typeof loadFuturesStats === 'function') loadFuturesStats();
       if (typeof loadBest10 === 'function') loadBest10();
-      if (typeof renderProfitCharts === 'function' && _marketsDataCache) renderProfitCharts(_marketsDataCache);
+      if (typeof renderProfitCharts === 'function') renderProfitCharts();
       if (typeof updateBest10Date === 'function') updateBest10Date(lang);
     }
 
@@ -3697,10 +3698,10 @@
     }
 
     async function loadBest10() {
+      renderProfitCharts();
       const markets = await fetchMarketsFromServer();
       if (!markets) return;
       renderBest10(JSON.stringify(markets));
-      renderProfitCharts(markets);
     }
 
     function updateBest10Date(lang) {
@@ -3712,55 +3713,85 @@
       el.textContent = d + ' ' + (t['best10.date_suffix'] || '현재까지');
     }
 
-    /* 종목별 최근 30거래일: 관리자 입력 데이터(dailyProfits, 단위 %)로 월평균 수익률 상위 8종목 카드를 만든다.
-       dailyProfits[0]이 가장 최근 거래일이다. */
-    function renderProfitCharts(markets) {
+    /* 종목별 최근 30거래일: 실적 조회 페이지와 같은 기록(records.json + 관리자 업로드)만 쓴다.
+       관리자 종목 데이터(dailyProfits)는 쓰지 않는다. 수익률 = 청산 ÷ (증거금 × 3) × 100, 1계약 기준. */
+    const PC_MARGIN = { KOSPI: 42588131, NQ: 46462, ES: 28525, NKD: 26851, GC: 24288, CL: 10171, NG: 3084, '6E': 3460 };
+    const PC_ALIAS = { K200: 'KOSPI', KOSPI200: 'KOSPI' };
+    let _pcRecords = null, _pcLoading = null;
+    function loadProfitRecords() {
+      if (_pcLoading) return _pcLoading;
+      const api = (location.protocol !== 'file:') ? location.origin + '/api' : 'http://localhost:3000/api';
+      const get = (u) => fetch(u, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
+      _pcLoading = Promise.all([get('records.json'), get(api + '/storage/records')]).then(function(res) {
+        const seen = {}, out = [];
+        res.forEach(function(d) {
+          if (!d) return;
+          let v = d.value !== undefined ? d.value : d;
+          if (typeof v === 'string') { try { v = JSON.parse(v); } catch (e) { v = null; } }
+          const list = Array.isArray(v) ? v : (v && Array.isArray(v.records) ? v.records : []);
+          list.forEach(function(r) {
+            if (!r || !/^\d{4}-\d{2}-\d{2}$/.test(String(r.date || ''))) return;
+            if (r.kind && r.kind !== 'live' && r.kind !== 'system') return;
+            let sym = String(r.sym || '').toUpperCase(); sym = PC_ALIAS[sym] || sym;
+            const pnl = Number(r.pnl), mg = PC_MARGIN[sym];
+            if (!mg || isNaN(pnl)) return;
+            const key = r.date + '|' + sym;
+            if (seen[key]) return; seen[key] = 1;
+            const minP = Number(r.min_pnl);
+            out.push({ date: r.date, sym: sym, name: r.name || sym, kind: r.kind || 'live',
+              pct: pnl / (mg * 3) * 100, minPct: isNaN(minP) ? null : minP / (mg * 3) * 100 });
+          });
+        });
+        out.sort((x, y) => x.date < y.date ? -1 : (x.date > y.date ? 1 : 0));
+        _pcRecords = out;
+        return out;
+      });
+      return _pcLoading;
+    }
+    function renderProfitCharts() {
       const wrap = document.getElementById('profitChartsWrap');
       const grid = document.getElementById('profitChartGrid');
       if (!wrap || !grid) return;
+      if (!_pcRecords) { loadProfitRecords().then(renderProfitCharts); return; }
       const t = (typeof TRANSLATIONS !== 'undefined' && TRANSLATIONS[currentLang]) ? TRANSLATIONS[currentLang] : TRANSLATIONS['ko'];
       const tk = (k, d) => (t[k] !== undefined ? t[k] : (TRANSLATIONS.ko[k] !== undefined ? TRANSLATIONS.ko[k] : d));
       const isKo = currentLang === 'ko';
-
-      const symMap = {};
-      markets.forEach(function(m) {
-        (m.instruments || []).forEach(function(inst) {
-          if (!inst.dailyProfits || !inst.dailyProfits.length) return;
-          if ((inst.sym || '').toUpperCase() === 'HIS') return;
-          const key = (inst.sym || '').toUpperCase();
-          const cur = parseFloat(inst.monthlyReturn) || -Infinity;
-          const prev = symMap[key] ? (parseFloat(symMap[key].monthlyReturn) || -Infinity) : -Infinity;
-          if (!(key in symMap) || cur > prev) symMap[key] = Object.assign({}, inst, { _catName: m.nameKo, _catNameEn: m.nameEn || m.nameKo });
-        });
-      });
-      const top = Object.values(symMap).sort(function(a, b) {
-        return (parseFloat(b.monthlyReturn) || -Infinity) - (parseFloat(a.monthlyReturn) || -Infinity);
+      const KO = { KOSPI: '코스피200 선물', NQ: '나스닥 선물', ES: 'S&P 선물', NKD: '니케이달러선물', GC: '골드', CL: '원유', NG: '천연가스', '6E': '유로 FX' };
+      const EN = { KOSPI: 'KOSPI 200 Futures', NQ: 'Nasdaq 100 Futures', ES: 'S&P 500 Futures', NKD: 'Nikkei Dollar Futures', GC: 'Gold', CL: 'Crude Oil', NG: 'Natural Gas', '6E': 'Euro FX' };
+      const bySym = {};
+      _pcRecords.forEach(function(r) { (bySym[r.sym] = bySym[r.sym] || []).push(r); });
+      const syms = Object.keys(bySym).sort(function(a, b) {
+        const la = bySym[a][bySym[a].length - 1].date, lb = bySym[b][bySym[b].length - 1].date;
+        return la < lb ? 1 : (la > lb ? -1 : bySym[b].length - bySym[a].length);
       }).slice(0, 8);
-      if (!top.length) { wrap.style.display = 'none'; return; }
-
+      if (!syms.length) { wrap.style.display = 'none'; return; }
+      const sysTag = tk('charts.sys', '시스템 결과 (신호 발송 전)');
       const pct = (v, d) => (v >= 0 ? '+' : '') + v.toFixed(d == null ? 2 : d) + '%';
       const cls = (v) => v >= 0 ? 'hpf-up' : 'hpf-dn';
-      grid.innerHTML = top.map(function(inst) {
-        const vals = inst.dailyProfits.map(Number).filter(function(n) { return !isNaN(n); });
-        const last = vals[0], sum = vals.reduce((a, b) => a + b, 0), minV = Math.min.apply(null, vals);
+      grid.innerHTML = syms.map(function(sym) {
+        const rows = bySym[sym].slice(-30);
+        const vals = rows.map(r => r.pct);
+        const L = rows[rows.length - 1];
+        const sum = vals.reduce((a, b) => a + b, 0);
+        const mins = rows.map(r => r.minPct).filter(v => v != null);
+        const minV = mins.length ? Math.min.apply(null, mins) : Math.min.apply(null, vals);
         const win = vals.filter(v => v > 0).length / vals.length * 100;
-        const mr = parseFloat(inst.monthlyReturn);
-        const name = isKo ? (inst.nameKo || inst.sym) : (inst.nameEn || inst.nameKo || inst.sym);
-        const cat = isKo ? inst._catName : inst._catNameEn;
+        const name = isKo ? (KO[sym] || L.name) : (EN[sym] || L.name);
+        const shown = sym === 'KOSPI' ? 'KOSPI200' : sym;
         return '<div class="hpf-card">' +
-          '<div class="hpf-mk"><b>' + name + '</b><span>' + (inst.sym || '') + ' · ' + (cat || '') + '</span></div>' +
+          '<div class="hpf-mk"><b>' + name + '</b><span>' + shown + '</span></div>' +
+          (rows.some(r => r.kind === 'system') ? '<div class="hpf-pcsys"><span class="hpf-systag">' + sysTag + '</span></div>' : '') +
           '<div class="hpf-last">' +
-            '<div class="lbl">' + tk('charts.last', '최근 거래일') + '</div>' +
+            '<div class="lbl">' + tk('charts.last', '최근 거래일') + ' · ' + L.date + '</div>' +
             '<div class="min">' + tk('charts.min30', '30일 최저') + ' ' + pct(minV) + '</div>' +
-            '<div class="lbl">' + tk('best10.col_monthly_return', '월평균 수익률') + ' <b class="' + cls(mr || 0) + '">' + (isNaN(mr) ? '—' : pct(mr)) + '</b></div>' +
-            '<div class="pnl ' + cls(last) + '">' + pct(last) + '</div>' +
+            '<div class="pnl ' + cls(L.pct) + '">' + pct(L.pct) + '</div>' +
           '</div>' +
           '<div class="hpf-stats">' +
             '<div><div class="k">' + tk('charts.sum30', '30일 합계') + '</div><div class="v ' + cls(sum) + '">' + pct(sum, 1) + '</div></div>' +
             '<div><div class="k">' + tk('charts.win', '수익일 비율') + '</div><div class="v">' + win.toFixed(0) + '%</div></div>' +
             '<div><div class="k">' + tk('charts.days', '거래일') + '</div><div class="v">' + vals.length + '</div></div>' +
           '</div>' +
-          makeBarSVG(vals.slice().reverse()) +
+          makeBarSVG(vals) +
           '<div class="hpf-cap">' + tk('charts.cap', '일별 수익률(%) · 왼쪽 30거래일 전 → 오른쪽 최근') + '</div>' +
           '</div>';
       }).join('');
@@ -3774,17 +3805,17 @@
       const maxV = Math.max.apply(null, vals.concat([0])), minV = Math.min.apply(null, vals.concat([0]));
       const range = (maxV - minV) || 1;
       const py = v => PT + (maxV - v) / range * cH;
-      const zy = py(0), n = vals.length, bw = cW / n;
+      const zy = py(0), n = vals.length, slots = Math.max(n, 10), bw = cW / slots, x0 = PL + (slots - n) * bw;
       const fmt = v => (v > 0 ? '+' : '') + (Math.abs(v) >= 10 ? v.toFixed(0) : v.toFixed(1)) + '%';
       let bars = '';
       vals.forEach(function(v, i) {
         const y = v >= 0 ? py(v) : zy, h = Math.max(1, Math.abs(py(v) - zy));
-        bars += '<rect x="' + (PL + i * bw + bw * .15).toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (bw * .7).toFixed(1) + '" height="' + h.toFixed(1) + '" fill="' + (v >= 0 ? '#00d084' : '#ff4757') + '" rx="1"/>';
+        bars += '<rect x="' + (x0 + i * bw + bw * .15).toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (bw * .7).toFixed(1) + '" height="' + h.toFixed(1) + '" fill="' + (v >= 0 ? '#00d084' : '#ff4757') + '" rx="1"/>';
       });
       const lbl = (y, txt) => '<text x="' + (PL - 4) + '" y="' + (y + 3).toFixed(1) + '" text-anchor="end" font-size="9" fill="rgba(255,255,255,.45)">' + txt + '</text>';
       return '<svg class="sym30-chart" viewBox="0 0 ' + W + ' ' + H + '" role="img">' +
         '<line x1="' + PL + '" y1="' + zy.toFixed(1) + '" x2="' + (W - PR) + '" y2="' + zy.toFixed(1) + '" stroke="rgba(255,255,255,.18)" stroke-width="1"/>' +
-        bars + lbl(PT + 2, fmt(maxV)) + lbl(zy, '0%') + (minV < 0 ? lbl(PT + cH - 2, fmt(minV)) : '') +
+        bars + (maxV > 0 ? lbl(PT + 2, fmt(maxV)) : '') + lbl(zy, '0%') + (minV < 0 ? lbl(PT + cH - 2, fmt(minV)) : '') +
         '</svg>';
     }
 
