@@ -763,6 +763,11 @@ async def broadcast_signal(app, code, text):
     with db() as c:
         c.execute("INSERT INTO signals(at, service, text, sent) VALUES(?,?,?,?)",
                   (dt.datetime.now(KST).isoformat(timespec="seconds"), code or "ALL", text, sent))
+    if ADMIN_ID:   # Sean님께도 사본: 신호가 실제로 나갔는지 바로 확인
+        try:
+            await app.bot.send_message(ADMIN_ID, f"[신호 발송 · {code or 'ALL'} · {sent}명]\n{text}")
+        except Exception as e:
+            log.warning("signal copy to admin failed: %s", e)
     return sent
 
 
@@ -940,6 +945,18 @@ async def cmd_newkey(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         f"BOT_KEY = {key}", protect_content=True)
 
 
+async def cmd_signals(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """운영자에게만: 최근 발송 신호 20건."""
+    if update.effective_user.id != ADMIN_ID:
+        return
+    with db() as c:
+        rows = c.execute("SELECT at, service, text, sent FROM signals ORDER BY id DESC LIMIT 20").fetchall()
+    if not rows:
+        return await update.message.reply_text("아직 발송된 신호가 없습니다.")
+    lines = [f"{r['at'][5:16].replace('T', ' ')} {r['service']} ({r['sent']}명) {r['text'][:80]}" for r in rows]
+    await update.message.reply_text("최근 발송 신호\n" + "\n".join(lines))
+
+
 async def cmd_myid(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"내 텔레그램 번호: {update.effective_user.id}")
 
@@ -1087,6 +1104,7 @@ async def main():
     app.add_handler(CommandHandler("myid", cmd_myid))
     app.add_handler(CommandHandler("excel", cmd_excel))
     app.add_handler(CommandHandler("newkey", cmd_newkey))
+    app.add_handler(CommandHandler("signals", cmd_signals))
     app.add_handler(CommandHandler("notice", cmd_notice))
     app.add_handler(CommandHandler(["setnotice", "unsetnotice"], cmd_setnotice))
     app.add_handler(CommandHandler("stats", cmd_stats))
