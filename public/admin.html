@@ -4463,14 +4463,14 @@
           pnl: '손익 금액 (손실은 음수)',
           min_pnl: '당일 최소기록 (장중 최저 평가손익)',
           cur: 'USD 또는 KRW (비우면 USD)',
-          kind: 'live = 실제 신호 기록, backtest = 가상 성과. 반드시 구분해서 입력'
+          kind: 'live = 데일리 시그널 실적(2026-11-19부터), system = 신호 발송 전 시스템 결과. 반드시 구분해서 입력'
         },
         map: function(row) {
           var kind = String(row.kind || '').toLowerCase().trim();
           var date = toYMD(row.date);
           var pnl = Number(row.pnl);
           /* 구분(kind)이 없거나 잘못된 행은 받지 않는다: 가상 성과가 실제 기록으로 섞이지 않게 */
-          if (kind !== 'live' && kind !== 'backtest') throw new Error('kind');
+          if (kind !== 'live' && kind !== 'system') throw new Error('kind');
           if (!date || !isFinite(pnl) || String(row.pnl).trim() === '') throw new Error('row');
           var side = String(row.side || '').toUpperCase().trim();
           return {
