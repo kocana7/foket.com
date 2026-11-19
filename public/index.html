@@ -951,6 +951,7 @@
     .hpf-mk{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:14px}
     .hpf-mk b{font-size:16px;color:var(--text-primary)}
     .hpf-mk span{font-size:12px;color:var(--text-muted)}
+    .hpf-last+.hpf-last{margin-top:-8px}
     .hpf-last{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center}
     .hpf-last .lbl{font-size:12px;color:var(--text-secondary)}
     .hpf-last .sym{font-size:15px;font-weight:700;color:var(--text-primary)}
@@ -4105,9 +4106,9 @@
       return rows.filter(function(r){return r.date>=from;});
     }
     function bars(rows,t){
-      var monthly=rows.length>60,pts=[];
+      var monthly=Object.keys(rows.reduce(function(m,r){m[r.date]=1;return m;},{})).length>60,pts=[];
       if(monthly){var m={},o=[];rows.forEach(function(r){var k=r.date.slice(0,7);if(!(k in m)){m[k]=0;o.push(k);}m[k]+=r.pnl;});o.forEach(function(k){pts.push({k:k,v:m[k]});});}
-      else rows.forEach(function(r){pts.push({k:r.date,v:r.pnl});});
+      else{var dm={},od=[];rows.forEach(function(r){if(!(r.date in dm)){dm[r.date]=0;od.push(r.date);}dm[r.date]+=r.pnl;});od.forEach(function(k){pts.push({k:k,v:dm[k]});});}
       var NS='http://www.w3.org/2000/svg',W=600,H=64,mid=H/2,max=0;pts.forEach(function(p){max=Math.max(max,Math.abs(p.v));});
       var svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('class','hpf-chart');svg.setAttribute('role','img');
       var base=document.createElementNS(NS,'line');base.setAttribute('x1',0);base.setAttribute('x2',W);base.setAttribute('y1',mid);base.setAttribute('y2',mid);base.setAttribute('stroke','#1e2d4a');svg.appendChild(base);
@@ -4120,14 +4121,20 @@
     function card(mk,all,t){
       var c=el('div','hpf-card'),hd=el('div','hpf-mk');hd.appendChild(el('b',null,t[mk]));hd.appendChild(el('span',null,t[mk+'Sub']));c.appendChild(hd);
       if(!all.length){c.appendChild(el('div','hpf-empty',t.noneLive));return c;}
-      var L=all[all.length-1],box=el('div','hpf-last');
-      box.appendChild(el('div','lbl',t.last+' · '+L.date));box.appendChild(el('div','min',L.minPnl!=null?t.min+fmt(L.minPnl,L.cur):''));
-      var nm_=window.FK_I18N?FK_I18N.symName(L.sym,L.name,(typeof currentLang!=='undefined'&&currentLang)||'ko'):L.name;box.appendChild(el('div','sym',nm_?L.sym+' · '+nm_:L.sym));box.appendChild(el('div','pnl '+cl(L.pnl),fmt(L.pnl,L.cur)));c.appendChild(box);
+      /* 최근 거래일에 여러 종목이 있으면(해외선물 하루 여러 종목) 모두 보여 준다 */
+      var L=all[all.length-1],lastRows=all.filter(function(r){return r.date===L.date;});
+      var lang=(typeof currentLang!=='undefined'&&currentLang)||'ko';
+      lastRows.forEach(function(R,ix){
+        var box=el('div','hpf-last');
+        box.appendChild(el('div','lbl',ix===0?t.last+' · '+R.date:''));box.appendChild(el('div','min',R.minPnl!=null?t.min+fmt(R.minPnl,R.cur):''));
+        var nm_=window.FK_I18N?FK_I18N.symName(R.sym,R.name,lang):R.name;box.appendChild(el('div','sym',nm_?R.sym+' · '+nm_:R.sym));box.appendChild(el('div','pnl '+cl(R.pnl),fmt(R.pnl,R.cur)));
+        c.appendChild(box);
+      });
       var rows=inPeriod(all);
       if(!rows.length){c.appendChild(el('div','hpf-empty',t.none));return c;}
       var sum=0,w=0;rows.forEach(function(r){sum+=r.pnl;if(r.pnl>0)w++;});
       var st=el('div','hpf-stats');
-      [[t.pnl,fmt(sum,L.cur),cl(sum)],[t.win,(w/rows.length*100).toFixed(1)+'%',''],[t.days,rows.length.toLocaleString('en-US'),'']].forEach(function(s){
+      [[t.pnl,fmt(sum,L.cur),cl(sum)],[t.win,(w/rows.length*100).toFixed(1)+'%',''],[t.days,Object.keys(rows.reduce(function(m,r){m[r.date]=1;return m;},{})).length.toLocaleString('en-US'),'']].forEach(function(s){
         var d=el('div');d.appendChild(el('div','k',s[0]));d.appendChild(el('div','v '+s[2],s[1]));st.appendChild(d);});
       c.appendChild(st);
       var b=bars(rows,t);c.appendChild(b.svg);c.appendChild(el('div','hpf-cap',b.cap));
