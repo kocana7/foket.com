@@ -1087,6 +1087,17 @@ async def cmd_signal(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"{n}명에게 보냈습니다.")
 
 
+async def cmd_testsignal(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """운영자에게만: 회원이 받는 모양 그대로 가상 신호를 Sean님께만 보냄. 회원·기록에는 남지 않음.
+    /testsignal  또는  /testsignal NQ 매수 진입 21000"""
+    if update.effective_user.id != ADMIN_ID:
+        return
+    text = update.message.text.partition(" ")[2].strip() or "코스피200 매수 진입 (가상 신호)"
+    lang = lang_of(update.effective_user.id)
+    await ctx.bot.send_message(ADMIN_ID, f"[테스트 · 회원에게는 가지 않습니다]\n{t(lang, 'signal_head')}\n{text}",
+                               protect_content=True)
+
+
 async def cmd_position(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     u = get_user(update.effective_user.id)
     if u:
@@ -1105,6 +1116,7 @@ async def main():
     app.add_handler(CommandHandler("excel", cmd_excel))
     app.add_handler(CommandHandler("newkey", cmd_newkey))
     app.add_handler(CommandHandler("signals", cmd_signals))
+    app.add_handler(CommandHandler("testsignal", cmd_testsignal))
     app.add_handler(CommandHandler("notice", cmd_notice))
     app.add_handler(CommandHandler(["setnotice", "unsetnotice"], cmd_setnotice))
     app.add_handler(CommandHandler("stats", cmd_stats))
