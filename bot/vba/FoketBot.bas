@@ -227,15 +227,18 @@ Public Sub TestFoketBot()
         Exit Sub
     End If
     On Error GoTo 0
-    code = CodeOf(Trim(ws.Cells(3, 4).Text))
-    rows = RowJson(ws, 3, code, True)
+    If MAIN_FILE Then
+        code = CodeOf(Trim(ws.Cells(3, 4).Text))
+        rows = RowJson(ws, 3, code, True)
+    End If
     For r = FIRST_SELECT_ROW To LAST_SELECT_ROW
         If Trim(ws.Cells(r, 4).Text) <> "" Then
             code = CodeOf(Trim(ws.Cells(r, 4).Text))
-            rows = rows & "," & RowJson(ws, r, code, (code = CodeOf(Trim(ws.Cells(4, 4).Text))))
+            If rows <> "" Then rows = rows & ","
+            rows = rows & RowJson(ws, r, code, MAIN_FILE And (code = CodeOf(Trim(ws.Cells(4, 4).Text))))
         End If
     Next r
-    body = "{""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
+    body = "{""full"":false,""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
     For i = 1 To 3
         res = TryPost(i, BOT_URL & "/position", body)
         msg = msg & MethodName(i) & ": " & res & vbCrLf
