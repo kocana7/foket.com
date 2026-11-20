@@ -11,7 +11,8 @@ Attribute VB_Name = "FoketBot"
 '
 ' [동작]
 '   엑셀 파일 2개 이상에 넣어 동시에 실행해도 됩니다. 2번 파일은 MAIN_FILE 을 False 로 바꾸세요.
-'   단, 같은 종목이 두 파일에 함께 있으면 신호가 두 번 나갑니다.
+'   두 파일에 같은 종목 줄이 있으면, 각 파일에서 자기가 맡는 종목 줄의 J열에 O 를 적으세요.
+'   O 가 있는 줄만 봇에 보내고 신호를 냅니다 (다른 파일의 포지션을 덮어쓰지 않도록).
 '   StartFoketBot 을 한 번 실행하면 10초마다 표 전체를 봇에 보냅니다 (회원의 "현재 포지션" 조회용).
 '   E열(포지션)은 2초마다 읽고, 바뀐 값이 STABLE_SECONDS(12초) 동안 그대로 유지될 때만 신호를 보냅니다.
 '   (계산 중 4초 간격으로 빈칸 → 매수 → 빈칸 → 매도 처럼 깜빡이는 값은 신호로 보내지 않음)
@@ -23,7 +24,8 @@ Option Explicit
 Const BOT_URL As String = "https://foket.com/bot-api"
 Const BOT_KEY As String = "봇에_/excel_보내면_나오는_BOT_KEY"
 Const SHEET_NAME As String = "봇"
-Const MAIN_FILE As Boolean = True      ' 1번 엑셀 = True. 2번 엑셀에서는 False 로 바꾸세요 (3행 코스피200·D4 데일리를 읽지 않음)
+Const OWN_COL As Long = 10             ' J열: 이 파일이 맡는(신호를 내는) 종목 줄에 아무 글자(예: O)를 적음. J열이 모두 비면 전 종목
+Const MAIN_FILE As Boolean = True      ' 1번 엑셀 = True. 2번 엑셀에서는 False 로 바꾸세요 (3행 코스피200을 보내지 않음)
 Const PUSH_SECONDS As Long = 10        ' 표 전체를 봇에 보내는 간격
 Const CHECK_SECONDS As Long = 2        ' 포지션(E열)을 읽는 간격
 Const STABLE_SECONDS As Long = 12      ' 바뀐 포지션이 이만큼 그대로여야 신호 (깜빡임 무시)
@@ -38,6 +40,15 @@ Dim candPos As Object      ' 종목코드 → 바뀌는 중인 새 포지션 (아직 확정 전)
 Dim candSince As Object    ' 종목코드 → 그 새 포지션이 처음 보인 시각
 Dim lastPush As Date
 Dim goodMethod As Long     ' 이 PC에서 되는 전송 방식 (처음 한 번 찾아서 기억)
+
+' 6행~ 종목 줄을 이 파일이 맡는지: J열에 O 가 하나라도 있으면 O 줄만, 하나도 없으면 전부
+Private Function Owned(ws As Worksheet, r As Long) As Boolean
+    Dim i As Long, anyMark As Boolean
+    For i = FIRST_SELECT_ROW To LAST_SELECT_ROW
+        If Trim(ws.Cells(i, OWN_COL).Text) <> "" Then anyMark = True: Exit For
+    Next i
+    Owned = (Not anyMark) Or Trim(ws.Cells(r, OWN_COL).Text) <> ""
+End Function
 
 ' 엑셀 파일을 여러 개 동시에 켜도 각 파일이 자기 매크로만 부르도록 파일 이름을 붙임
 Private Function MyMacro(ByVal nm As String) As String
@@ -147,8 +158,8 @@ Public Sub PushTable()
         Set candSince = CreateObject("Scripting.Dictionary")
         first = True
     End If
+    dailyCode = CodeOf(Trim(ws.Cells(4, 4).Text))      ' D4 = 오늘 데일리 해외 종목 (그 종목을 맡은 파일이 데일리로 보냄)
     If MAIN_FILE Then
-        dailyCode = CodeOf(Trim(ws.Cells(4, 4).Text))  ' D4 = 오늘 데일리 해외 종목
         ' 3행 코스피200 (데일리 고정)
         code = CodeOf(Trim(ws.Cells(3, 4).Text))
         rows = RowJson(ws, 3, code, True)
@@ -157,7 +168,7 @@ Public Sub PushTable()
 
     ' 6행~ 셀렉트 종목
     For r = FIRST_SELECT_ROW To LAST_SELECT_ROW
-        If Trim(ws.Cells(r, 4).Text) <> "" Then
+        If Trim(ws.Cells(r, 4).Text) <> "" And Owned(ws, r) Then
             code = CodeOf(Trim(ws.Cells(r, 4).Text))
             If rows <> "" Then rows = rows & ","
             rows = rows & RowJson(ws, r, code, (code = dailyCode))
@@ -232,10 +243,10 @@ Public Sub TestFoketBot()
         rows = RowJson(ws, 3, code, True)
     End If
     For r = FIRST_SELECT_ROW To LAST_SELECT_ROW
-        If Trim(ws.Cells(r, 4).Text) <> "" Then
+        If Trim(ws.Cells(r, 4).Text) <> "" And Owned(ws, r) Then
             code = CodeOf(Trim(ws.Cells(r, 4).Text))
             If rows <> "" Then rows = rows & ","
-            rows = rows & RowJson(ws, r, code, MAIN_FILE And (code = CodeOf(Trim(ws.Cells(4, 4).Text))))
+            rows = rows & RowJson(ws, r, code, (code = CodeOf(Trim(ws.Cells(4, 4).Text))))
         End If
     Next r
     body = "{""full"":false,""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
