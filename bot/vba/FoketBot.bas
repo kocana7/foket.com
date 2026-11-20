@@ -10,6 +10,9 @@ Attribute VB_Name = "FoketBot"
 '   E~I 칸은 로직 시트의 셀을 가리키는 수식으로 채웁니다 (예: E6 칸에 =나스닥로직!$K$5)
 '
 ' [동작]
+'   엑셀 파일 2개 이상에 넣어 동시에 실행해도 됩니다. 2번 파일은 MAIN_FILE 을 False 로 바꾸세요.
+'   두 파일에 같은 종목 줄이 있으면, 각 파일에서 자기가 맡는 종목 줄의 J열에 O 를 적으세요.
+'   O 가 있는 줄만 봇에 보내고 신호를 냅니다 (다른 파일의 포지션을 덮어쓰지 않도록).
 '   StartFoketBot 을 한 번 실행하면 10초마다 표 전체를 봇에 보냅니다 (회원의 "현재 포지션" 조회용).
 '   E열(포지션)은 2초마다 읽고, 바뀐 값이 STABLE_SECONDS(12초) 동안 그대로 유지될 때만 신호를 보냅니다.
 '   (계산 중 4초 간격으로 빈칸 → 매수 → 빈칸 → 매도 처럼 깜빡이는 값은 신호로 보내지 않음)
@@ -21,9 +24,13 @@ Option Explicit
 Const BOT_URL As String = "https://foket.com/bot-api"
 Const BOT_KEY As String = "봇에_/excel_보내면_나오는_BOT_KEY"
 Const SHEET_NAME As String = "봇"
+Const OWN_COL As Long = 10             ' J열: 이 파일이 맡는(신호를 내는) 종목 줄에 아무 글자(예: O)를 적음. J열이 모두 비면 전 종목
+Const MAIN_FILE As Boolean = True      ' 1번 엑셀 = True. 2번 엑셀에서는 False 로 바꾸세요 (3행 코스피200을 보내지 않음)
 Const PUSH_SECONDS As Long = 10        ' 표 전체를 봇에 보내는 간격
 Const CHECK_SECONDS As Long = 2        ' 포지션(E열)을 읽는 간격
 Const STABLE_SECONDS As Long = 12      ' 바뀐 포지션이 이만큼 그대로여야 신호 (깜빡임 무시)
+Const KRW_PER_USD As Double = 1420     ' 손익(달러로 나옴)을 원화로 바꿀 때 쓰는 고정 환율 (Sean, 11-19)
+Const VALUE_WAIT_SECONDS As Long = 30  ' 진입가·청산손익 칸이 #N/A 같은 오류면 값이 나올 때까지 더 기다리는 시간
 Const FIRST_SELECT_ROW As Long = 6
 Const LAST_SELECT_ROW As Long = 30      ' 종목을 더 넣어도 30행까지 읽음 (빈 줄은 건너뜀)
 
@@ -34,6 +41,20 @@ Dim candSince As Object    ' 종목코드 → 그 새 포지션이 처음 보인 시각
 Dim lastPush As Date
 Dim goodMethod As Long     ' 이 PC에서 되는 전송 방식 (처음 한 번 찾아서 기억)
 
+' 6행~ 종목 줄을 이 파일이 맡는지: J열에 O 가 하나라도 있으면 O 줄만, 하나도 없으면 전부
+Private Function Owned(ws As Worksheet, r As Long) As Boolean
+    Dim i As Long, anyMark As Boolean
+    For i = FIRST_SELECT_ROW To LAST_SELECT_ROW
+        If Trim(ws.Cells(i, OWN_COL).Text) <> "" Then anyMark = True: Exit For
+    Next i
+    Owned = (Not anyMark) Or Trim(ws.Cells(r, OWN_COL).Text) <> ""
+End Function
+
+' 엑셀 파일을 여러 개 동시에 켜도 각 파일이 자기 매크로만 부르도록 파일 이름을 붙임
+Private Function MyMacro(ByVal nm As String) As String
+    MyMacro = "'" & ThisWorkbook.Name & "'!" & nm
+End Function
+
 Public Sub StartFoketBot()
     StopFoketBot
     Set lastPos = Nothing
@@ -43,7 +64,7 @@ End Sub
 
 Public Sub StopFoketBot()
     On Error Resume Next
-    Application.OnTime nextRun, "PushTable", , False
+    Application.OnTime nextRun, MyMacro("PushTable"), , False
 End Sub
 
 ' 종목 이름 → 봇이 쓰는 코드. 새 종목을 넣으면 여기에 한 줄 추가
@@ -74,9 +95,34 @@ Private Function CodeOf(ByVal nm As String) As String
     End Select
 End Function
 
-' 포지션 칸 값: "매수" 또는 "매도"만 포지션, 그 밖(빈칸, 0 등)은 모두 "없음"
+' 칸 글자. #N/A 같은 오류값이면 빈칸으로
+Private Function CellText(ws As Worksheet, r As Long, c As Long) As String
+    If IsError(ws.Cells(r, c).Value) Then
+        CellText = ""
+    Else
+        CellText = Trim(CStr(ws.Cells(r, c).Text))
+    End If
+End Function
+
+' 손익 칸 글자 (엑셀 값은 달러). 해외는 달러 정수: -$833
+' 코스피200은 원화(고정 환율, 1,000원 단위)와 달러를 함께: -1,182,000원 (-$833)
+Private Function MoneyText(ws As Worksheet, r As Long, c As Long, code As String) As String
+    Dim v As Variant, w As Double, d As Double
+    v = ws.Cells(r, c).Value
+    If Not IsError(v) And Not IsEmpty(v) And IsNumeric(v) Then
+        w = Int(CDbl(v) * KRW_PER_USD / 1000 + 0.5) * 1000
+        d = Int(CDbl(v) + 0.5)
+        MoneyText = IIf(d < 0, "-$", "$") & Format(Abs(d), "#,##0")
+        If code = "K200" Then MoneyText = Format(w, "#,##0") & "원 (" & MoneyText & ")"
+    Else
+        MoneyText = CellText(ws, r, c)
+    End If
+End Function
+
+' 포지션 칸 값: "매수" 또는 "매도"만 포지션, 그 밖(빈칸, 0 등)은 모두 "없음". 오류값(#N/A 등)은 "?" = 모름
 Private Function PosOf(ws As Worksheet, r As Long) As String
     Dim v As String
+    If IsError(ws.Cells(r, 5).Value) Then PosOf = "?": Exit Function
     v = Trim(CStr(ws.Cells(r, 5).Text))
     If InStr(v, "매수") > 0 Then
         PosOf = "매수"
@@ -89,10 +135,14 @@ End Function
 
 Private Function RowJson(ws As Worksheet, r As Long, code As String, daily As Boolean) As String
     Dim c As Long, s As String
-    s = """" & JsonEsc(code) & """,""" & JsonEsc(Trim(ws.Cells(r, 4).Text)) & """"
-    s = s & ",""" & JsonEsc(PosOf(ws, r)) & """"
-    For c = 6 To 9      ' F~I
-        s = s & ",""" & JsonEsc(Trim(ws.Cells(r, c).Text)) & """"
+    s = """" & JsonEsc(code) & """,""" & JsonEsc(CellText(ws, r, 4)) & """"
+    s = s & ",""" & JsonEsc(Replace(PosOf(ws, r), "?", "")) & """"
+    For c = 6 To 9      ' F~I (손익 G·I: 해외는 달러, 코스피200은 원화와 달러)
+        If c = 7 Or c = 9 Then
+            s = s & ",""" & JsonEsc(MoneyText(ws, r, c, code)) & """"
+        Else
+            s = s & ",""" & JsonEsc(CellText(ws, r, c)) & """"
+        End If
     Next c
     RowJson = "[" & s & ",""" & IIf(daily, "Y", "") & """]"
 End Function
@@ -108,34 +158,37 @@ Public Sub PushTable()
         Set candSince = CreateObject("Scripting.Dictionary")
         first = True
     End If
-    dailyCode = CodeOf(Trim(ws.Cells(4, 4).Text))      ' D4 = 오늘 데일리 해외 종목
-
-    ' 3행 코스피200 (데일리 고정)
-    code = CodeOf(Trim(ws.Cells(3, 4).Text))
-    rows = RowJson(ws, 3, code, True)
-    CheckSignal ws, 3, code, first
+    dailyCode = CodeOf(Trim(ws.Cells(4, 4).Text))      ' D4 = 오늘 데일리 해외 종목 (그 종목을 맡은 파일이 데일리로 보냄)
+    If MAIN_FILE Then
+        ' 3행 코스피200 (데일리 고정)
+        code = CodeOf(Trim(ws.Cells(3, 4).Text))
+        rows = RowJson(ws, 3, code, True)
+        CheckSignal ws, 3, code, first
+    End If
 
     ' 6행~ 셀렉트 종목
     For r = FIRST_SELECT_ROW To LAST_SELECT_ROW
-        If Trim(ws.Cells(r, 4).Text) <> "" Then
+        If Trim(ws.Cells(r, 4).Text) <> "" And Owned(ws, r) Then
             code = CodeOf(Trim(ws.Cells(r, 4).Text))
-            rows = rows & "," & RowJson(ws, r, code, (code = dailyCode))
+            If rows <> "" Then rows = rows & ","
+            rows = rows & RowJson(ws, r, code, (code = dailyCode))
             CheckSignal ws, r, code, first
         End If
     Next r
 
     If (Now - lastPush) * 86400 >= PUSH_SECONDS - 1 Then
-        PostJson "/position", "{""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
+        PostJson "/position", "{""full"":false,""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
         lastPush = Now
     End If
     nextRun = Now + TimeSerial(0, 0, CHECK_SECONDS)
-    Application.OnTime nextRun, "PushTable"
+    Application.OnTime nextRun, MyMacro("PushTable")
 End Sub
 
 ' 포지션(E열)이 바뀌고 STABLE_SECONDS 동안 그대로면 신호 (엑셀을 처음 켰을 때는 보내지 않음)
 Private Sub CheckSignal(ws As Worksheet, r As Long, code As String, first As Boolean)
     Dim pos As String
     pos = PosOf(ws, r)
+    If pos = "?" Then Exit Sub              ' 포지션 칸이 오류값: 판단 보류
     If first Or Not lastPos.Exists(code) Then
         lastPos(code) = pos
         candPos(code) = pos
@@ -151,6 +204,9 @@ Private Sub CheckSignal(ws As Worksheet, r As Long, code As String, first As Boo
         Exit Sub
     End If
     If (Now - candSince(code)) * 86400 >= STABLE_SECONDS Then
+        ' 신호에 넣을 값(진입가 F 또는 청산손익 I)이 아직 오류값이면 조금 더 기다림
+        If IsError(ws.Cells(r, IIf(pos = "없음", 9, 6)).Value) And _
+           (Now - candSince(code)) * 86400 < STABLE_SECONDS + VALUE_WAIT_SECONDS Then Exit Sub
         SendFoketSignal code, SignalText(ws, r, code, lastPos(code), pos)
         lastPos(code) = pos
     End If
@@ -158,14 +214,17 @@ End Sub
 
 Private Function SignalText(ws As Worksheet, r As Long, code As String, oldPos As String, newPos As String) As String
     Dim head As String, t As String
-    head = "[" & code & " " & Trim(ws.Cells(r, 4).Text) & "] "
+    Dim px As String, pl As String
+    head = "[" & code & " " & CellText(ws, r, 4) & "] "
     t = " (" & Format(Now, "hh:nn") & ")"
+    px = CellText(ws, r, 6): If px = "" Then px = "-"
+    pl = MoneyText(ws, r, 9, code): If pl = "" Then pl = "-"
     If newPos = "없음" Then
-        SignalText = head & oldPos & " 청산  청산손익 " & ws.Cells(r, 9).Text & t
+        SignalText = head & oldPos & " 청산  청산손익 " & pl & t
     ElseIf oldPos = "없음" Then
-        SignalText = head & newPos & " 진입 " & ws.Cells(r, 6).Text & t
+        SignalText = head & newPos & " 진입 " & px & t
     Else
-        SignalText = head & oldPos & " → " & newPos & " 전환 " & ws.Cells(r, 6).Text & t
+        SignalText = head & oldPos & " → " & newPos & " 전환 " & px & t
     End If
 End Function
 
@@ -179,15 +238,18 @@ Public Sub TestFoketBot()
         Exit Sub
     End If
     On Error GoTo 0
-    code = CodeOf(Trim(ws.Cells(3, 4).Text))
-    rows = RowJson(ws, 3, code, True)
+    If MAIN_FILE Then
+        code = CodeOf(Trim(ws.Cells(3, 4).Text))
+        rows = RowJson(ws, 3, code, True)
+    End If
     For r = FIRST_SELECT_ROW To LAST_SELECT_ROW
-        If Trim(ws.Cells(r, 4).Text) <> "" Then
+        If Trim(ws.Cells(r, 4).Text) <> "" And Owned(ws, r) Then
             code = CodeOf(Trim(ws.Cells(r, 4).Text))
-            rows = rows & "," & RowJson(ws, r, code, (code = CodeOf(Trim(ws.Cells(4, 4).Text))))
+            If rows <> "" Then rows = rows & ","
+            rows = rows & RowJson(ws, r, code, (code = CodeOf(Trim(ws.Cells(4, 4).Text))))
         End If
     Next r
-    body = "{""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
+    body = "{""full"":false,""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
     For i = 1 To 3
         res = TryPost(i, BOT_URL & "/position", body)
         msg = msg & MethodName(i) & ": " & res & vbCrLf
