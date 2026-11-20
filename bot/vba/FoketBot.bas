@@ -10,6 +10,7 @@ Attribute VB_Name = "FoketBot"
 '   E~I 칸은 로직 시트의 셀을 가리키는 수식으로 채웁니다 (예: E6 칸에 =나스닥로직!$K$5)
 '
 ' [동작]
+'   엑셀 파일 2개 이상에 넣어 동시에 실행해도 됩니다. 단, 같은 종목이 두 파일에 함께 있으면 신호가 두 번 나갑니다.
 '   StartFoketBot 을 한 번 실행하면 10초마다 표 전체를 봇에 보냅니다 (회원의 "현재 포지션" 조회용).
 '   E열(포지션)은 2초마다 읽고, 바뀐 값이 STABLE_SECONDS(12초) 동안 그대로 유지될 때만 신호를 보냅니다.
 '   (계산 중 4초 간격으로 빈칸 → 매수 → 빈칸 → 매도 처럼 깜빡이는 값은 신호로 보내지 않음)
@@ -36,6 +37,11 @@ Dim candSince As Object    ' 종목코드 → 그 새 포지션이 처음 보인 시각
 Dim lastPush As Date
 Dim goodMethod As Long     ' 이 PC에서 되는 전송 방식 (처음 한 번 찾아서 기억)
 
+' 엑셀 파일을 여러 개 동시에 켜도 각 파일이 자기 매크로만 부르도록 파일 이름을 붙임
+Private Function MyMacro(ByVal nm As String) As String
+    MyMacro = "'" & ThisWorkbook.Name & "'!" & nm
+End Function
+
 Public Sub StartFoketBot()
     StopFoketBot
     Set lastPos = Nothing
@@ -45,7 +51,7 @@ End Sub
 
 Public Sub StopFoketBot()
     On Error Resume Next
-    Application.OnTime nextRun, "PushTable", , False
+    Application.OnTime nextRun, MyMacro("PushTable"), , False
 End Sub
 
 ' 종목 이름 → 봇이 쓰는 코드. 새 종목을 넣으면 여기에 한 줄 추가
@@ -156,11 +162,11 @@ Public Sub PushTable()
     Next r
 
     If (Now - lastPush) * 86400 >= PUSH_SECONDS - 1 Then
-        PostJson "/position", "{""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
+        PostJson "/position", "{""full"":false,""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
         lastPush = Now
     End If
     nextRun = Now + TimeSerial(0, 0, CHECK_SECONDS)
-    Application.OnTime nextRun, "PushTable"
+    Application.OnTime nextRun, MyMacro("PushTable")
 End Sub
 
 ' 포지션(E열)이 바뀌고 STABLE_SECONDS 동안 그대로면 신호 (엑셀을 처음 켰을 때는 보내지 않음)
