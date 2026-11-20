@@ -10,7 +10,8 @@ Attribute VB_Name = "FoketBot"
 '   E~I 칸은 로직 시트의 셀을 가리키는 수식으로 채웁니다 (예: E6 칸에 =나스닥로직!$K$5)
 '
 ' [동작]
-'   엑셀 파일 2개 이상에 넣어 동시에 실행해도 됩니다. 단, 같은 종목이 두 파일에 함께 있으면 신호가 두 번 나갑니다.
+'   엑셀 파일 2개 이상에 넣어 동시에 실행해도 됩니다. 2번 파일은 MAIN_FILE 을 False 로 바꾸세요.
+'   단, 같은 종목이 두 파일에 함께 있으면 신호가 두 번 나갑니다.
 '   StartFoketBot 을 한 번 실행하면 10초마다 표 전체를 봇에 보냅니다 (회원의 "현재 포지션" 조회용).
 '   E열(포지션)은 2초마다 읽고, 바뀐 값이 STABLE_SECONDS(12초) 동안 그대로 유지될 때만 신호를 보냅니다.
 '   (계산 중 4초 간격으로 빈칸 → 매수 → 빈칸 → 매도 처럼 깜빡이는 값은 신호로 보내지 않음)
@@ -22,6 +23,7 @@ Option Explicit
 Const BOT_URL As String = "https://foket.com/bot-api"
 Const BOT_KEY As String = "봇에_/excel_보내면_나오는_BOT_KEY"
 Const SHEET_NAME As String = "봇"
+Const MAIN_FILE As Boolean = True      ' 1번 엑셀 = True. 2번 엑셀에서는 False 로 바꾸세요 (3행 코스피200·D4 데일리를 읽지 않음)
 Const PUSH_SECONDS As Long = 10        ' 표 전체를 봇에 보내는 간격
 Const CHECK_SECONDS As Long = 2        ' 포지션(E열)을 읽는 간격
 Const STABLE_SECONDS As Long = 12      ' 바뀐 포지션이 이만큼 그대로여야 신호 (깜빡임 무시)
@@ -145,18 +147,20 @@ Public Sub PushTable()
         Set candSince = CreateObject("Scripting.Dictionary")
         first = True
     End If
-    dailyCode = CodeOf(Trim(ws.Cells(4, 4).Text))      ' D4 = 오늘 데일리 해외 종목
-
-    ' 3행 코스피200 (데일리 고정)
-    code = CodeOf(Trim(ws.Cells(3, 4).Text))
-    rows = RowJson(ws, 3, code, True)
-    CheckSignal ws, 3, code, first
+    If MAIN_FILE Then
+        dailyCode = CodeOf(Trim(ws.Cells(4, 4).Text))  ' D4 = 오늘 데일리 해외 종목
+        ' 3행 코스피200 (데일리 고정)
+        code = CodeOf(Trim(ws.Cells(3, 4).Text))
+        rows = RowJson(ws, 3, code, True)
+        CheckSignal ws, 3, code, first
+    End If
 
     ' 6행~ 셀렉트 종목
     For r = FIRST_SELECT_ROW To LAST_SELECT_ROW
         If Trim(ws.Cells(r, 4).Text) <> "" Then
             code = CodeOf(Trim(ws.Cells(r, 4).Text))
-            rows = rows & "," & RowJson(ws, r, code, (code = dailyCode))
+            If rows <> "" Then rows = rows & ","
+            rows = rows & RowJson(ws, r, code, (code = dailyCode))
             CheckSignal ws, r, code, first
         End If
     Next r
