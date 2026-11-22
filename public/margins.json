@@ -1,0 +1,11 @@
+{
+  "note": "종목별 1계약 증거금(USD). 메인 'FOKET 수익률 현황' 카드 계산에 쓴다. 기준: 실적 엑셀 설정 시트 = operations/daily/config.json. KOSPI는 원화(margins_krw), 환율은 krw_per_usd.",
+  "updated": "2026-11-22",
+  "krw_per_usd": 1420,
+  "margins": {
+    "GC": 24288, "NQ": 46461.8, "ES": 28525.2, "CL": 10170.6, "NKD": 26851,
+    "6J": 2640, "NG": 3084.4, "SIL": 7474.5, "6M": 1210, "6N": 1320,
+    "6A": 1925, "6B": 1870, "UB": 5665, "6E": 3460, "ZW": 2200
+  },
+  "margins_krw": { "KOSPI": 42588131 }
+}

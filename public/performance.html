@@ -40,7 +40,6 @@
     .pf-sub{color:var(--text-secondary);font-size:15px;margin:-12px 0 28px}
     .pf-kindnote{font-size:13px;color:var(--text-secondary);line-height:1.7;background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.25);border-radius:var(--radius-sm);padding:10px 14px;margin:0 0 16px}
     .pf-btnote{font-size:13px;color:var(--text-primary);line-height:1.7;background:rgba(245,184,74,.10);border:1px solid rgba(245,184,74,.55);border-radius:var(--radius-sm);padding:10px 14px;margin:0 0 16px}
-    .pf-sys.bt{color:#c98a12;border-color:rgba(245,184,74,.7)}
     .pf-sys{display:inline-block;margin-left:8px;font-size:11px;font-weight:700;color:var(--text-secondary);border:1px solid var(--border-color);border-radius:100px;padding:1px 8px;vertical-align:middle}
     .pf-filters{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:16px 18px;margin-bottom:20px}
     .pf-filters label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--text-secondary);font-weight:600}
@@ -105,12 +104,9 @@
     <p class="pf-sub" data-i18n="sub">공개된 매매 신호의 결과를 손실 포함 그대로 조회할 수 있습니다.</p>
     <p class="fk-basis" data-fk-basis="rec"></p>
 
-    <p class="pf-kindnote" data-i18n="kindNote">결과는 2022년 6월부터 어제까지의 전체 기록입니다. 2026-11-11까지는 백테스트(로직 테스트, ‘백테스트’ 표시), 2026-11-12부터는 포켓 자동 시스템의 실제 결과(1계약 기준)입니다. 데일리 시그널은 한국선물·해외선물 1종목씩, 셀렉트 시그널은 회원이 원하는 1종목을 고르므로 하루에 여러 종목의 결과가 나올 수 있습니다.</p>
-
-    <p class="pf-btnote" id="btNote" data-i18n="btNote" hidden>백테스트는 2022-06-13~2026-11-11 기간에 포켓 로직을 과거 시세로 돌려 본 테스트 결과입니다. 회원에게 보낸 신호나 실제 거래가 아니며, 해외선물은 수수료 편도 $5를 가정해 반영했습니다.</p>
+    <p class="pf-kindnote" data-i18n="kindNote">결과는 포켓 자동 시스템의 결과(1계약 기준)입니다. 데일리 시그널은 한국선물·해외선물 1종목씩, 셀렉트 시그널은 회원이 원하는 1종목을 고르므로 하루에 여러 종목의 결과가 나올 수 있습니다.</p>
 
     <div class="pf-filters">
-      <label><span data-i18n="fType">구분</span><select id="fType"><option value="system" data-i18n="tySys">결과</option><option value="backtest" data-i18n="tyBt">백테스트 (로직 테스트)</option></select></label>
       <label><span data-i18n="fSym">종목</span><select id="fSym"><option value="" data-i18n="all">전체</option></select></label>
       <label><span data-i18n="fFrom">시작일</span><input type="date" id="fFrom"></label>
       <label><span data-i18n="fTo">종료일</span><input type="date" id="fTo"></label>
@@ -185,14 +181,14 @@
     svcT:'How to receive these signals',svcS:'Both plans $300 or KRW 500,000 per 20 trading days · 10-trading-day free trial',svcA:'Foket Daily Signal',svcAd:'1 selected overseas futures + 1 Korean futures symbol each day',svcB:'Foket Select Signal',svcBd:'Pick any one overseas or Korean futures symbol (switchable anytime)',svcC:'Start free trial',
     note:'Signal records are the results of signals issued by the Foket automated system, calculated for one contract. Records may differ from actual account results due to fees and slippage. Past performance does not guarantee future results. Futures trading can lose more than the initial capital.'};
   var KINDTXT={
-    ko:{fType:'구분',tyLive:'데일리 시그널 실적',tySys:'결과',kindNote:'결과는 2022년 6월부터 어제까지의 전체 기록입니다. 2026-11-11까지는 백테스트(로직 테스트, ‘백테스트’ 표시), 2026-11-12부터는 포켓 자동 시스템의 실제 결과(1계약 기준)입니다. 데일리 시그널은 한국선물·해외선물 1종목씩, 셀렉트 시그널은 회원이 원하는 1종목을 고르므로 하루에 여러 종목의 결과가 나올 수 있습니다.',tyBt:'백테스트 (로직 테스트)',tyBtTag:'백테스트',btNote:'백테스트는 2022-06-13~2026-11-11 기간에 포켓 로직을 과거 시세로 돌려 본 테스트 결과입니다. 회원에게 보낸 신호나 실제 거래가 아니며, 해외선물은 수수료 편도 $5를 가정해 반영했습니다.'},
-    en:{fType:'Type',tyLive:'Daily Signal results',tySys:'Results',kindNote:'Results cover all records from June 2022 through yesterday. Up to 2026-11-11 they are backtest results (logic test, marked “Backtest”); from 2026-11-12 they are actual results of the Foket automated system (one contract). Daily Signal sends one Korean and one overseas futures symbol and Select Signal lets members pick any one symbol, so several symbols can have results on the same day.',tyBt:'Backtest (logic test)',tyBtTag:'Backtest',btNote:'Backtest results come from running the Foket logic on past market data for 2022-06-13 to 2026-11-11. They are not signals sent to members or actual trades; overseas futures include an assumed fee of $5 per side.'},
-    de:{fType:'Art',tyLive:'Daily-Signal-Ergebnisse',tySys:'Ergebnisse',kindNote:'Die Ergebnisse umfassen alle Einträge von Juni 2022 bis gestern. Bis 11.11.2026 sind es Backtest-Ergebnisse (Logiktest, als „Backtest“ markiert), ab 12.11.2026 tatsächliche Ergebnisse des automatisierten Foket-Systems (ein Kontrakt). Daily Signal liefert je einen koreanischen und einen ausländischen Future, bei Select Signal wählt man einen beliebigen Kontrakt – daher kann es an einem Tag Ergebnisse für mehrere Kontrakte geben.',tyBt:'Backtest (Logiktest)',tyBtTag:'Backtest',btNote:'Backtest-Ergebnisse stammen aus der Anwendung der Foket-Logik auf historische Kursdaten vom 13.06.2022 bis 11.11.2026. Es sind weder an Mitglieder gesendete Signale noch tatsächliche Trades; bei Auslandsfutures ist eine angenommene Gebühr von 5 $ pro Seite enthalten.'},
-    ja:{fType:'区分',tyLive:'デイリーシグナル実績',tySys:'結果',kindNote:'結果は2022年6月から昨日までの全記録です。2026-11-11まではバックテスト(ロジックテスト、「バックテスト」表示)、2026-11-12からはFoket自動システムの実際の結果(1枚基準)です。デイリーシグナルは韓国先物・海外先物を1銘柄ずつ、セレクトシグナルは会員がお好きな1銘柄を選ぶため、1日に複数銘柄の結果が出ることがあります。',tyBt:'バックテスト(ロジックテスト)',tyBtTag:'バックテスト',btNote:'バックテストは、2022-06-13〜2026-11-11の期間にFoketのロジックを過去の相場データで動かしたテスト結果です。会員に送信したシグナルや実際の取引ではなく、海外先物は片道5ドルの手数料を仮定して反映しています。'},
-    zh:{fType:'类别',tyLive:'每日信号业绩',tySys:'结果',kindNote:'结果为2022年6月至昨天的全部记录。2026-11-11及之前为回测(逻辑测试，标有“回测”)，自2026-11-12起为Foket自动系统的实际结果(按1手计算)。每日信号为韩国期货与海外期货各1个品种，自选信号由会员任选1个品种，因此同一天可能有多个品种的结果。',tyBt:'回测(逻辑测试)',tyBtTag:'回测',btNote:'回测是将Foket逻辑应用于2022-06-13至2026-11-11历史行情数据得出的测试结果，并非发送给会员的信号或实际交易；海外期货已按单边5美元的假设手续费计入。'},
-    fr:{fType:'Type',tyLive:'Résultats Daily Signal',tySys:'Résultats',kindNote:'Les résultats couvrent tous les enregistrements de juin 2022 à hier. Jusqu’au 11/11/2026, il s’agit de backtest (test de la logique, marqué « Backtest ») ; depuis le 12/11/2026, de résultats réels du système automatisé Foket (un contrat). Daily Signal envoie un contrat coréen et un contrat étranger, et Select Signal permet de choisir n’importe quel contrat : plusieurs contrats peuvent donc avoir un résultat le même jour.',tyBt:'Backtest (test de la logique)',tyBtTag:'Backtest',btNote:'Les résultats de backtest proviennent de l’application de la logique Foket aux données de marché du 13/06/2022 au 11/11/2026. Ce ne sont ni des signaux envoyés aux membres ni des transactions réelles ; les futures étrangers incluent des frais supposés de 5 $ par côté.'},
-    es:{fType:'Tipo',tyLive:'Resultados Daily Signal',tySys:'Resultados',kindNote:'Los resultados abarcan todos los registros desde junio de 2022 hasta ayer. Hasta el 11/11/2026 son backtest (prueba de la lógica, marcados «Backtest»); desde el 12/11/2026 son resultados reales del sistema automatizado de Foket (un contrato). Daily Signal envía un futuro coreano y uno extranjero, y en Select Signal se elige cualquier contrato, por lo que puede haber resultados de varios contratos el mismo día.',tyBt:'Backtest (prueba de la lógica)',tyBtTag:'Backtest',btNote:'Los resultados de backtest provienen de aplicar la lógica de Foket a datos de mercado del 13/06/2022 al 11/11/2026. No son señales enviadas a los miembros ni operaciones reales; los futuros extranjeros incluyen una comisión supuesta de 5 $ por lado.'},
-    ru:{fType:'Тип',tyLive:'Результаты Daily Signal',tySys:'Результаты',kindNote:'Результаты охватывают все записи с июня 2022 года по вчерашний день. До 11.11.2026 — бэктест (тест логики, помечен «Бэктест»), с 12.11.2026 — фактические результаты автоматической системы Foket (один контракт). Daily Signal даёт один корейский и один зарубежный фьючерс, в Select Signal выбирается любой один инструмент, поэтому за один день могут быть результаты по нескольким инструментам.',tyBt:'Бэктест (тест логики)',tyBtTag:'Бэктест',btNote:'Результаты бэктеста получены прогоном логики Foket на рыночных данных с 13.06.2022 по 11.11.2026. Это не сигналы, отправленные участникам, и не реальные сделки; для зарубежных фьючерсов учтена условная комиссия $5 за сторону.'}
+    ko:{fType:'구분',tyLive:'데일리 시그널 실적',tySys:'결과',kindNote:'결과는 포켓 자동 시스템의 결과(1계약 기준)입니다. 데일리 시그널은 한국선물·해외선물 1종목씩, 셀렉트 시그널은 회원이 원하는 1종목을 고르므로 하루에 여러 종목의 결과가 나올 수 있습니다.'},
+    en:{fType:'Type',tyLive:'Daily Signal results',tySys:'Results',kindNote:'Results are those of the Foket automated system (one contract). Daily Signal sends one Korean and one overseas futures symbol and Select Signal lets members pick any one symbol, so several symbols can have results on the same day.'},
+    de:{fType:'Art',tyLive:'Daily-Signal-Ergebnisse',tySys:'Ergebnisse',kindNote:'Die Ergebnisse stammen aus dem automatisierten Foket-System (ein Kontrakt). Daily Signal liefert je einen koreanischen und einen ausländischen Future, bei Select Signal wählt man einen beliebigen Kontrakt – daher kann es an einem Tag Ergebnisse für mehrere Kontrakte geben.'},
+    ja:{fType:'区分',tyLive:'デイリーシグナル実績',tySys:'結果',kindNote:'結果はFoket自動システムの結果(1枚基準)です。デイリーシグナルは韓国先物・海外先物を1銘柄ずつ、セレクトシグナルは会員がお好きな1銘柄を選ぶため、1日に複数銘柄の結果が出ることがあります。'},
+    zh:{fType:'类别',tyLive:'每日信号业绩',tySys:'结果',kindNote:'结果为Foket自动系统的结果(按1手计算)。每日信号为韩国期货与海外期货各1个品种，自选信号由会员任选1个品种，因此同一天可能有多个品种的结果。'},
+    fr:{fType:'Type',tyLive:'Résultats Daily Signal',tySys:'Résultats',kindNote:'Les résultats sont ceux du système automatisé Foket (un contrat). Daily Signal envoie un contrat coréen et un contrat étranger, et Select Signal permet de choisir n’importe quel contrat : plusieurs contrats peuvent donc avoir un résultat le même jour.'},
+    es:{fType:'Tipo',tyLive:'Resultados Daily Signal',tySys:'Resultados',kindNote:'Los resultados son los del sistema automatizado de Foket (un contrato). Daily Signal envía un futuro coreano y uno extranjero, y en Select Signal se elige cualquier contrato, por lo que puede haber resultados de varios contratos el mismo día.'},
+    ru:{fType:'Тип',tyLive:'Результаты Daily Signal',tySys:'Результаты',kindNote:'Результаты — это результаты автоматической системы Foket (один контракт). Daily Signal даёт один корейский и один зарубежный фьючерс, в Select Signal выбирается любой один инструмент, поэтому за один день могут быть результаты по нескольким инструментам.'}
   };
   var T={ko:KO,en:EN};
   var DE={"title": "Bisherige Ergebnisse", "h": "Startseite", "p": "Service", "f": "Häufige Fragen (FAQ)", "perf": "Performance", "c": "Kontakt", "j": "Telegram-Anfrage", "k": "KakaoTalk-Anfrage", "risk": "Risikohinweis", "pt": "Bisherige Ergebnisse", "sub": "Sehen Sie die Ergebnisse veröffentlichter Handelssignale ein, Verluste eingeschlossen.", "fSym": "Kontrakt", "all": "Alle", "fFrom": "Von", "fTo": "Bis", "fRange": "Schnellauswahl", "rAll": "Gesamter Zeitraum", "r20": "Letzte 20 Handelstage", "rM1": "Dieser Monat", "rM3": "Letzte 3 Monate", "rY1": "Letzte 12 Monate", "cTrades": "Trades", "cWin": "Trefferquote", "cPnl": "Kumulierter G/V", "cWorst": "Größter Verlust", "lK200": "KOSPI200", "lFutSum": "Auslandsfutures gesamt", "lFut": "Auslandsfutures", "hMonth": "Monatsübersicht", "hTrades": "Trade-Historie", "tMonth": "Monat", "tTrades": "Trades", "tWin": "Trefferquote", "tPnl": "G/V", "tDate": "Datum", "tSym": "Kontrakt", "tSide": "Richtung", "tEntry": "Einstieg", "tExit": "Ausstieg", "tMin": "Tagestief G/V", "long": "Long", "short": "Short", "prev": "Zurück", "next": "Weiter", "emptyLive": "Es wurden noch keine Signaldaten veröffentlicht.", "emptyFilter": "Keine Einträge für diese Filter.", "loading": "Wird geladen…", "svcT": "So erhalten Sie diese Signale", "svcS": "Beide Pläne 300 $ oder 500.000 KRW pro 20 Handelstage · 10 Handelstage kostenlos testen", "svcA": "Foket Daily Signal", "svcAd": "Täglich 1 ausgewählter Auslandsfuture + 1 koreanischer Future", "svcB": "Foket Select Signal", "svcBd": "Einen beliebigen ausländischen oder koreanischen Future wählen (jederzeit wechselbar)", "svcC": "Kostenlos testen", "note": "Signaldaten sind Ergebnisse der Signale des automatisierten Foket-Systems, berechnet für einen Kontrakt. Gebühren und Slippage können zu Abweichungen von tatsächlichen Kontoergebnissen führen. Vergangene Ergebnisse garantieren keine zukünftigen Gewinne. Beim Futures-Handel können Verluste über das eingesetzte Kapital hinaus entstehen."};
@@ -208,11 +204,9 @@
   function tr(){return T[currentLang]||EN;}
 
   var ALL=null, kind='live', page=1, PER=50;
-  /* 구분은 두 가지: 결과(신호 발송 전 system + 회원에게 보낸 live를 합쳐 하나로) / 백테스트(backtest, 실제 기록과 합산하지 않음) */
-  function btMode(){var s=document.getElementById('fType');return !!s&&s.value==='backtest';}
-  /* 결과 = 2022-06부터 어제(한국 시간)까지 전체 기록(2026-11-11까지 백테스트 + 2026-11-12부터 시스템 결과), 백테스트 = 2026-11-11까지 */
+  /* 결과 = 신호 발송 전 system + 회원에게 보낸 live를 합쳐 어제(한국 시간)까지 */
   var TODAY_KST=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
-  function inKind(r){if(btMode())return r.kind==='backtest';return (r.kind==='backtest'||r.kind==='system'||r.kind==='live')&&r.date<TODAY_KST;}
+  function inKind(r){return (r.kind==='system'||r.kind==='live')&&r.date<TODAY_KST;}
 
   /* 레코드 정규화: 잘못된 행은 버린다 */
   function norm(r){
@@ -220,7 +214,7 @@
     var d=String(r.date||'').slice(0,10);
     if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return null;
     var pnl=Number(r.pnl); if(!isFinite(pnl))return null;
-    var k=String(r.kind||'').toLowerCase(); if(k!=='live'&&k!=='backtest'&&k!=='system')return null;
+    var k=String(r.kind||'').toLowerCase(); if(k!=='live'&&k!=='system')return null;
     var side=String(r.side||'').toUpperCase().trim();
     side=(side==='SHORT'||side==='S'||side==='SELL'||side==='매도')?'SHORT':((side==='LONG'||side==='L'||side==='BUY'||side==='매수')?'LONG':'');
     var mp=(r.min_pnl===''||r.min_pnl==null)?null:Number(r.min_pnl); if(mp!=null&&!isFinite(mp))mp=null;
@@ -258,7 +252,6 @@
   function filtered(){
     var sym=document.getElementById('fSym').value, from=document.getElementById('fFrom').value, to=document.getElementById('fTo').value;
     return (ALL||[]).filter(function(r){
-      var ty=document.getElementById('fType').value;
       return inKind(r)&&(!sym||r.sym===sym)&&(!from||r.date>=from)&&(!to||r.date<=to);
     }).sort(function(a,b){return a.date<b.date?1:(a.date>b.date?-1:0);});
   }
@@ -298,7 +291,7 @@
     else{mb.textContent='';order.forEach(function(m){
       var g=months[m],w=g.filter(function(r){return r.pnl>0;}).length,s=sumByCur(g),k2=Object.keys(s);
       var row=document.createElement('tr');
-      var mc=td(m);if(!btMode()&&g.some(function(r){return r.kind==='backtest';})){var mb_=document.createElement('span');mb_.className='pf-sys bt';mb_.textContent=t.tyBtTag;mc.appendChild(mb_);}row.appendChild(mc);row.appendChild(td(g.length,'r'));row.appendChild(td((w/g.length*100).toFixed(1)+'%','r'));
+      var mc=td(m);row.appendChild(mc);row.appendChild(td(g.length,'r'));row.appendChild(td((w/g.length*100).toFixed(1)+'%','r'));
       row.appendChild(td(curText(s),'r '+(k2.length===1?cls(s[k2[0]]):'')));mb.appendChild(row);});}
 
     /* 거래 내역 (페이지) */
@@ -307,7 +300,7 @@
     if(!slice.length)emptyRow(tb,4,emptyMsg);
     else{tb.textContent='';slice.forEach(function(r){
       var row=document.createElement('tr');
-      var dc=td(r.date);if(r.kind==='backtest'){var bg=document.createElement('span');bg.className='pf-sys bt';bg.textContent=tr().tyBtTag;dc.appendChild(bg);}row.appendChild(dc);var n_=nm(r);row.appendChild(td(n_?r.sym+' · '+n_:r.sym));
+      var dc=td(r.date);row.appendChild(dc);var n_=nm(r);row.appendChild(td(n_?r.sym+' · '+n_:r.sym));
       row.appendChild(td(r.minPnl==null?'-':fmtMoney(r.minPnl,r.cur),'r '+(r.minPnl==null?'':cls(r.minPnl))));
       row.appendChild(td(fmtMoney(r.pnl,r.cur),'r '+cls(r.pnl)));tb.appendChild(row);});}
 
@@ -347,7 +340,7 @@
     fillSymbols(); render();
   }
 
-  ['fType','fSym','fFrom','fTo'].forEach(function(id){document.getElementById(id).addEventListener('change',function(){page=1;if(id!=='fSym'&&id!=='fType')document.getElementById('fRange').value='';if(id==='fType'){document.getElementById('btNote').hidden=!btMode();fillSymbols();}render();});});
+  ['fSym','fFrom','fTo'].forEach(function(id){document.getElementById(id).addEventListener('change',function(){page=1;if(id!=='fSym')document.getElementById('fRange').value='';render();});});
   document.getElementById('fRange').addEventListener('change',function(e){page=1;applyRange(e.target.value);render();});
 
   applyLang(currentLang);

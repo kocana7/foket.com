@@ -364,14 +364,14 @@ window.FOKET_FAQ = {
         ru: 'Где посмотреть прошлые результаты?'
       },
       a: {
-        ko: '[실적 조회](performance.html) 페이지에서 날짜별 기록을 보실 수 있습니다. 실제 신호 기록과 과거 데이터로 계산한 가상 성과(백테스트)는 구분해 표시하며, 손실도 그대로 공개합니다.',
-        en: 'See the [Performance](performance.html) page for results by date. Real signal records and simulated results calculated on past data (backtests) are labeled separately, and losses are shown as they are.',
-        de: 'Auf der Seite [Performance](performance.html) finden Sie die Ergebnisse nach Datum. Echte Signalaufzeichnungen und simulierte Ergebnisse aus historischen Daten (Backtests) sind getrennt gekennzeichnet; Verluste werden unverändert gezeigt.',
-        ja: '[実績照会](performance.html)ページで日付ごとの記録をご覧いただけます。実際のシグナル記録と過去データで計算した仮想成果（バックテスト）は区別して表示し、損失もそのまま公開しています。',
-        zh: '请在 [业绩查询](performance.html) 页面按日期查看记录。真实信号记录与基于历史数据计算的模拟业绩（回测）分开标示，亏损也如实公开。',
-        fr: 'Consultez la page [Performances](performance.html) pour les résultats par date. Les signaux réels et les résultats simulés sur données passées (backtests) sont indiqués séparément, et les pertes sont publiées telles quelles.',
-        es: 'Consulte la página de [Rendimiento](performance.html) para ver los resultados por fecha. Los registros de señales reales y los resultados simulados con datos pasados (backtests) se muestran por separado, y las pérdidas se publican tal cual.',
-        ru: 'Результаты по датам — на странице [Результаты](performance.html). Реальные сигналы и смоделированные на исторических данных результаты (бэктесты) отмечены отдельно, убытки показаны как есть.'
+        ko: '[실적 조회](performance.html) 페이지에서 날짜별 기록을 보실 수 있습니다. 포켓 자동 시스템의 결과를 손실까지 그대로 공개합니다.',
+        en: 'See the [Performance](performance.html) page for results by date. Results of the Foket automated system are published as they are, losses included.',
+        de: 'Auf der Seite [Performance](performance.html) finden Sie die Ergebnisse nach Datum. Die Ergebnisse des automatisierten Foket-Systems werden unverändert veröffentlicht, Verluste eingeschlossen.',
+        ja: '[実績照会](performance.html)ページで日付ごとの記録をご覧いただけます。Foket自動システムの結果を、損失も含めてそのまま公開しています。',
+        zh: '请在 [业绩查询](performance.html) 页面按日期查看记录。Foket自动系统的结果连同亏损一并如实公开。',
+        fr: 'Consultez la page [Performances](performance.html) pour les résultats par date. Les résultats du système automatisé Foket sont publiés tels quels, pertes comprises.',
+        es: 'Consulte la página de [Rendimiento](performance.html) para ver los resultados por fecha. Los resultados del sistema automatizado de Foket se publican tal cual, pérdidas incluidas.',
+        ru: 'Результаты по датам — на странице [Результаты](performance.html). Результаты автоматической системы Foket публикуются как есть, включая убытки.'
       }
     },
     {
