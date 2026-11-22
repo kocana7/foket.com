@@ -3362,7 +3362,6 @@
       // Re-render stats panels so Korean shows nameKo first, others show sym first
       if (typeof loadFuturesStats === 'function') loadFuturesStats();
       if (typeof loadBest10 === 'function') loadBest10();
-      if (typeof renderProfitCharts === 'function' && _marketsDataCache) renderProfitCharts(_marketsDataCache);
       if (typeof updateBest10Date === 'function') updateBest10Date(lang);
     }
 
@@ -3748,20 +3747,23 @@
           sym: sym, nameKo: info.nameKo || recs[recs.length - 1].name || sym, nameEn: info.nameEn || '',
           monthlyProfit: mp, monthlyReturn: mp / (margin * 3) * 100, margin: margin,
           maxDailyLoss: worst < 0 ? worst : null, startDate: recs[0].date,
-          dailyProfits: recs.slice(-30).reverse().map(function (x) { return x.usd; })
+          /* 일별 수익률(%) = 손익 ÷ (증거금×3), [0]이 가장 최근 */
+          dailyProfits: recs.slice(-30).reverse().map(function (x) { return x.usd / (margin * 3) * 100; })
         });
       });
       return Object.values(cats);
     }
 
+    let _bestCache = null; /* 실적 기록으로 만든 종목 지표 (카드·30거래일 차트 공용) */
     async function loadBest10() {
       const getJ = (u) => fetch(u, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
       const [markets, rec, rec2, mcfg] = await Promise.all([
         fetchMarketsFromServer(), getJ('records.json'), getJ(location.origin + '/api/storage/records'), getJ('margins.json')
       ]);
       const best = buildBestFromRecords([rec, rec2], markets || [], mcfg);
+      _bestCache = best;
       renderBest10(best.length ? JSON.stringify(best) : null);
-      if (markets) renderProfitCharts(markets);
+      renderProfitCharts(best);
     }
 
     function updateBest10Date(lang) {
@@ -3773,7 +3775,7 @@
       el.textContent = d + ' ' + (t['best10.date_suffix'] || '현재까지');
     }
 
-    /* 종목별 최근 30거래일: 관리자 입력 데이터(dailyProfits, 단위 %)로 월평균 수익률 상위 8종목 카드를 만든다.
+    /* 종목별 최근 30거래일: 실적 기록으로 만든 지표(buildBestFromRecords의 dailyProfits, 단위 %)로 월평균 수익률 상위 8종목 카드를 만든다.
        dailyProfits[0]이 가장 최근 거래일이다. */
     function renderProfitCharts(markets) {
       const wrap = document.getElementById('profitChartsWrap');
@@ -3902,12 +3904,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      fetchMarketsFromServer().then(markets => {
-        if (!markets) return;
-        const raw = JSON.stringify(markets);
-        loadBest10();
-        loadFuturesStats(markets);
-      });
+      loadBest10();
+      fetchMarketsFromServer().then(markets => { if (markets) loadFuturesStats(markets); });
 
       // Random shuffle of 3 CSP cards periodically
       const heroCspWrap = document.getElementById('heroCspWrap');
