@@ -759,6 +759,7 @@ def active_members(code=None):
 KNOWN_CODES = {"K200", "NQ", "6E", "GC", "ES", "CL", "NG", "HHI", "ZW", "SIL", "ZS", "ZC", "6M", "6N",
                "6J", "NKD", "6A", "6B", "UB", "HG", "HSI"}
 SRC_SEEN = {}            # 엑셀 파일 이름 → 마지막으로 표가 들어온 시각
+SRC_DAILY = {}           # 엑셀 파일 이름 → 그 파일이 데일리로 표시한 종목 코드
 SRC_DOWN = set()         # 끊김을 이미 알린 파일
 ALERTED = {}             # 알림 내용 → 마지막으로 알린 시각 (같은 알림은 하루 한 번)
 FEED_GAP_MIN = 5         # 거래 시간에 엑셀 표가 이만큼(분) 안 들어오면 알림
@@ -947,6 +948,18 @@ async def http_position(request):
         SRC_SEEN[src] = now_dt
     unknown = []
     n = 0
+    # 데일리 표시는 두 엑셀 파일을 합쳐서 봄: 데일리 종목이 2번 파일에만 있어도, 포지션은 1번 파일 줄이 지켜져도 데일리로 남게
+    mine = set()
+    for r in rows[:200]:
+        if isinstance(r, list) and len(r) > DAILY_COL and str(r[0]).strip() and \
+                str(r[DAILY_COL]).strip().upper() in ("Y", "O", "1", "데일리"):
+            mine.add(str(r[0]).strip().upper())
+    SRC_DAILY[src] = mine
+    daily_codes = set()
+    for s2, codes in SRC_DAILY.items():
+        seen = SRC_SEEN.get(s2)
+        if s2 == src or (seen and (now_dt - seen).total_seconds() < 60):
+            daily_codes |= codes
     with db() as c:
         if d.get("full", True):
             c.execute("DELETE FROM positions")   # 표에서 지운 종목은 봇에서도 지움
@@ -960,7 +973,7 @@ async def http_position(request):
                 continue
             if cells[0] not in KNOWN_CODES:
                 unknown.append(f"{name} → {cells[0]}")
-            daily = 1 if len(cells) > DAILY_COL and cells[DAILY_COL].strip().upper() in ("Y", "O", "1", "데일리") else 0
+            daily = 1 if cells[0] in daily_codes else 0
             if keep_other_file(c, cells, src, now_dt):
                 continue
             c.execute("INSERT OR REPLACE INTO positions(code, data, daily, at, src) VALUES(?,?,?,?,?)",
@@ -970,6 +983,10 @@ async def http_position(request):
         old = (now_dt - dt.timedelta(minutes=10)).isoformat(timespec="seconds")
         c.execute("DELETE FROM positions WHERE at IS NULL OR at = '' OR at < ?", (old,))
         drop_placeholder_rows(c)
+        for r in c.execute("SELECT code, daily FROM positions").fetchall():   # 다른 파일 줄로 지켜진 종목도 데일리 표시 맞춤
+            want = 1 if r["code"] in daily_codes else 0
+            if r["daily"] != want:
+                c.execute("UPDATE positions SET daily=? WHERE code=?", (want, r["code"]))
     for u in unknown:
         await alert_admin(app, f"unknown:{u}", f"엑셀 봇 시트에 봇이 모르는 종목 이름이 있습니다: {u}"
                           + (f" (파일 '{src}')" if src else "") + "\n회원 메뉴와 신호에 이 이름 그대로 보입니다. "
