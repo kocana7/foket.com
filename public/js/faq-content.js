@@ -364,14 +364,14 @@ window.FOKET_FAQ = {
         ru: 'Где посмотреть прошлые результаты?'
       },
       a: {
-        ko: '[실적 조회](performance.html) 페이지에서 날짜별 기록을 보실 수 있습니다. 실제 신호 기록과 과거 데이터로 계산한 가상 성과(백테스트)는 구분해 표시하며, 손실도 그대로 공개합니다.',
-        en: 'See the [Performance](performance.html) page for results by date. Real signal records and simulated results calculated on past data (backtests) are labeled separately, and losses are shown as they are.',
-        de: 'Auf der Seite [Performance](performance.html) finden Sie die Ergebnisse nach Datum. Echte Signalaufzeichnungen und simulierte Ergebnisse aus historischen Daten (Backtests) sind getrennt gekennzeichnet; Verluste werden unverändert gezeigt.',
-        ja: '[実績照会](performance.html)ページで日付ごとの記録をご覧いただけます。実際のシグナル記録と過去データで計算した仮想成果（バックテスト）は区別して表示し、損失もそのまま公開しています。',
-        zh: '请在 [业绩查询](performance.html) 页面按日期查看记录。真实信号记录与基于历史数据计算的模拟业绩（回测）分开标示，亏损也如实公开。',
-        fr: 'Consultez la page [Performances](performance.html) pour les résultats par date. Les signaux réels et les résultats simulés sur données passées (backtests) sont indiqués séparément, et les pertes sont publiées telles quelles.',
-        es: 'Consulte la página de [Rendimiento](performance.html) para ver los resultados por fecha. Los registros de señales reales y los resultados simulados con datos pasados (backtests) se muestran por separado, y las pérdidas se publican tal cual.',
-        ru: 'Результаты по датам — на странице [Результаты](performance.html). Реальные сигналы и смоделированные на исторических данных результаты (бэктесты) отмечены отдельно, убытки показаны как есть.'
+        ko: '[실적 조회](performance.html) 페이지에서 날짜별 기록을 보실 수 있습니다. 포켓 자동 시스템의 결과를 손실까지 그대로 공개합니다.',
+        en: 'See the [Performance](performance.html) page for results by date. Results of the Foket automated system are published as they are, losses included.',
+        de: 'Auf der Seite [Performance](performance.html) finden Sie die Ergebnisse nach Datum. Die Ergebnisse des automatisierten Foket-Systems werden unverändert veröffentlicht, Verluste eingeschlossen.',
+        ja: '[実績照会](performance.html)ページで日付ごとの記録をご覧いただけます。Foket自動システムの結果を、損失も含めてそのまま公開しています。',
+        zh: '请在 [业绩查询](performance.html) 页面按日期查看记录。Foket自动系统的结果连同亏损一并如实公开。',
+        fr: 'Consultez la page [Performances](performance.html) pour les résultats par date. Les résultats du système automatisé Foket sont publiés tels quels, pertes comprises.',
+        es: 'Consulte la página de [Rendimiento](performance.html) para ver los resultados por fecha. Los resultados del sistema automatizado de Foket se publican tal cual, pérdidas incluidas.',
+        ru: 'Результаты по датам — на странице [Результаты](performance.html). Результаты автоматической системы Foket публикуются как есть, включая убытки.'
       }
     },
     {
@@ -395,6 +395,29 @@ window.FOKET_FAQ = {
         fr: 'Oui. En plus de Daily et Select Signal, nous enseignons la théorie ROF (Regulations Of FutureOption) de Foket. Les cours ont lieu principalement sur notre [Naver Cafe](https://cafe.naver.com/rof114). Pour en savoir plus, écrivez-nous sur Telegram via [@foket_center_bot](https://t.me/foket_center_bot).',
         es: 'Sí. Además de Daily y Select Signal, enseñamos la teoría ROF (Regulations Of FutureOption) de Foket. Las clases se imparten principalmente en nuestro [Naver Cafe](https://cafe.naver.com/rof114). Para más detalles, escríbanos por Telegram a [@foket_center_bot](https://t.me/foket_center_bot).',
         ru: 'Да. Помимо Daily и Select Signal, мы обучаем теории ROF (Regulations Of FutureOption) от Foket. Занятия проходят в основном в нашем [Naver Cafe](https://cafe.naver.com/rof114). Подробности — в Telegram: [@foket_center_bot](https://t.me/foket_center_bot).'
+      }
+    },
+    {
+      id: 'edu-how', cat: 'edu',
+      q: {
+        ko: '교육은 어떻게 진행되나요?',
+        en: 'How are the classes run?',
+        de: 'Wie läuft der Unterricht ab?',
+        ja: '教育はどのように進みますか？',
+        zh: '课程是怎样进行的？',
+        fr: 'Comment se déroule la formation ?',
+        es: '¿Cómo se imparten las clases?',
+        ru: 'Как проходит обучение?'
+      },
+      a: {
+        ko: '교육은 문답 형식으로 온라인 및 8개 언어(한국어·영어·독일어·일본어·중국어·프랑스어·스페인어·러시아어)로 진행되며, 최종 100% 자동 시스템 완성까지 진행됩니다.',
+        en: 'Classes are held online in a Q&A format in 8 languages (Korean, English, German, Japanese, Chinese, French, Spanish and Russian), and they continue until your 100% automated system is complete.',
+        de: 'Der Unterricht findet online im Frage-Antwort-Format in 8 Sprachen statt (Koreanisch, Englisch, Deutsch, Japanisch, Chinesisch, Französisch, Spanisch und Russisch) und läuft bis zur Fertigstellung Ihres 100 % automatischen Systems.',
+        ja: '教育は問答形式でオンライン、8言語（韓国語・英語・ドイツ語・日本語・中国語・フランス語・スペイン語・ロシア語）で行い、最終的に100%自動システムの完成まで進めます。',
+        zh: '课程以问答形式在线进行，提供 8 种语言（韩语、英语、德语、日语、中文、法语、西班牙语、俄语），一直持续到最终完成 100% 自动系统。',
+        fr: 'Les cours ont lieu en ligne, sous forme de questions-réponses, en 8 langues (coréen, anglais, allemand, japonais, chinois, français, espagnol et russe), et se poursuivent jusqu’à l’achèvement de votre système 100 % automatisé.',
+        es: 'Las clases se imparten en línea, en formato de preguntas y respuestas y en 8 idiomas (coreano, inglés, alemán, japonés, chino, francés, español y ruso), y continúan hasta completar su sistema 100 % automatizado.',
+        ru: 'Обучение проходит онлайн в формате вопросов и ответов на 8 языках (корейский, английский, немецкий, японский, китайский, французский, испанский и русский) и продолжается до создания вашей 100% автоматической системы.'
       }
     },
     {
@@ -456,14 +479,14 @@ window.FOKET_FAQ = {
         ru: 'Можно ли учиться, если я живу не в Корее?'
       },
       a: {
-        ko: '네. 교육은 언어별로 진행되기 때문에 해외에서도 문제없이 수강하실 수 있습니다.',
-        en: 'Yes. Classes are run in each language, so you can join from anywhere in the world without any problem.',
-        de: 'Ja. Der Unterricht findet in den jeweiligen Sprachen statt, sodass Sie problemlos von überall auf der Welt teilnehmen können.',
-        ja: 'はい。教育は言語別に行うため、海外からでも問題なく受講できます。',
-        zh: '可以。课程按语言分别进行，在海外也可以顺利参加。',
-        fr: 'Oui. Les cours sont donnés dans chaque langue, vous pouvez donc les suivre sans difficulté depuis n’importe quel pays.',
-        es: 'Sí. Las clases se imparten en cada idioma, así que puede seguirlas sin problema desde cualquier país.',
-        ru: 'Да. Обучение ведётся на разных языках, поэтому участвовать можно без проблем из любой страны.'
+        ko: '네. 교육은 온라인에서 8개 언어로 진행되기 때문에 해외에서도 문제없이 수강하실 수 있습니다.',
+        en: 'Yes. Classes are held online in 8 languages, so you can join from anywhere in the world without any problem.',
+        de: 'Ja. Der Unterricht findet online in 8 Sprachen statt, sodass Sie problemlos von überall auf der Welt teilnehmen können.',
+        ja: 'はい。教育はオンラインで8言語で行うため、海外からでも問題なく受講できます。',
+        zh: '可以。课程在线进行，提供 8 种语言，在海外也可以顺利参加。',
+        fr: 'Oui. Les cours ont lieu en ligne en 8 langues, vous pouvez donc les suivre sans difficulté depuis n’importe quel pays.',
+        es: 'Sí. Las clases se imparten en línea en 8 idiomas, así que puede seguirlas sin problema desde cualquier país.',
+        ru: 'Да. Обучение проходит онлайн на 8 языках, поэтому участвовать можно без проблем из любой страны.'
       }
     },
 
