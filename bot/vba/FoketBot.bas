@@ -1,21 +1,24 @@
 Attribute VB_Name = "FoketBot"
 ' 포켓 로직 엑셀 → foket_center_bot 연결 (엑셀 2007 이상)
 '
-' [봇 시트] Sean님이 만든 표 그대로 씁니다 (시트 이름은 아래 SHEET_NAME)
+' [봇 시트] 엑셀 1번·2번 모두 같은 양식 (시트 이름은 아래 SHEET_NAME)
 '   D열 종목명, E열 포지션, F열 진입가, G열 현재 평가손익, H열 진입시간, I열 청산손익
-'   3행  : 데일리 한국선물 (코스피200)
-'   4행  : 데일리 해외선물. D4 칸에 오늘 고른 종목 이름을 적습니다 (예: 골드). 6~23행의 이름과 똑같이.
-'   6~23행: 셀렉트 18종목
+'   3~4행 : 데일리 시그널 2종목 (한국선물 1 + 해외선물 1). 이 두 종목이 데일리 회원에게 갑니다
+'   6~28행: 셀렉트 시그널 종목 (이름이 "예비"로 시작하는 줄과 빈 줄은 건너뜀)
 '   E열 포지션: 매수 또는 매도. 그 밖의 값(빈칸, 0 등)은 모두 포지션 없음
-'   E~I 칸은 로직 시트의 셀을 가리키는 수식으로 채웁니다 (예: E6 칸에 =나스닥로직!$K$5)
+'
+' [엑셀 2개 동시 실행]
+'   1번·2번 엑셀에 이 파일을 똑같이 넣고 각각 StartFoketBot 을 실행합니다. 설정을 바꿀 것은 없습니다.
+'   한 종목은 한쪽 파일에서만 거래되므로, 신호는 거래가 일어난 파일에서 한 번만 나갑니다.
+'   봇은 두 파일이 보낸 같은 종목 줄 중 포지션(또는 청산손익)이 있는 쪽을 회원에게 보여 줍니다.
 '
 ' [동작]
 '   StartFoketBot 을 한 번 실행하면 10초마다 표 전체를 봇에 보냅니다 (회원의 "현재 포지션" 조회용).
 '   E열(포지션)은 2초마다 읽고, 바뀐 값이 STABLE_SECONDS(12초) 동안 그대로 유지될 때만 신호를 보냅니다.
 '   (계산 중 4초 간격으로 빈칸 → 매수 → 빈칸 → 매도 처럼 깜빡이는 값은 신호로 보내지 않음)
-'     데일리 회원 = 코스피200 + D4에 적은 종목,  셀렉트 회원 = 본인이 고른 1종목
+'   같은 종목이 데일리 줄과 셀렉트 줄에 함께 있어도 신호는 한 번만 나갑니다.
 '   예) 골드 E열이 빈칸(0) → "매수"  :  "[GC 골드] 매수 진입 2650 (22:31)"
-'       골드 E열이 "매수" → 빈칸(0)  :  "[GC 골드] 매수 청산  청산손익 +$1,000 (23:10)"
+'       골드 E열이 "매수" → 빈칸(0)  :  "[GC 골드] 매수 청산  청산손익 $1,000 (23:10)"
 Option Explicit
 
 Const BOT_URL As String = "https://foket.com/bot-api"
@@ -24,8 +27,12 @@ Const SHEET_NAME As String = "봇"
 Const PUSH_SECONDS As Long = 10        ' 표 전체를 봇에 보내는 간격
 Const CHECK_SECONDS As Long = 2        ' 포지션(E열)을 읽는 간격
 Const STABLE_SECONDS As Long = 12      ' 바뀐 포지션이 이만큼 그대로여야 신호 (깜빡임 무시)
+Const KRW_PER_USD As Double = 1420     ' 손익(달러로 나옴)을 원화로 바꿀 때 쓰는 고정 환율 (Sean, 11-19)
+Const VALUE_WAIT_SECONDS As Long = 30  ' 진입가·청산손익 칸이 #N/A 같은 오류면 값이 나올 때까지 더 기다리는 시간
+Const FIRST_DAILY_ROW As Long = 3
+Const LAST_DAILY_ROW As Long = 4
 Const FIRST_SELECT_ROW As Long = 6
-Const LAST_SELECT_ROW As Long = 30      ' 종목을 더 넣어도 30행까지 읽음 (빈 줄은 건너뜀)
+Const LAST_SELECT_ROW As Long = 30      ' 종목을 더 넣어도 30행까지 읽음 (빈 줄·예비 줄은 건너뜀)
 
 Dim nextRun As Date
 Dim lastPos As Object      ' 종목코드 → 직전 포지션
@@ -33,6 +40,11 @@ Dim candPos As Object      ' 종목코드 → 바뀌는 중인 새 포지션 (아직 확정 전)
 Dim candSince As Object    ' 종목코드 → 그 새 포지션이 처음 보인 시각
 Dim lastPush As Date
 Dim goodMethod As Long     ' 이 PC에서 되는 전송 방식 (처음 한 번 찾아서 기억)
+
+' 엑셀 파일을 여러 개 동시에 켜도 각 파일이 자기 매크로만 부르도록 파일 이름을 붙임
+Private Function MyMacro(ByVal nm As String) As String
+    MyMacro = "'" & ThisWorkbook.Name & "'!" & nm
+End Function
 
 Public Sub StartFoketBot()
     StopFoketBot
@@ -43,7 +55,7 @@ End Sub
 
 Public Sub StopFoketBot()
     On Error Resume Next
-    Application.OnTime nextRun, "PushTable", , False
+    Application.OnTime nextRun, MyMacro("PushTable"), , False
 End Sub
 
 ' 종목 이름 → 봇이 쓰는 코드. 새 종목을 넣으면 여기에 한 줄 추가
@@ -52,11 +64,11 @@ Private Function CodeOf(ByVal nm As String) As String
     s = Replace(Replace(UCase(nm), " ", ""), "&", "")
     Select Case True
         Case InStr(s, "코스피") > 0: CodeOf = "K200"
-        Case InStr(s, "나스닥") > 0: CodeOf = "NQ"
+        Case InStr(s, "나스닥") > 0 Or InStr(s, "NASDAQ") > 0: CodeOf = "NQ"
         Case InStr(s, "유로") > 0: CodeOf = "6E"
-        Case InStr(s, "골드") > 0: CodeOf = "GC"
+        Case InStr(s, "골드") > 0 Or InStr(s, "GOLD") > 0: CodeOf = "GC"
         Case InStr(s, "에스앤피") > 0 Or InStr(s, "S P") > 0 Or InStr(s, "SP") > 0: CodeOf = "ES"
-        Case InStr(s, "크루드") > 0: CodeOf = "CL"
+        Case InStr(s, "크루드") > 0 Or InStr(s, "CRUDE") > 0: CodeOf = "CL"
         Case InStr(s, "천연가스") > 0: CodeOf = "NG"
         Case InStr(s, "H-SHARE") > 0 Or InStr(s, "HSHARE") > 0: CodeOf = "HHI"
         Case InStr(s, "실버") > 0: CodeOf = "SIL"
@@ -64,19 +76,46 @@ Private Function CodeOf(ByVal nm As String) As String
         Case InStr(s, "옥수수") > 0: CodeOf = "ZC"
         Case InStr(s, "페소") > 0: CodeOf = "6M"
         Case InStr(s, "뉴질랜드") > 0: CodeOf = "6N"
-        Case InStr(s, "니케이") > 0: CodeOf = "NKD"
+        Case InStr(s, "니케이") > 0 Or InStr(s, "NIKKEI") > 0: CodeOf = "NKD"
         Case InStr(s, "엔") > 0: CodeOf = "6J"
         Case InStr(s, "호주") > 0: CodeOf = "6A"
         Case InStr(s, "파운드") > 0: CodeOf = "6B"
         Case InStr(s, "본드") > 0 Or InStr(s, "T본드") > 0: CodeOf = "UB"
         Case s = "밀": CodeOf = "ZW"
+        Case InStr(s, "COPPER") > 0 Or InStr(s, "구리") > 0: CodeOf = "HG"
+        Case InStr(s, "항셍") > 0 Or InStr(s, "HANGSENG") > 0: CodeOf = "HSI"
         Case Else: CodeOf = s
     End Select
 End Function
 
-' 포지션 칸 값: "매수" 또는 "매도"만 포지션, 그 밖(빈칸, 0 등)은 모두 "없음"
+' 칸 글자. #N/A 같은 오류값이면 빈칸으로
+Private Function CellText(ws As Worksheet, r As Long, c As Long) As String
+    If IsError(ws.Cells(r, c).Value) Then
+        CellText = ""
+    Else
+        CellText = Trim(CStr(ws.Cells(r, c).Text))
+    End If
+End Function
+
+' 손익 칸 글자 (엑셀 값은 달러). 해외는 달러 정수: -$833
+' 코스피200은 원화(고정 환율, 1,000원 단위)와 달러를 함께: -1,182,000원 (-$833)
+Private Function MoneyText(ws As Worksheet, r As Long, c As Long, code As String) As String
+    Dim v As Variant, w As Double, d As Double
+    v = ws.Cells(r, c).Value
+    If Not IsError(v) And Not IsEmpty(v) And IsNumeric(v) Then
+        w = Int(CDbl(v) * KRW_PER_USD / 1000 + 0.5) * 1000
+        d = Int(CDbl(v) + 0.5)
+        MoneyText = IIf(d < 0, "-$", "$") & Format(Abs(d), "#,##0")
+        If code = "K200" Then MoneyText = Format(w, "#,##0") & "원 (" & MoneyText & ")"
+    Else
+        MoneyText = CellText(ws, r, c)
+    End If
+End Function
+
+' 포지션 칸 값: "매수" 또는 "매도"만 포지션, 그 밖(빈칸, 0 등)은 모두 "없음". 오류값(#N/A 등)은 "?" = 모름
 Private Function PosOf(ws As Worksheet, r As Long) As String
     Dim v As String
+    If IsError(ws.Cells(r, 5).Value) Then PosOf = "?": Exit Function
     v = Trim(CStr(ws.Cells(r, 5).Text))
     If InStr(v, "매수") > 0 Then
         PosOf = "매수"
@@ -89,18 +128,56 @@ End Function
 
 Private Function RowJson(ws As Worksheet, r As Long, code As String, daily As Boolean) As String
     Dim c As Long, s As String
-    s = """" & JsonEsc(code) & """,""" & JsonEsc(Trim(ws.Cells(r, 4).Text)) & """"
-    s = s & ",""" & JsonEsc(PosOf(ws, r)) & """"
-    For c = 6 To 9      ' F~I
-        s = s & ",""" & JsonEsc(Trim(ws.Cells(r, c).Text)) & """"
+    s = """" & JsonEsc(code) & """,""" & JsonEsc(CellText(ws, r, 4)) & """"
+    s = s & ",""" & JsonEsc(Replace(PosOf(ws, r), "?", "")) & """"
+    For c = 6 To 9      ' F~I (손익 G·I: 해외는 달러, 코스피200은 원화와 달러)
+        If c = 7 Or c = 9 Then
+            s = s & ",""" & JsonEsc(MoneyText(ws, r, c, code)) & """"
+        Else
+            s = s & ",""" & JsonEsc(CellText(ws, r, c)) & """"
+        End If
     Next c
     RowJson = "[" & s & ",""" & IIf(daily, "Y", "") & """]"
+End Function
+
+' 줄을 건너뛸지: 빈 줄, "예비"로 시작하는 줄
+Private Function SkipRow(ws As Worksheet, r As Long) As Boolean
+    Dim nm As String
+    nm = CellText(ws, r, 4)
+    SkipRow = (nm = "" Or Left(nm, 2) = "예비")
+End Function
+
+' 봇에 보낼 표(JSON 줄들). doCheck 이면 포지션 변화를 보고 신호도 냄
+Private Function BuildRows(ws As Worksheet, ByVal doCheck As Boolean, ByVal first As Boolean) As String
+    Dim r As Long, code As String, rows As String, daily As Object, done As Object
+    Set daily = CreateObject("Scripting.Dictionary")
+    Set done = CreateObject("Scripting.Dictionary")
+    For r = FIRST_DAILY_ROW To LAST_DAILY_ROW              ' 데일리 2종목
+        If Not SkipRow(ws, r) Then daily(CodeOf(CellText(ws, r, 4))) = True
+    Next r
+    For r = FIRST_DAILY_ROW To LAST_SELECT_ROW
+        If (r <= LAST_DAILY_ROW Or r >= FIRST_SELECT_ROW) And Not SkipRow(ws, r) Then
+            code = CodeOf(CellText(ws, r, 4))
+            If Not done.Exists(code) Then                  ' 데일리 줄과 셀렉트 줄에 같은 종목이 있으면 한 번만
+                done(code) = True
+                If rows <> "" Then rows = rows & ","
+                rows = rows & RowJson(ws, r, code, daily.Exists(code))
+                If doCheck Then CheckSignal ws, r, code, first
+            End If
+        End If
+    Next r
+    BuildRows = rows
+End Function
+
+Private Function TableBody(ByVal rows As String) As String
+    TableBody = "{" & Chr(34) & "full" & Chr(34) & ":false," & Chr(34) & "src" & Chr(34) & ":" & Chr(34) & JsonEsc(ThisWorkbook.Name) & Chr(34) & "," & _
+                Chr(34) & "key" & Chr(34) & ":" & Chr(34) & BOT_KEY & Chr(34) & "," & Chr(34) & "rows" & Chr(34) & ":[" & rows & "]}"
 End Function
 
 ' 2초마다 실행: 포지션 확인, 10초마다 표 전체 전송
 Public Sub PushTable()
     On Error Resume Next
-    Dim ws As Worksheet, r As Long, code As String, rows As String, dailyCode As String, first As Boolean
+    Dim ws As Worksheet, rows As String, first As Boolean
     Set ws = ThisWorkbook.Worksheets(SHEET_NAME)
     If lastPos Is Nothing Then
         Set lastPos = CreateObject("Scripting.Dictionary")
@@ -108,34 +185,20 @@ Public Sub PushTable()
         Set candSince = CreateObject("Scripting.Dictionary")
         first = True
     End If
-    dailyCode = CodeOf(Trim(ws.Cells(4, 4).Text))      ' D4 = 오늘 데일리 해외 종목
-
-    ' 3행 코스피200 (데일리 고정)
-    code = CodeOf(Trim(ws.Cells(3, 4).Text))
-    rows = RowJson(ws, 3, code, True)
-    CheckSignal ws, 3, code, first
-
-    ' 6행~ 셀렉트 종목
-    For r = FIRST_SELECT_ROW To LAST_SELECT_ROW
-        If Trim(ws.Cells(r, 4).Text) <> "" Then
-            code = CodeOf(Trim(ws.Cells(r, 4).Text))
-            rows = rows & "," & RowJson(ws, r, code, (code = dailyCode))
-            CheckSignal ws, r, code, first
-        End If
-    Next r
-
+    rows = BuildRows(ws, True, first)
     If (Now - lastPush) * 86400 >= PUSH_SECONDS - 1 Then
-        PostJson "/position", "{""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
+        PostJson "/position", TableBody(rows)
         lastPush = Now
     End If
     nextRun = Now + TimeSerial(0, 0, CHECK_SECONDS)
-    Application.OnTime nextRun, "PushTable"
+    Application.OnTime nextRun, MyMacro("PushTable")
 End Sub
 
 ' 포지션(E열)이 바뀌고 STABLE_SECONDS 동안 그대로면 신호 (엑셀을 처음 켰을 때는 보내지 않음)
 Private Sub CheckSignal(ws As Worksheet, r As Long, code As String, first As Boolean)
     Dim pos As String
     pos = PosOf(ws, r)
+    If pos = "?" Then Exit Sub              ' 포지션 칸이 오류값: 판단 보류
     If first Or Not lastPos.Exists(code) Then
         lastPos(code) = pos
         candPos(code) = pos
@@ -151,6 +214,9 @@ Private Sub CheckSignal(ws As Worksheet, r As Long, code As String, first As Boo
         Exit Sub
     End If
     If (Now - candSince(code)) * 86400 >= STABLE_SECONDS Then
+        ' 신호에 넣을 값(진입가 F 또는 청산손익 I)이 아직 오류값이면 조금 더 기다림
+        If IsError(ws.Cells(r, IIf(pos = "없음", 9, 6)).Value) And _
+           (Now - candSince(code)) * 86400 < STABLE_SECONDS + VALUE_WAIT_SECONDS Then Exit Sub
         SendFoketSignal code, SignalText(ws, r, code, lastPos(code), pos)
         lastPos(code) = pos
     End If
@@ -158,20 +224,23 @@ End Sub
 
 Private Function SignalText(ws As Worksheet, r As Long, code As String, oldPos As String, newPos As String) As String
     Dim head As String, t As String
-    head = "[" & code & " " & Trim(ws.Cells(r, 4).Text) & "] "
+    Dim px As String, pl As String
+    head = "[" & code & " " & CellText(ws, r, 4) & "] "
     t = " (" & Format(Now, "hh:nn") & ")"
+    px = CellText(ws, r, 6): If px = "" Then px = "-"
+    pl = MoneyText(ws, r, 9, code): If pl = "" Then pl = "-"
     If newPos = "없음" Then
-        SignalText = head & oldPos & " 청산  청산손익 " & ws.Cells(r, 9).Text & t
+        SignalText = head & oldPos & " 청산  청산손익 " & pl & t
     ElseIf oldPos = "없음" Then
-        SignalText = head & newPos & " 진입 " & ws.Cells(r, 6).Text & t
+        SignalText = head & newPos & " 진입 " & px & t
     Else
-        SignalText = head & oldPos & " → " & newPos & " 전환 " & ws.Cells(r, 6).Text & t
+        SignalText = head & oldPos & " → " & newPos & " 전환 " & px & t
     End If
 End Function
 
 ' 연결 시험: Alt+F8 → TestFoketBot. 접속 방법 3가지를 차례로 시험해 결과를 창으로 보여 줌
 Public Sub TestFoketBot()
-    Dim ws As Worksheet, body As String, r As Long, code As String, rows As String, i As Long, msg As String, res As String
+    Dim ws As Worksheet, body As String, i As Long, msg As String, res As String
     On Error Resume Next
     Set ws = ThisWorkbook.Worksheets(SHEET_NAME)
     If ws Is Nothing Then
@@ -179,15 +248,7 @@ Public Sub TestFoketBot()
         Exit Sub
     End If
     On Error GoTo 0
-    code = CodeOf(Trim(ws.Cells(3, 4).Text))
-    rows = RowJson(ws, 3, code, True)
-    For r = FIRST_SELECT_ROW To LAST_SELECT_ROW
-        If Trim(ws.Cells(r, 4).Text) <> "" Then
-            code = CodeOf(Trim(ws.Cells(r, 4).Text))
-            rows = rows & "," & RowJson(ws, r, code, (code = CodeOf(Trim(ws.Cells(4, 4).Text))))
-        End If
-    Next r
-    body = "{""key"":""" & BOT_KEY & """,""rows"":[" & rows & "]}"
+    body = TableBody(BuildRows(ws, False, False))
     For i = 1 To 3
         res = TryPost(i, BOT_URL & "/position", body)
         msg = msg & MethodName(i) & ": " & res & vbCrLf
