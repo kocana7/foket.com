@@ -159,6 +159,7 @@ def migrate_db():
         if not c.execute("SELECT 1 FROM settings WHERE k='i18n_v2'").fetchone():   # 문구가 바뀐 번역은 다시 만들기
             c.execute("DELETE FROM i18n WHERE key IN ('price','trial_used')")
             c.execute("INSERT INTO settings VALUES('i18n_v2','1')")
+        drop_placeholder_rows(c)
 
 
 def get_user(uid):
@@ -889,6 +890,24 @@ def row_weight(cells):
     return 1 if any(ch in "123456789" for ch in pnl) else 0     # "-", "0", "0원 ($0)" 은 빈 값
 
 
+def is_placeholder(name):
+    """예비1~4, '아래 종목 중 택1' 같은 줄은 종목이 아님"""
+    name = (name or "").strip()
+    return name.startswith("예비") or "택1" in name.replace(" ", "").replace("\u00a0", "")
+
+
+def drop_placeholder_rows(c):
+    """예전에 저장된 안내 문구 줄도 표에서 지움 (회원 메뉴·데일리 종목에 보이지 않게)"""
+    for r in c.execute("SELECT code, data FROM positions").fetchall():
+        try:
+            d = json.loads(r["data"])
+            name = d[1] if len(d) > 1 else ""
+        except Exception:
+            name = ""
+        if is_placeholder(name) or is_placeholder(r["code"]):
+            c.execute("DELETE FROM positions WHERE code=?", (r["code"],))
+
+
 def keep_other_file(c, cells, src, now_dt):
     """엑셀 1·2번이 같은 종목 줄을 함께 보낼 때: 한 종목은 한 파일에서만 거래하므로,
     다른 파일이 최근 60초 안에 보낸 줄이 더 많은 정보(포지션, 청산손익)를 담고 있으면 그 값을 지킴."""
@@ -937,7 +956,7 @@ async def http_position(request):
             cells = [str(x)[:200] for x in r[:12]]
             cells[0] = cells[0].strip().upper()
             name = cells[1].strip() if len(cells) > 1 else ""
-            if name.startswith("예비") or "택1" in name.replace(" ", ""):   # 빈 자리·안내 문구 줄은 종목이 아님
+            if is_placeholder(name):   # 빈 자리·안내 문구 줄은 종목이 아님
                 continue
             if cells[0] not in KNOWN_CODES:
                 unknown.append(f"{name} → {cells[0]}")
@@ -949,7 +968,8 @@ async def http_position(request):
             n += 1
         # 엑셀에서 10분 넘게 다시 오지 않은 줄(지운 종목, 예전 이름)은 정리. 엑셀이 꺼져 있을 때는 이 요청 자체가 없으므로 지워지지 않음
         old = (now_dt - dt.timedelta(minutes=10)).isoformat(timespec="seconds")
-        c.execute("DELETE FROM positions WHERE at < ?", (old,))
+        c.execute("DELETE FROM positions WHERE at IS NULL OR at = '' OR at < ?", (old,))
+        drop_placeholder_rows(c)
     for u in unknown:
         await alert_admin(app, f"unknown:{u}", f"엑셀 봇 시트에 봇이 모르는 종목 이름이 있습니다: {u}"
                           + (f" (파일 '{src}')" if src else "") + "\n회원 메뉴와 신호에 이 이름 그대로 보입니다. "
