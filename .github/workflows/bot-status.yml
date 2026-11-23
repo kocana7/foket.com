@@ -26,8 +26,8 @@ jobs:
           c = sqlite3.connect("/opt/foket-bot/foket_bot.db")
           q = lambda s: c.execute(s).fetchall()
           print("종목 표:", q("SELECT COUNT(*), MAX(at) FROM positions")[0])
-          for code, data, daily in q("SELECT code, data, daily FROM positions ORDER BY rowid"):
-              d = json.loads(data); print(" ", code, d[1] if len(d) > 1 else "", "| 포지션:", d[2] if len(d) > 2 else "", "| 데일리" if daily else "")
+          for code, data, daily, at, src in q("SELECT code, data, daily, at, src FROM positions ORDER BY rowid"):
+              d = json.loads(data); print(" ", code, d[1] if len(d) > 1 else "", "| 포지션:", d[2] if len(d) > 2 else "", "| 데일리" if daily else "", "|", (at or "")[11:19], src or "")
           print("회원 상태:", q("SELECT status, COUNT(*) FROM users GROUP BY status"))
           print("신호 발송 (최근 5):", q("SELECT at, service, sent FROM signals ORDER BY id DESC LIMIT 5"))
           PY
