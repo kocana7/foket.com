@@ -892,8 +892,10 @@ def row_weight(cells):
 
 
 def is_placeholder(name):
-    """예비1~4, '아래 종목 중 택1' 같은 줄은 종목이 아님"""
+    """예비1~4, 안내 문구, 0만 보이는 빈 칸 같은 줄은 종목이 아님"""
     name = (name or "").strip()
+    if name in ("", "0", "-", "#N/A"):   # 비어 있는 데일리 칸(수식이 0을 보여 줌)
+        return True
     return name.startswith("예비") or "택1" in name.replace(" ", "").replace("\u00a0", "")
 
 
