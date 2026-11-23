@@ -153,6 +153,9 @@ def migrate_db():
             c.execute("ALTER TABLE users ADD COLUMN plan TEXT DEFAULT ''")      # '' = 신호 이용권, 'edu' = ROF 교육회원
         if "edu_start_req" not in cols:
             c.execute("ALTER TABLE users ADD COLUMN edu_start_req TEXT DEFAULT ''")
+        pcols = [r[1] for r in c.execute("PRAGMA table_info(positions)")]
+        if "src" not in pcols:
+            c.execute("ALTER TABLE positions ADD COLUMN src TEXT DEFAULT ''")   # 보낸 엑셀 파일 이름
         if not c.execute("SELECT 1 FROM settings WHERE k='i18n_v2'").fetchone():   # 문구가 바뀐 번역은 다시 만들기
             c.execute("DELETE FROM i18n WHERE key IN ('price','trial_used')")
             c.execute("INSERT INTO settings VALUES('i18n_v2','1')")
@@ -808,6 +811,30 @@ async def read_body(request):
         return dict(await request.post())
 
 
+def row_weight(cells):
+    """2 = 포지션 있음, 1 = 포지션은 없지만 청산손익이 있음, 0 = 빈 줄"""
+    if len(cells) > 2 and cells[2] in ("매수", "매도"):
+        return 2
+    pnl = cells[6] if len(cells) > 6 else ""
+    return 1 if any(ch in "123456789" for ch in pnl) else 0     # "-", "0", "0원 ($0)" 은 빈 값
+
+
+def keep_other_file(c, cells, src, now_dt):
+    """엑셀 1·2번이 같은 종목 줄을 함께 보낼 때: 한 종목은 한 파일에서만 거래하므로,
+    다른 파일이 최근 60초 안에 보낸 줄이 더 많은 정보(포지션, 청산손익)를 담고 있으면 그 값을 지킴."""
+    if not src:
+        return False
+    r = c.execute("SELECT data, src, at FROM positions WHERE code=?", (cells[0],)).fetchone()
+    if not r or not r["src"] or r["src"] == src:
+        return False
+    try:
+        old = json.loads(r["data"])
+        age = (now_dt - dt.datetime.fromisoformat(r["at"])).total_seconds()
+    except Exception:
+        return False
+    return age < 60 and row_weight(old) > row_weight(cells)
+
+
 async def http_position(request):
     """엑셀이 표 전체를 몇 초마다 보냄: {"key":..., "rows":[["NQ","미니나스닥","매수",...,"Y"], ...]}"""
     d = await read_body(request)
@@ -818,7 +845,9 @@ async def http_position(request):
         rows = [d["cells"]]
     if not isinstance(rows, list):
         return web.json_response({"ok": False, "error": "rows"}, status=400)
-    now = dt.datetime.now(KST).isoformat(timespec="seconds")
+    now_dt = dt.datetime.now(KST)
+    now = now_dt.isoformat(timespec="seconds")
+    src = str(d.get("src", ""))[:100]
     n = 0
     with db() as c:
         if d.get("full", True):
@@ -829,8 +858,10 @@ async def http_position(request):
             cells = [str(x)[:200] for x in r[:12]]
             cells[0] = cells[0].strip().upper()
             daily = 1 if len(cells) > DAILY_COL and cells[DAILY_COL].strip().upper() in ("Y", "O", "1", "데일리") else 0
-            c.execute("INSERT OR REPLACE INTO positions(code, data, daily, at) VALUES(?,?,?,?)",
-                      (cells[0], json.dumps(cells, ensure_ascii=False), daily, now))
+            if keep_other_file(c, cells, src, now_dt):
+                continue
+            c.execute("INSERT OR REPLACE INTO positions(code, data, daily, at, src) VALUES(?,?,?,?,?)",
+                      (cells[0], json.dumps(cells, ensure_ascii=False), daily, now, src))
             n += 1
     return web.json_response({"ok": True, "rows": n})
 
