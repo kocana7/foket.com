@@ -754,15 +754,85 @@ def active_members(code=None):
     return [u for u in rows if is_active(u) and (code in ("", "ALL") or code in member_codes(u))]
 
 
+# ---------------------------------------------------------------- 문제 감지 → Sean님께 바로 알림
+KNOWN_CODES = {"K200", "NQ", "6E", "GC", "ES", "CL", "NG", "HHI", "ZW", "SIL", "ZS", "ZC", "6M", "6N",
+               "6J", "NKD", "6A", "6B", "UB", "HG", "HSI"}
+SRC_SEEN = {}            # 엑셀 파일 이름 → 마지막으로 표가 들어온 시각
+SRC_DOWN = set()         # 끊김을 이미 알린 파일
+ALERTED = {}             # 알림 내용 → 마지막으로 알린 시각 (같은 알림은 하루 한 번)
+FEED_GAP_MIN = 5         # 거래 시간에 엑셀 표가 이만큼(분) 안 들어오면 알림
+
+
+async def alert_admin(app, key, text, once_per_day=True):
+    now = dt.datetime.now(KST)
+    last = ALERTED.get(key)
+    if once_per_day and last and (now - last).total_seconds() < 86400:
+        return
+    ALERTED[key] = now
+    log.warning("alert: %s", text)
+    if ADMIN_ID:
+        try:
+            await app.bot.send_message(ADMIN_ID, "[점검 알림] " + text)
+        except Exception as e:
+            log.warning("alert to admin failed: %s", e)
+
+
+def signal_problems(code, text):
+    """신호 문장에서 회원이 보면 이상한 부분을 찾음."""
+    p = []
+    if not code:
+        p.append("종목 코드가 비어 있습니다")
+    elif code not in KNOWN_CODES:
+        p.append(f"봇이 모르는 종목 코드입니다: {code}")
+    if "#" in text and any(e in text.upper() for e in ("#N/A", "#VALUE", "#REF", "#DIV", "#NAME", "#NUM", "#NULL")):
+        p.append("엑셀 오류값(#N/A 등)이 들어 있습니다")
+    if "] " in text and text.split("] ", 1)[0].strip("[ ").strip() in ("", code):
+        p.append("종목 이름이 비어 있습니다")
+    if " 진입 -" in text or " 전환 -" in text:
+        p.append("진입가가 비어 있습니다 (엑셀 F열)")
+    if "청산손익 -" in text:
+        p.append("청산손익이 비어 있습니다 (엑셀 I열)")
+    return p
+
+
+def in_feed_hours(now):
+    """엑셀 표가 들어와야 하는 시간: 거래일 08:30 ~ 다음 날 05:30 (KST)."""
+    t = now.time()
+    if dt.time(5, 30) <= t < dt.time(8, 30):
+        return False
+    day = now.date() if t >= dt.time(8, 30) else now.date() - dt.timedelta(days=1)
+    return is_trading(day)
+
+
+async def feed_watch_job(ctx: ContextTypes.DEFAULT_TYPE):
+    """1분마다: 엑셀 파일별로 표가 끊겼는지 확인하고, 끊김·복구를 알림."""
+    now = dt.datetime.now(KST)
+    for src, at in list(SRC_SEEN.items()):
+        gap = (now - at).total_seconds() / 60
+        if gap >= FEED_GAP_MIN and src not in SRC_DOWN and in_feed_hours(now):
+            SRC_DOWN.add(src)
+            await alert_admin(ctx.application, f"down:{src}:{at:%H%M}",
+                              f"엑셀 '{src}' 에서 {int(gap)}분째 표가 들어오지 않습니다 (마지막 {at:%H:%M:%S}). "
+                              "이 파일의 신호와 포지션 조회가 멈춰 있습니다. 엑셀과 StartFoketBot 을 확인해 주세요.",
+                              once_per_day=False)
+        if gap > 24 * 60:
+            SRC_SEEN.pop(src, None)
+            SRC_DOWN.discard(src)
+
+
 async def broadcast_signal(app, code, text):
-    sent = 0
+    sent = failed = 0
     for u in active_members(code):
         try:
             await app.bot.send_message(u["tg_id"], f"{t(u['lang'], 'signal_head')}\n{text}", protect_content=True)
             sent += 1
         except Exception as e:
+            failed += 1
             log.warning("signal to %s failed: %s", u["tg_id"], e)
         await asyncio.sleep(0.05)  # 텔레그램 초당 전송 제한
+    if failed:
+        await alert_admin(app, f"fail:{code}:{text}", f"신호를 {failed}명에게 보내지 못했습니다 (성공 {sent}명). "
+                          f"회원이 봇을 차단했거나 텔레그램 오류일 수 있습니다.\n{text}", once_per_day=False)
     with db() as c:
         c.execute("INSERT INTO signals(at, service, text, sent) VALUES(?,?,?,?)",
                   (dt.datetime.now(KST).isoformat(timespec="seconds"), code or "ALL", text, sent))
@@ -848,6 +918,15 @@ async def http_position(request):
     now_dt = dt.datetime.now(KST)
     now = now_dt.isoformat(timespec="seconds")
     src = str(d.get("src", ""))[:100]
+    app = request.app["tg"]
+    if src:
+        if src in SRC_DOWN:
+            SRC_DOWN.discard(src)
+            last = SRC_SEEN.get(src)
+            await alert_admin(app, f"up:{src}:{now_dt:%H%M}", f"엑셀 '{src}' 표가 다시 들어옵니다"
+                              + (f" (끊긴 시간 {last:%H:%M:%S} ~ {now_dt:%H:%M:%S})." if last else "."), once_per_day=False)
+        SRC_SEEN[src] = now_dt
+    unknown = []
     n = 0
     with db() as c:
         if d.get("full", True):
@@ -860,6 +939,8 @@ async def http_position(request):
             name = cells[1].strip() if len(cells) > 1 else ""
             if name.startswith("예비") or "택1" in name.replace(" ", ""):   # 빈 자리·안내 문구 줄은 종목이 아님
                 continue
+            if cells[0] not in KNOWN_CODES:
+                unknown.append(f"{name} → {cells[0]}")
             daily = 1 if len(cells) > DAILY_COL and cells[DAILY_COL].strip().upper() in ("Y", "O", "1", "데일리") else 0
             if keep_other_file(c, cells, src, now_dt):
                 continue
@@ -869,6 +950,10 @@ async def http_position(request):
         # 엑셀에서 10분 넘게 다시 오지 않은 줄(지운 종목, 예전 이름)은 정리. 엑셀이 꺼져 있을 때는 이 요청 자체가 없으므로 지워지지 않음
         old = (now_dt - dt.timedelta(minutes=10)).isoformat(timespec="seconds")
         c.execute("DELETE FROM positions WHERE at < ?", (old,))
+    for u in unknown:
+        await alert_admin(app, f"unknown:{u}", f"엑셀 봇 시트에 봇이 모르는 종목 이름이 있습니다: {u}"
+                          + (f" (파일 '{src}')" if src else "") + "\n회원 메뉴와 신호에 이 이름 그대로 보입니다. "
+                          "새 종목이면 알려 주세요. 매크로에 코드를 추가하겠습니다.")
     return web.json_response({"ok": True, "rows": n})
 
 
@@ -890,7 +975,12 @@ async def http_signal(request):
     text = signal_text(d)
     if not text:
         return web.json_response({"ok": False, "error": "empty"}, status=400)
-    n = await broadcast_signal(app, d.get("sym", ""), text)
+    code = str(d.get("sym", "")).strip().upper()
+    probs = signal_problems(code, text)
+    if probs:
+        await alert_admin(app, f"sig:{code}:{text}", "방금 나간 신호에 문제가 있습니다.\n- " + "\n- ".join(probs)
+                          + f"\n\n신호 내용: {text}", once_per_day=False)
+    n = await broadcast_signal(app, code, text)
     return web.json_response({"ok": True, "sent": n})
 
 
@@ -1163,6 +1253,7 @@ async def main():
     app.add_handler(MessageHandler(filters.CONTACT, on_contact))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_text))
     app.job_queue.run_daily(daily_job, time=dt.time(7, 0, tzinfo=KST))
+    app.job_queue.run_repeating(feed_watch_job, interval=60, first=120)
 
     web_app = web.Application()
     web_app["tg"] = app
