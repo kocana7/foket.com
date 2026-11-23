@@ -398,6 +398,29 @@ window.FOKET_FAQ = {
       }
     },
     {
+      id: 'edu-how', cat: 'edu',
+      q: {
+        ko: '교육은 어떻게 진행되나요?',
+        en: 'How are the classes run?',
+        de: 'Wie läuft der Unterricht ab?',
+        ja: '教育はどのように進みますか？',
+        zh: '课程是怎样进行的？',
+        fr: 'Comment se déroule la formation ?',
+        es: '¿Cómo se imparten las clases?',
+        ru: 'Как проходит обучение?'
+      },
+      a: {
+        ko: '교육은 문답 형식으로 온라인 및 8개 언어(한국어·영어·독일어·일본어·중국어·프랑스어·스페인어·러시아어)로 진행되며, 최종 100% 자동 시스템 완성까지 진행됩니다.',
+        en: 'Classes are held online in a Q&A format in 8 languages (Korean, English, German, Japanese, Chinese, French, Spanish and Russian), and they continue until your 100% automated system is complete.',
+        de: 'Der Unterricht findet online im Frage-Antwort-Format in 8 Sprachen statt (Koreanisch, Englisch, Deutsch, Japanisch, Chinesisch, Französisch, Spanisch und Russisch) und läuft bis zur Fertigstellung Ihres 100 % automatischen Systems.',
+        ja: '教育は問答形式でオンライン、8言語（韓国語・英語・ドイツ語・日本語・中国語・フランス語・スペイン語・ロシア語）で行い、最終的に100%自動システムの完成まで進めます。',
+        zh: '课程以问答形式在线进行，提供 8 种语言（韩语、英语、德语、日语、中文、法语、西班牙语、俄语），一直持续到最终完成 100% 自动系统。',
+        fr: 'Les cours ont lieu en ligne, sous forme de questions-réponses, en 8 langues (coréen, anglais, allemand, japonais, chinois, français, espagnol et russe), et se poursuivent jusqu’à l’achèvement de votre système 100 % automatisé.',
+        es: 'Las clases se imparten en línea, en formato de preguntas y respuestas y en 8 idiomas (coreano, inglés, alemán, japonés, chino, francés, español y ruso), y continúan hasta completar su sistema 100 % automatizado.',
+        ru: 'Обучение проходит онлайн в формате вопросов и ответов на 8 языках (корейский, английский, немецкий, японский, китайский, французский, испанский и русский) и продолжается до создания вашей 100% автоматической системы.'
+      }
+    },
+    {
       id: 'edu-level', cat: 'edu',
       q: {
         ko: '완전 초보도 들을 수 있나요? 어디까지 배우나요?',
@@ -456,14 +479,14 @@ window.FOKET_FAQ = {
         ru: 'Можно ли учиться, если я живу не в Корее?'
       },
       a: {
-        ko: '네. 교육은 언어별로 진행되기 때문에 해외에서도 문제없이 수강하실 수 있습니다.',
-        en: 'Yes. Classes are run in each language, so you can join from anywhere in the world without any problem.',
-        de: 'Ja. Der Unterricht findet in den jeweiligen Sprachen statt, sodass Sie problemlos von überall auf der Welt teilnehmen können.',
-        ja: 'はい。教育は言語別に行うため、海外からでも問題なく受講できます。',
-        zh: '可以。课程按语言分别进行，在海外也可以顺利参加。',
-        fr: 'Oui. Les cours sont donnés dans chaque langue, vous pouvez donc les suivre sans difficulté depuis n’importe quel pays.',
-        es: 'Sí. Las clases se imparten en cada idioma, así que puede seguirlas sin problema desde cualquier país.',
-        ru: 'Да. Обучение ведётся на разных языках, поэтому участвовать можно без проблем из любой страны.'
+        ko: '네. 교육은 온라인에서 8개 언어로 진행되기 때문에 해외에서도 문제없이 수강하실 수 있습니다.',
+        en: 'Yes. Classes are held online in 8 languages, so you can join from anywhere in the world without any problem.',
+        de: 'Ja. Der Unterricht findet online in 8 Sprachen statt, sodass Sie problemlos von überall auf der Welt teilnehmen können.',
+        ja: 'はい。教育はオンラインで8言語で行うため、海外からでも問題なく受講できます。',
+        zh: '可以。课程在线进行，提供 8 种语言，在海外也可以顺利参加。',
+        fr: 'Oui. Les cours ont lieu en ligne en 8 langues, vous pouvez donc les suivre sans difficulté depuis n’importe quel pays.',
+        es: 'Sí. Las clases se imparten en línea en 8 idiomas, así que puede seguirlas sin problema desde cualquier país.',
+        ru: 'Да. Обучение проходит онлайн на 8 языках, поэтому участвовать можно без проблем из любой страны.'
       }
     },
 
