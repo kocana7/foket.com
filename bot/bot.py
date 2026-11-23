@@ -857,12 +857,18 @@ async def http_position(request):
                 continue
             cells = [str(x)[:200] for x in r[:12]]
             cells[0] = cells[0].strip().upper()
+            name = cells[1].strip() if len(cells) > 1 else ""
+            if name.startswith("예비") or "택1" in name.replace(" ", ""):   # 빈 자리·안내 문구 줄은 종목이 아님
+                continue
             daily = 1 if len(cells) > DAILY_COL and cells[DAILY_COL].strip().upper() in ("Y", "O", "1", "데일리") else 0
             if keep_other_file(c, cells, src, now_dt):
                 continue
             c.execute("INSERT OR REPLACE INTO positions(code, data, daily, at, src) VALUES(?,?,?,?,?)",
                       (cells[0], json.dumps(cells, ensure_ascii=False), daily, now, src))
             n += 1
+        # 엑셀에서 10분 넘게 다시 오지 않은 줄(지운 종목, 예전 이름)은 정리. 엑셀이 꺼져 있을 때는 이 요청 자체가 없으므로 지워지지 않음
+        old = (now_dt - dt.timedelta(minutes=10)).isoformat(timespec="seconds")
+        c.execute("DELETE FROM positions WHERE at < ?", (old,))
     return web.json_response({"ok": True, "rows": n})
 
 

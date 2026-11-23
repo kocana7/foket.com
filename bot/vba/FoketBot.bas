@@ -140,11 +140,11 @@ Private Function RowJson(ws As Worksheet, r As Long, code As String, daily As Bo
     RowJson = "[" & s & ",""" & IIf(daily, "Y", "") & """]"
 End Function
 
-' 줄을 건너뛸지: 빈 줄, "예비"로 시작하는 줄
+' 줄을 건너뛸지: 빈 줄, "예비"로 시작하는 줄, "아래 종목 중 택1" 같은 안내 문구
 Private Function SkipRow(ws As Worksheet, r As Long) As Boolean
     Dim nm As String
     nm = CellText(ws, r, 4)
-    SkipRow = (nm = "" Or Left(nm, 2) = "예비")
+    SkipRow = (nm = "" Or Left(nm, 2) = "예비" Or InStr(Replace(nm, " ", ""), "택1") > 0)
 End Function
 
 ' 봇에 보낼 표(JSON 줄들). doCheck 이면 포지션 변화를 보고 신호도 냄
