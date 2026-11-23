@@ -143,9 +143,6 @@ def init_db():
         CREATE TABLE IF NOT EXISTS positions(code TEXT PRIMARY KEY, data TEXT, daily INTEGER, at TEXT);
         CREATE TABLE IF NOT EXISTS settings(k TEXT PRIMARY KEY, v TEXT);
         CREATE TABLE IF NOT EXISTS relay(admin_msg_id INTEGER PRIMARY KEY, tg_id INTEGER);
-        CREATE TABLE IF NOT EXISTS daystats(day TEXT, code TEXT, name TEXT,
-          realized REAL, total REAL, min_total REAL, first_at TEXT, last_at TEXT,
-          samples INTEGER, max_gap INTEGER, PRIMARY KEY(day, code));   -- 데일리 2종목 하루 실적 (06:50 마감)
         """)
 
 
@@ -821,8 +818,7 @@ async def http_position(request):
         rows = [d["cells"]]
     if not isinstance(rows, list):
         return web.json_response({"ok": False, "error": "rows"}, status=400)
-    now_dt = dt.datetime.now(KST)
-    now = now_dt.isoformat(timespec="seconds")
+    now = dt.datetime.now(KST).isoformat(timespec="seconds")
     n = 0
     with db() as c:
         if d.get("full", True):
@@ -835,82 +831,8 @@ async def http_position(request):
             daily = 1 if len(cells) > DAILY_COL and cells[DAILY_COL].strip().upper() in ("Y", "O", "1", "데일리") else 0
             c.execute("INSERT OR REPLACE INTO positions(code, data, daily, at) VALUES(?,?,?,?)",
                       (cells[0], json.dumps(cells, ensure_ascii=False), daily, now))
-            if daily:
-                try:
-                    record_daystats(c, now_dt, cells)
-                except Exception as e:
-                    log.warning("daystats %s: %s", cells[0], e)
             n += 1
     return web.json_response({"ok": True, "rows": n})
-
-
-# ---------------------------------------------------------------- 데일리 실적 자동 집계
-DAY_CLOSE = dt.time(6, 50)          # 하루 마감: 다음 날 아침 06:50 (Sean, 11-19). 코스피200·해외 모두
-
-
-def trade_day(now):
-    """06:50 이전은 전날 실적으로 봄."""
-    d = now.date()
-    return d - dt.timedelta(days=1) if now.time() < DAY_CLOSE else d
-
-
-def money(v):
-    """엑셀 칸 글자 → 숫자. "$1,000" "-1,210" "1,300,000원" "(500)" "" → 1000, -1210, 1300000, -500, 0"""
-    s = str(v or "").strip()
-    neg = s.startswith("(") and s.endswith(")") or "-" in s or "−" in s or "▼" in s
-    digits = "".join(ch for ch in s if ch.isdigit() or ch == ".")
-    try:
-        x = float(digits) if digits.strip(".") else 0.0
-    except ValueError:
-        return None
-    return -x if neg else x
-
-
-def record_daystats(c, now, cells):
-    """데일리 종목 한 줄: [코드, 이름, 포지션, 진입가, 현재평가손익(G), 진입시간, 청산손익 누적(I), 데일리]"""
-    day = trade_day(now)
-    if not is_trading(day):
-        return
-    realized, unreal = money(cells[6] if len(cells) > 6 else ""), money(cells[4] if len(cells) > 4 else "")
-    if realized is None or unreal is None:
-        return
-    total = realized + (unreal if cells[2] in ("매수", "매도") else 0.0)
-    ds, at = day.isoformat(), now.isoformat(timespec="seconds")
-    r = c.execute("SELECT * FROM daystats WHERE day=? AND code=?", (ds, cells[0])).fetchone()
-    if not r:
-        c.execute("INSERT INTO daystats VALUES(?,?,?,?,?,?,?,?,?,?)",
-                  (ds, cells[0], cells[1], realized, total, min(0.0, total), at, at, 1, 0))
-        return
-    gap = int((now - dt.datetime.fromisoformat(r["last_at"])).total_seconds())
-    c.execute("UPDATE daystats SET name=?, realized=?, total=?, min_total=?, last_at=?, samples=samples+1, "
-              "max_gap=? WHERE day=? AND code=?",
-              (cells[1], realized, total, min(r["min_total"], total), at, max(r["max_gap"], gap), ds, cells[0]))
-
-
-def day_rows(day):
-    with db() as c:
-        return c.execute("SELECT * FROM daystats WHERE day=? ORDER BY code<>'K200', samples DESC", (day,)).fetchall()
-
-
-def day_summary_text(day):
-    rows = day_rows(day)
-    if not rows:
-        return f"[{day} 데일리 실적] 기록 없음 (엑셀이 꺼져 있었거나 거래일이 아님)"
-    out = [f"[{day} 데일리 실적 · 06:50 마감]"]
-    for r in rows:
-        unit = "원" if r["code"] == "K200" else "$"
-        f = (lambda x: f"{x:,.0f}원") if unit == "원" else (lambda x: f"${x:,.0f}")
-        warn = f" ⚠ 엑셀 끊김 최대 {r['max_gap'] // 60}분" if r["max_gap"] > 600 else ""
-        out.append(f"{r['code']} {r['name']}: 청산손익 {f(r['total'])}, 최소기록 {f(r['min_total'])}"
-                   f" ({r['first_at'][11:16]}~{r['last_at'][11:16]}, {r['samples']}회){warn}")
-    return "\n".join(out)
-
-
-async def day_close_job(ctx: ContextTypes.DEFAULT_TYPE):
-    """06:51: 어제(06:50 마감) 데일리 실적을 Sean님께."""
-    day = trade_day(dt.datetime.now(KST) - dt.timedelta(minutes=5))
-    if is_trading(day) and ADMIN_ID:
-        await ctx.bot.send_message(ADMIN_ID, day_summary_text(day.isoformat()))
 
 
 def signal_text(d):
@@ -1033,15 +955,6 @@ async def cmd_signals(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         return await update.message.reply_text("아직 발송된 신호가 없습니다.")
     lines = [f"{r['at'][5:16].replace('T', ' ')} {r['service']} ({r['sent']}명) {r['text'][:80]}" for r in rows]
     await update.message.reply_text("최근 발송 신호\n" + "\n".join(lines))
-
-
-async def cmd_daypnl(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    """운영자에게만: 오늘(또는 지정한 날) 데일리 실적 집계. /daypnl  또는  /daypnl 2026-11-19"""
-    if update.effective_user.id != ADMIN_ID:
-        return
-    arg = update.message.text.partition(" ")[2].strip()[:10]
-    day = arg or trade_day(dt.datetime.now(KST)).isoformat()
-    await update.message.reply_text(day_summary_text(day))
 
 
 async def cmd_myid(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
@@ -1204,7 +1117,6 @@ async def main():
     app.add_handler(CommandHandler("newkey", cmd_newkey))
     app.add_handler(CommandHandler("signals", cmd_signals))
     app.add_handler(CommandHandler("testsignal", cmd_testsignal))
-    app.add_handler(CommandHandler("daypnl", cmd_daypnl))
     app.add_handler(CommandHandler("notice", cmd_notice))
     app.add_handler(CommandHandler(["setnotice", "unsetnotice"], cmd_setnotice))
     app.add_handler(CommandHandler("stats", cmd_stats))
@@ -1214,7 +1126,6 @@ async def main():
     app.add_handler(MessageHandler(filters.CONTACT, on_contact))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_text))
     app.job_queue.run_daily(daily_job, time=dt.time(7, 0, tzinfo=KST))
-    app.job_queue.run_daily(day_close_job, time=dt.time(6, 51, tzinfo=KST))
 
     web_app = web.Application()
     web_app["tg"] = app
