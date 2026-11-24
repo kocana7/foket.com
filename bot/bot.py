@@ -143,6 +143,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS positions(code TEXT PRIMARY KEY, data TEXT, daily INTEGER, at TEXT);
         CREATE TABLE IF NOT EXISTS settings(k TEXT PRIMARY KEY, v TEXT);
         CREATE TABLE IF NOT EXISTS relay(admin_msg_id INTEGER PRIMARY KEY, tg_id INTEGER);
+        CREATE TABLE IF NOT EXISTS pos_log(at TEXT, src TEXT, code TEXT, name TEXT, pos TEXT);
         """)
 
 
@@ -760,6 +761,9 @@ KNOWN_CODES = {"K200", "NQ", "6E", "GC", "ES", "CL", "NG", "HHI", "ZW", "SIL", "
                "6J", "NKD", "6A", "6B", "UB", "HG", "HSI"}
 SRC_SEEN = {}            # 엑셀 파일 이름 → 마지막으로 표가 들어온 시각
 SRC_DAILY = {}           # 엑셀 파일 이름 → 그 파일이 데일리로 표시한 종목 코드
+LAST_POS = {}            # (파일, 종목) → 표에서 마지막으로 본 포지션
+POS_WAIT = {}            # (파일, 종목) → (새 포지션, 바뀐 시각, 이름): 신호가 오는지 지켜보는 중
+NO_SIGNAL_SEC = 90       # 표의 포지션이 바뀐 뒤 이 시간 안에 신호가 안 오면 알림
 SRC_DOWN = set()         # 끊김을 이미 알린 파일
 ALERTED = {}             # 알림 내용 → 마지막으로 알린 시각 (같은 알림은 하루 한 번)
 FEED_GAP_MIN = 5         # 거래 시간에 엑셀 표가 이만큼(분) 안 들어오면 알림
@@ -891,6 +895,44 @@ def row_weight(cells):
     return 1 if any(ch in "123456789" for ch in pnl) else 0     # "-", "0", "0원 ($0)" 은 빈 값
 
 
+def watch_positions(src, rows, now_dt):
+    """표에 들어온 포지션 변화를 기록하고, 신호가 따라오지 않으면 알릴 것을 돌려줌.
+    엑셀 매크로가 신호를 못 보내도(시트 연결, 깜빡임 등) 표만으로 알아챌 수 있게."""
+    alerts = []
+    with db() as c:
+        for r in rows[:200]:
+            if not isinstance(r, list) or len(r) < 3 or not str(r[0]).strip():
+                continue
+            code, name, pos = str(r[0]).strip().upper(), str(r[1]).strip(), str(r[2]).strip() or "없음"
+            if is_placeholder(name):
+                continue
+            key = (src, code)
+            old = LAST_POS.get(key)
+            LAST_POS[key] = pos
+            if old is not None and old != pos:
+                c.execute("INSERT INTO pos_log VALUES(?,?,?,?,?)", (now_dt.isoformat(timespec="seconds"), src, code, name, pos))
+                POS_WAIT[key] = (pos, now_dt, name, old)
+            w = POS_WAIT.get(key)
+            if not w:
+                continue
+            if w[0] != pos:                    # 다시 바뀜(깜빡임): 새 값으로 다시 지켜봄
+                POS_WAIT[key] = (pos, now_dt, name, w[3])
+                continue
+            if (now_dt - w[1]).total_seconds() < NO_SIGNAL_SEC:
+                continue
+            POS_WAIT.pop(key, None)
+            if w[3] == pos:                    # 잠깐 깜빡였다가 원래대로: 신호 필요 없음
+                continue
+            got = c.execute("SELECT 1 FROM signals WHERE service=? AND at>=?",
+                            (code, (w[1] - dt.timedelta(seconds=30)).isoformat(timespec="seconds"))).fetchone()
+            if not got:
+                alerts.append(f"엑셀 '{src}' 표에서 {name}({code}) 포지션이 {w[3]} → {pos}(으)로 바뀐 지 "
+                              f"{NO_SIGNAL_SEC}초가 지났는데 신호가 오지 않았습니다 (바뀐 시각 {w[1]:%H:%M:%S}). "
+                              "회원에게 신호가 나가지 않았을 수 있습니다.")
+        c.execute("DELETE FROM pos_log WHERE at < ?", ((now_dt - dt.timedelta(days=14)).isoformat(timespec="seconds"),))
+    return alerts
+
+
 def is_placeholder(name):
     """예비1~4, 안내 문구, 0만 보이는 빈 칸 같은 줄은 종목이 아님"""
     name = (name or "").strip()
@@ -989,6 +1031,11 @@ async def http_position(request):
             want = 1 if r["code"] in daily_codes else 0
             if r["daily"] != want:
                 c.execute("UPDATE positions SET daily=? WHERE code=?", (want, r["code"]))
+    try:
+        for a in watch_positions(src, rows, now_dt):
+            await alert_admin(app, f"nosig:{a}", a, once_per_day=False)
+    except Exception as e:
+        log.warning("watch_positions failed: %s", e)
     for u in unknown:
         await alert_admin(app, f"unknown:{u}", f"엑셀 봇 시트에 봇이 모르는 종목 이름이 있습니다: {u}"
                           + (f" (파일 '{src}')" if src else "") + "\n회원 메뉴와 신호에 이 이름 그대로 보입니다. "
