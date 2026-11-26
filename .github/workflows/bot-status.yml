@@ -20,6 +20,10 @@ jobs:
           echo "== https://foket.com/bot-api/health =="; curl -s -m 5 -o /dev/null -w "%{http_code}\n" https://foket.com/bot-api/health
           echo "== 엑셀에서 들어온 요청 (최근 10건, 시각·주소·결과만) =="
           sudo grep -h "/bot-api/" /var/log/nginx/access.log 2>/dev/null | tail -n 10 | awk '{print $4, $6, $7, $9}'
+          echo "== 엑셀이 보낸 신호 요청 (최근 30건, 시각·결과만) =="
+          sudo sh -c 'cat /var/log/nginx/access.log.1 /var/log/nginx/access.log 2>/dev/null' | grep -h "/bot-api/signal" | tail -n 30 | awk '{print $4, $9}'
+          echo "== 봇 오류 (최근 24시간, 숫자·토큰은 가림) =="
+          sudo journalctl -u foket-bot --since "24 hours ago" --no-pager 2>/dev/null | grep -Ei "error|exception|traceback" | sed -E 's/bot[0-9]+:[A-Za-z0-9_-]+/bot***/g; s/[0-9]{6,}/***/g' | tail -n 15
           echo "== 봇 DB =="
           sudo /opt/foket-bot/venv/bin/python - <<'PY'
           import sqlite3, json
@@ -28,7 +32,11 @@ jobs:
           print("종목 표:", q("SELECT COUNT(*), MAX(at) FROM positions")[0])
           for code, data, daily, at, src in q("SELECT code, data, daily, at, src FROM positions ORDER BY rowid"):
               d = json.loads(data); print(" ", code, d[1] if len(d) > 1 else "", "| 포지션:", d[2] if len(d) > 2 else "", "| 데일리" if daily else "", "|", (at or "")[11:19], src or "")
+          try:
+              print("표의 포지션 변화 (최근 30):", q("SELECT substr(at,6,14), code, pos FROM pos_log ORDER BY rowid DESC LIMIT 30"))
+          except Exception:
+              pass
           print("회원 상태:", q("SELECT status, COUNT(*) FROM users GROUP BY status"))
-          print("신호 발송 (최근 5):", q("SELECT at, service, sent FROM signals ORDER BY id DESC LIMIT 5"))
+          print("신호 발송 (최근 20):", q("SELECT at, service, sent FROM signals ORDER BY id DESC LIMIT 20"))
           PY
           REMOTE

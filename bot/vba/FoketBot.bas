@@ -64,6 +64,7 @@ Private Function CodeOf(ByVal nm As String) As String
     s = Replace(Replace(UCase(nm), " ", ""), "&", "")
     Select Case True
         Case InStr(s, "코스피") > 0: CodeOf = "K200"
+        Case s Like "F####" Or s Like "F######": CodeOf = "K200"   ' 키움 이름 "F 2612" = 코스피200 선물
         Case InStr(s, "나스닥") > 0 Or InStr(s, "NASDAQ") > 0: CodeOf = "NQ"
         Case InStr(s, "유로") > 0: CodeOf = "6E"
         Case InStr(s, "골드") > 0 Or InStr(s, "GOLD") > 0: CodeOf = "GC"
