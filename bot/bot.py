@@ -10,7 +10,7 @@
 
 실행: python3 bot.py   (설정은 같은 폴더의 .env 또는 환경변수)
 """
-import asyncio, datetime as dt, json, logging, os, secrets, sqlite3, string
+import asyncio, datetime as dt, json, logging, os, re, secrets, sqlite3, string
 from zoneinfo import ZoneInfo
 
 from aiohttp import web
@@ -904,6 +904,8 @@ def watch_positions(src, rows, now_dt):
             if not isinstance(r, list) or len(r) < 3 or not str(r[0]).strip():
                 continue
             code, name, pos = str(r[0]).strip().upper(), str(r[1]).strip(), str(r[2]).strip() or "없음"
+            if is_k200(code, name):
+                code, name = "K200", "코스피200"
             if is_placeholder(name):
                 continue
             key = (src, code)
@@ -931,6 +933,41 @@ def watch_positions(src, rows, now_dt):
                               "회원에게 신호가 나가지 않았을 수 있습니다.")
         c.execute("DELETE FROM pos_log WHERE at < ?", ((now_dt - dt.timedelta(days=14)).isoformat(timespec="seconds"),))
     return alerts
+
+
+KRW_PER_USD = 1420   # 코스피200 손익 원화 환산 (엑셀 매크로와 같은 고정 환율)
+K200_NAME_RE = re.compile(r"^F\s?\d{4,6}$")   # 키움 종목 이름 "F 2612" = 코스피200 선물 12월물
+
+
+def is_k200(code, name=""):
+    code = (code or "").strip().upper()
+    name = (name or "").strip().upper()
+    return code == "K200" or bool(K200_NAME_RE.match(code)) or bool(K200_NAME_RE.match(name)) or "코스피" in name
+
+
+def k200_money(text):
+    """달러로만 적힌 코스피200 손익을 '원 (달러)'로. 이미 원화가 있으면 그대로."""
+    text = str(text)
+    if "원" in text:
+        return text
+
+    def one(m):
+        usd = float(m.group(2).replace(",", "")) * (-1 if m.group(1) else 1)
+        won = round(usd * KRW_PER_USD / 1000) * 1000
+        return f"{won:,.0f}원 ({m.group(0)})"
+    return re.sub(r"(-)?\$([\d,]+(?:\.\d+)?)", one, text)
+
+
+def fix_k200_row(cells):
+    """엑셀 매크로가 코스피200을 다른 이름(F 2612 등)으로 보내도 K200으로 맞춤."""
+    if len(cells) < 2 or cells[0] == "K200" or not is_k200(cells[0], cells[1]):
+        return cells
+    cells = list(cells)
+    cells[0], cells[1] = "K200", "코스피200"
+    for i in (4, 6):                        # G 현재 평가손익, I 청산손익
+        if len(cells) > i and cells[i]:
+            cells[i] = k200_money(cells[i])
+    return cells
 
 
 def is_placeholder(name):
@@ -997,7 +1034,7 @@ async def http_position(request):
     for r in rows[:200]:
         if isinstance(r, list) and len(r) > DAILY_COL and str(r[0]).strip() and \
                 str(r[DAILY_COL]).strip().upper() in ("Y", "O", "1", "데일리"):
-            mine.add(str(r[0]).strip().upper())
+            mine.add("K200" if is_k200(str(r[0]), str(r[1]) if len(r) > 1 else "") else str(r[0]).strip().upper())
     SRC_DAILY[src] = mine
     daily_codes = set()
     for s2, codes in SRC_DAILY.items():
@@ -1012,6 +1049,7 @@ async def http_position(request):
                 continue
             cells = [str(x)[:200] for x in r[:12]]
             cells[0] = cells[0].strip().upper()
+            cells = fix_k200_row(cells)
             name = cells[1].strip() if len(cells) > 1 else ""
             if is_placeholder(name):   # 빈 자리·안내 문구 줄은 종목이 아님
                 continue
@@ -1062,6 +1100,12 @@ async def http_signal(request):
     if not text:
         return web.json_response({"ok": False, "error": "empty"}, status=400)
     code = str(d.get("sym", "")).strip().upper()
+    if code != "K200" and is_k200(code):     # "F2612" 등 → 코스피200
+        m = re.match(r"^\[([^\]]*)\]", text)
+        if m and code in m.group(1).replace(" ", "").upper():
+            text = "[K200 코스피200]" + text[m.end():]
+        code = "K200"
+        text = k200_money(text)
     probs = signal_problems(code, text)
     if probs:
         await alert_admin(app, f"sig:{code}:{text}", "방금 나간 신호에 문제가 있습니다.\n- " + "\n- ".join(probs)
