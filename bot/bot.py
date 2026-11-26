@@ -794,9 +794,10 @@ def signal_problems(code, text):
         p.append("엑셀 오류값(#N/A 등)이 들어 있습니다")
     if "] " in text and text.split("] ", 1)[0].strip("[ ").strip() in ("", code):
         p.append("종목 이름이 비어 있습니다")
-    if " 진입 -" in text or " 전환 -" in text:
+    # 빈 값은 매크로가 "-" 하나로 보냄. "-1,000" 같은 손실 금액은 빈 값이 아님
+    if re.search(r" (진입|전환) -(\s|\(|$)", text):
         p.append("진입가가 비어 있습니다 (엑셀 F열)")
-    if "청산손익 -" in text:
+    if re.search(r"청산손익 -(\s|\(|$)", text):
         p.append("청산손익이 비어 있습니다 (엑셀 I열)")
     return p
 
