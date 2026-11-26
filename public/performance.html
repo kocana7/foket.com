@@ -47,7 +47,7 @@
     .pf-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}
     .pf-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:18px 20px}
     .pf-card .k{font-size:12px;color:var(--text-secondary);font-weight:600;margin-bottom:8px}
-    .pf-card .v .nt{display:block;font-size:11.5px;font-weight:500;color:var(--text-muted);margin-top:2px}
+    .pf-card .v .nt{display:block;white-space:pre-line;font-size:11.5px;font-weight:500;color:var(--text-muted);margin-top:2px}
     .pf-card .v .lb{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-top:4px}
     .pf-card .v>div>span:last-child{white-space:nowrap;font-size:20px}
     .pf-card .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.35}
@@ -125,8 +125,8 @@
     <div class="pf-cards">
       <div class="pf-card"><div class="k" data-i18n="cTrades">거래 수</div><div class="v" id="cTrades">-</div></div>
       <div class="pf-card"><div class="k" data-i18n="cWin">승률</div><div class="v" id="cWin">-</div></div>
-      <div class="pf-card"><div class="k" data-i18n="cPnl">누적 손익</div><div class="v" id="cPnl">-</div></div>
-      <div class="pf-card"><div class="k" data-i18n="cWorst">최대 손실 거래</div><div class="v" id="cWorst">-</div></div>
+      <div class="pf-card"><div class="k" data-i18n="cAvg">거래당 평균 손익</div><div class="v" id="cAvg">-</div></div>
+      <div class="pf-card"><div class="k" data-i18n="cRatio">손익비</div><div class="v" id="cRatio">-</div></div>
     </div>
 
     <h2 class="pf-h2" data-i18n="hMonth">월별 요약</h2>
@@ -191,6 +191,17 @@
     es:{fType:'Tipo',tyLive:'Resultados Daily Signal',tySys:'Resultados',kindNote:'Los resultados son los del sistema automatizado de Foket (un contrato). Daily Signal envía un futuro coreano y uno extranjero, y en Select Signal se elige cualquier contrato, por lo que puede haber resultados de varios contratos el mismo día.'},
     ru:{fType:'Тип',tyLive:'Результаты Daily Signal',tySys:'Результаты',kindNote:'Результаты — это результаты автоматической системы Foket (один контракт). Daily Signal даёт один корейский и один зарубежный фьючерс, в Select Signal выбирается любой один инструмент, поэтому за один день могут быть результаты по нескольким инструментам.'}
   };
+  /* 손익비 카드 문구 */
+  var METRIC={
+    ko:{cAvg:'거래당 평균 손익',avgNt:'{n}건 평균\n{d}부터',cRatio:'손익비',ratioNt:'평균 수익 {w}\n평균 손실 {l}'},
+    en:{cAvg:'Avg P&L per trade',avgNt:'Avg of {n} trades\nSince {d}',cRatio:'Profit/loss ratio',ratioNt:'Avg win {w}\nAvg loss {l}'},
+    de:{cAvg:'Ø G/V pro Trade',avgNt:'Ø aus {n} Trades\nSeit {d}',cRatio:'Gewinn-Verlust-Verhältnis',ratioNt:'Ø Gewinn {w}\nØ Verlust {l}'},
+    ja:{cAvg:'1取引あたり平均損益',avgNt:'{n}件の平均\n{d}から',cRatio:'損益比',ratioNt:'平均利益 {w}\n平均損失 {l}'},
+    zh:{cAvg:'每笔平均盈亏',avgNt:'{n}笔平均\n自{d}起',cRatio:'盈亏比',ratioNt:'平均盈利 {w}\n平均亏损 {l}'},
+    fr:{cAvg:'P&L moyen par transaction',avgNt:'Moyenne de {n} transactions\nDepuis le {d}',cRatio:'Ratio gain/perte',ratioNt:'Gain moy. {w}\nPerte moy. {l}'},
+    es:{cAvg:'P&L medio por operación',avgNt:'Media de {n} operaciones\nDesde {d}',cRatio:'Ratio beneficio/pérdida',ratioNt:'Ganancia media {w}\nPérdida media {l}'},
+    ru:{cAvg:'Средний P&L на сделку',avgNt:'Среднее по {n} сделкам\nС {d}',cRatio:'Прибыль/убыток',ratioNt:'Ср. прибыль {w}\nСр. убыток {l}'}
+  };
   var T={ko:KO,en:EN};
   var DE={"title": "Bisherige Ergebnisse", "h": "Startseite", "p": "Service", "f": "Häufige Fragen (FAQ)", "perf": "Performance", "c": "Kontakt", "j": "Telegram-Anfrage", "k": "KakaoTalk-Anfrage", "risk": "Risikohinweis", "pt": "Bisherige Ergebnisse", "sub": "Sehen Sie die Ergebnisse veröffentlichter Handelssignale ein, Verluste eingeschlossen.", "fSym": "Kontrakt", "all": "Alle", "fFrom": "Von", "fTo": "Bis", "fRange": "Schnellauswahl", "rAll": "Gesamter Zeitraum", "r20": "Letzte 20 Handelstage", "rM1": "Dieser Monat", "rM3": "Letzte 3 Monate", "rY1": "Letzte 12 Monate", "cTrades": "Trades", "cWin": "Trefferquote", "cPnl": "Kumulierter G/V", "cWorst": "Größter Verlust", "cBasis": "1 Kontrakt · kumuliert seit {d}", "lK200": "KOSPI200", "lFutSum": "Auslandsfutures gesamt", "lFut": "Auslandsfutures", "hMonth": "Monatsübersicht", "hTrades": "Trade-Historie", "tMonth": "Monat", "tTrades": "Trades", "tWin": "Trefferquote", "tPnl": "G/V", "tMPnl": "G/V (Auslandsfutures / Korea-Futures)", "tDate": "Datum", "tSym": "Kontrakt", "tSide": "Richtung", "tEntry": "Einstieg", "tExit": "Ausstieg", "tMin": "Tagestief G/V", "tClose": "Schluss-G/V", "long": "Long", "short": "Short", "prev": "Zurück", "next": "Weiter", "emptyLive": "Es wurden noch keine Signaldaten veröffentlicht.", "emptyFilter": "Keine Einträge für diese Filter.", "loading": "Wird geladen…", "svcT": "So erhalten Sie diese Signale", "svcS": "Beide Pläne 300 $ oder 500.000 KRW pro 20 Handelstage · 10 Handelstage kostenlos testen", "svcA": "Foket Daily Signal", "svcAd": "Täglich 1 ausgewählter Auslandsfuture + 1 koreanischer Future", "svcB": "Foket Select Signal", "svcBd": "Einen beliebigen ausländischen oder koreanischen Future wählen (jederzeit wechselbar)", "svcC": "Kostenlos testen", "note": "Signaldaten sind Ergebnisse der Signale des automatisierten Foket-Systems, berechnet für einen Kontrakt. Gebühren und Slippage können zu Abweichungen von tatsächlichen Kontoergebnissen führen. Vergangene Ergebnisse garantieren keine zukünftigen Gewinne. Beim Futures-Handel können Verluste über das eingesetzte Kapital hinaus entstehen."};
   var JA={"title": "過去実績照会", "h": "ホーム", "p": "サービス", "f": "よくある質問(FAQ)", "perf": "実績照会", "c": "お問い合わせ", "j": "Telegramでお問い合わせ", "k": "KakaoTalkでお問い合わせ", "risk": "投資リスク開示", "pt": "過去実績照会", "sub": "公開した売買シグナルの結果を、損失も含めてそのまま照会できます。", "fSym": "銘柄", "all": "すべて", "fFrom": "開始日", "fTo": "終了日", "fRange": "クイック選択", "rAll": "全期間", "r20": "直近20取引日", "rM1": "今月", "rM3": "直近3か月", "rY1": "直近1年", "cTrades": "取引数", "cWin": "勝率", "cPnl": "累積損益", "cWorst": "最大損失取引", "cBasis": "1枚基準 · {d}から累計", "lK200": "KOSPI200", "lFutSum": "海外先物合計", "lFut": "海外先物", "hMonth": "月別サマリー", "hTrades": "取引履歴", "tMonth": "月", "tTrades": "取引数", "tWin": "勝率", "tPnl": "損益", "tMPnl": "損益（海外先物／韓国先物の順）", "tDate": "日付", "tSym": "銘柄", "tSide": "方向", "tEntry": "エントリー", "tExit": "決済", "tMin": "当日最小記録", "tClose": "決済損益", "long": "買い", "short": "売り", "prev": "前へ", "next": "次へ", "emptyLive": "公開されたシグナル記録はまだありません。", "emptyFilter": "条件に合う記録がありません。", "loading": "読み込み中…", "svcT": "この記録のシグナルを受け取る方法", "svcS": "両サービスとも20取引日50万ウォン(または300ドル) · 10取引日無料体験", "svcA": "Foket デイリーシグナル", "svcAd": "毎日選ばれた海外先物1銘柄 + 韓国先物1銘柄", "svcB": "Foket セレクトシグナル", "svcBd": "海外・韓国先物からお好きな1銘柄を選択(利用中も変更可能)", "svcC": "無料体験を申し込む", "note": "シグナル記録は、Foket自動システムが出した売買シグナルを1枚基準で計算した結果です。手数料・スリッページにより実際の口座結果と異なる場合があります。過去の実績は将来の収益を保証せず、先物取引では元本を超える損失が生じる可能性があります。"};
@@ -199,7 +210,7 @@
   var ES={"title": "Rendimiento histórico", "h": "Inicio", "p": "Servicio", "f": "Preguntas frecuentes (FAQ)", "perf": "Rendimiento", "c": "Contacto", "j": "Consulta por Telegram", "k": "Consulta por KakaoTalk", "risk": "Divulgación de riesgos", "pt": "Rendimiento histórico", "sub": "Consulte los resultados de las señales publicadas, incluidas las pérdidas.", "fSym": "Contrato", "all": "Todos", "fFrom": "Desde", "fTo": "Hasta", "fRange": "Selección rápida", "rAll": "Todo el periodo", "r20": "Últimos 20 días hábiles", "rM1": "Este mes", "rM3": "Últimos 3 meses", "rY1": "Últimos 12 meses", "cTrades": "Operaciones", "cWin": "Tasa de acierto", "cPnl": "P&L acumulado", "cWorst": "Mayor pérdida", "cBasis": "1 contrato · acumulado desde {d}", "lK200": "KOSPI200", "lFutSum": "Total futuros extranjeros", "lFut": "Futuros extranjeros", "hMonth": "Resumen mensual", "hTrades": "Historial de operaciones", "tMonth": "Mes", "tTrades": "Operaciones", "tWin": "Tasa de acierto", "tPnl": "P&L", "tMPnl": "P&L (futuros extranjeros / coreanos)", "tDate": "Fecha", "tSym": "Contrato", "tSide": "Dirección", "tEntry": "Entrada", "tExit": "Salida", "tMin": "Mínimo del día", "tClose": "P&L de cierre", "long": "Compra", "short": "Venta", "prev": "Anterior", "next": "Siguiente", "emptyLive": "Aún no se han publicado registros de señales.", "emptyFilter": "No hay registros con estos filtros.", "loading": "Cargando…", "svcT": "Cómo recibir estas señales", "svcS": "Ambos planes 300 $ o 500.000 KRW por 20 días hábiles · prueba gratis de 10 días hábiles", "svcA": "Foket Daily Signal", "svcAd": "Cada día 1 futuro extranjero seleccionado + 1 futuro coreano", "svcB": "Foket Select Signal", "svcBd": "Elija un futuro extranjero o coreano (puede cambiarlo durante el uso)", "svcC": "Solicitar prueba gratis", "note": "Los registros de señales son resultados de las señales del sistema automatizado de Foket calculados para un contrato. Las comisiones y el slippage pueden hacer que difieran de los resultados reales. El rendimiento pasado no garantiza ganancias futuras y el trading de futuros puede generar pérdidas superiores al capital invertido."};
   var RU={"title": "История результатов", "h": "Главная", "p": "Сервис", "f": "Часто задаваемые вопросы (FAQ)", "perf": "Результаты", "c": "Контакт", "j": "Запрос в Telegram", "k": "Запрос в KakaoTalk", "risk": "Раскрытие инвестиционных рисков", "pt": "История результатов", "sub": "Результаты опубликованных торговых сигналов, включая убытки, без изъятий.", "fSym": "Инструмент", "all": "Все", "fFrom": "С", "fTo": "По", "fRange": "Быстрый выбор", "rAll": "Весь период", "r20": "Последние 20 торговых дней", "rM1": "Этот месяц", "rM3": "Последние 3 месяца", "rY1": "Последние 12 месяцев", "cTrades": "Сделок", "cWin": "Доля прибыльных", "cPnl": "Накопленный P&L", "cWorst": "Крупнейший убыток", "cBasis": "1 контракт · с {d}", "lK200": "KOSPI200", "lFutSum": "Зарубежные фьючерсы, итого", "lFut": "Зарубежные фьючерсы", "hMonth": "Итоги по месяцам", "hTrades": "История сделок", "tMonth": "Месяц", "tTrades": "Сделок", "tWin": "Доля прибыльных", "tPnl": "P&L", "tMPnl": "P&L (зарубежные / корейские фьючерсы)", "tDate": "Дата", "tSym": "Инструмент", "tSide": "Направление", "tEntry": "Вход", "tExit": "Выход", "tMin": "Минимум за день", "tClose": "P&L при закрытии", "long": "Покупка", "short": "Продажа", "prev": "Назад", "next": "Далее", "emptyLive": "Записи сигналов ещё не опубликованы.", "emptyFilter": "Нет записей по этим фильтрам.", "loading": "Загрузка…", "svcT": "Как получать эти сигналы", "svcS": "Оба тарифа: $300 или 500 000 KRW за 20 торговых дней · 10 торговых дней бесплатно", "svcA": "Foket Daily Signal", "svcAd": "Каждый день 1 отобранный зарубежный фьючерс + 1 корейский фьючерс", "svcB": "Foket Select Signal", "svcBd": "Выберите любой зарубежный или корейский фьючерс (можно сменить в процессе)", "svcC": "Оформить бесплатный период", "note": "Записи сигналов — это результаты сигналов автоматической системы Foket, рассчитанные на один контракт. Из‑за комиссий и проскальзывания они могут отличаться от фактических. Прошлые результаты не гарантируют будущей доходности; при торговле фьючерсами убытки могут превысить вложенный капитал."};
   T.de=DE;T.ja=JA;T.zh=ZH;T.fr=FR;T.es=ES;T.ru=RU;
-  [['ko',KO],['en',EN],['de',DE],['ja',JA],['zh',ZH],['fr',FR],['es',ES],['ru',RU]].forEach(function(p){var o=KINDTXT[p[0]];for(var k in o)p[1][k]=o[k];});
+  [['ko',KO],['en',EN],['de',DE],['ja',JA],['zh',ZH],['fr',FR],['es',ES],['ru',RU]].forEach(function(p){[KINDTXT,METRIC].forEach(function(src){var o=src[p[0]];for(var k in o)p[1][k]=o[k];});});
   var LANG_META={ko:{flag:'fi-kr',name:'한국어'},en:{flag:'fi-us',name:'English'},de:{flag:'fi-de',name:'Deutsch'},ja:{flag:'fi-jp',name:'日本語'},zh:{flag:'fi-cn',name:'中文'},fr:{flag:'fi-fr',name:'Français'},es:{flag:'fi-es',name:'Español'},ru:{flag:'fi-ru',name:'Русский'}};
   var currentLang='ko'; try{currentLang=localStorage.getItem('lang')||'ko';}catch(e){}
   function tr(){return T[currentLang]||EN;}
@@ -248,6 +259,20 @@
     });
   }
   function cls(n){return n>0?'up':(n<0?'dn':'');}
+  /* 손익비 카드: 시장별 한 줄 + 보조 설명 */
+  function metricLines(el,curs,fn){
+    var t=tr(), ks=curs.slice().sort(function(a,b){return (a==='KRW'?0:1)-(b==='KRW'?0:1);});
+    el.textContent=''; el.className='v'; var n=0;
+    ks.forEach(function(c){
+      var r=fn(c); if(!r)return; n++;
+      var line=document.createElement('div'), lb=document.createElement('span'), v=document.createElement('span');
+      lb.className='lb'; lb.textContent=(c==='KRW'?t.lK200:t.lFut)+' ';
+      v.textContent=r.v; v.className=r.c;
+      line.appendChild(lb); line.appendChild(v); el.appendChild(line);
+      var nt=document.createElement('span'); nt.className='nt'; nt.textContent=r.nt; el.appendChild(nt);
+    });
+    if(!n)el.textContent='-';
+  }
 
   function td(text,className){var el=document.createElement('td');el.textContent=text;if(className)el.className=className;return el;}
 
@@ -277,15 +302,23 @@
     var wins=rows.filter(function(r){return r.pnl>0;}).length;
     document.getElementById('cTrades').textContent=rows.length?rows.length.toLocaleString('en-US'):'-';
     document.getElementById('cWin').textContent=rows.length?(wins/rows.length*100).toFixed(1)+'%':'-';
-    var tot=sumByCur(rows), cp=document.getElementById('cPnl');
+    var tot=sumByCur(rows);
     var since={}; rows.forEach(function(r){if(!since[r.cur]||r.date<since[r.cur])since[r.cur]=r.date;});
-    cardLines(cp,rows.length?tot:{},true,since);
-    var ks=Object.keys(tot); cp.className='v';
-    /* 통화가 다른 손익은 크기를 비교할 수 없으므로 통화별로 가장 큰 손실을 따로 보여준다 */
-    var worst={}; rows.forEach(function(r){if(r.pnl<0&&(worst[r.cur]===undefined||r.pnl<worst[r.cur]))worst[r.cur]=r.pnl;});
-    var cw=document.getElementById('cWorst'), wk=Object.keys(worst);
-    var wo={}; ks.forEach(function(c){if(worst[c]!==undefined)wo[c]=worst[c];});
-    cardLines(cw,wo,false); cw.className='v';
+    var ks=Object.keys(tot);
+    /* 거래당 평균 손익 = 시장(통화)별 손익 합계 ÷ 거래 수 */
+    var cnt={}; rows.forEach(function(r){cnt[r.cur]=(cnt[r.cur]||0)+1;});
+    metricLines(document.getElementById('cAvg'),ks,function(c){
+      var a=tot[c]/cnt[c];
+      return {v:fmtMoney(Math.round(a),c),c:cls(a),nt:t.avgNt.replace('{n}',cnt[c].toLocaleString('en-US')).replace('{d}',since[c])};
+    });
+    /* 손익비 = 평균 수익 ÷ 평균 손실(절댓값). 통화가 다르면 금액을 섞을 수 없어 시장(통화)별로 따로 낸다 */
+    var st={}; ks.forEach(function(c){st[c]={w:0,wn:0,l:0,ln:0};});
+    rows.forEach(function(r){var o=st[r.cur];if(r.pnl>0){o.w+=r.pnl;o.wn++;}else if(r.pnl<0){o.l+=r.pnl;o.ln++;}});
+    metricLines(document.getElementById('cRatio'),ks,function(c){
+      var o=st[c]; if(!o.wn||!o.ln)return null;
+      var aw=o.w/o.wn, al=o.l/o.ln, ratio=aw/Math.abs(al);
+      return {v:ratio.toFixed(2),c:ratio>=1?'up':'dn',nt:t.ratioNt.replace('{w}',fmtMoney(Math.round(aw),c)).replace('{l}',fmtMoney(Math.round(al),c))};
+    });
 
     /* 월별 */
     var mb=document.getElementById('monthBody'), months={}, order=[];
