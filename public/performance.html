@@ -125,7 +125,7 @@
     <div class="pf-cards">
       <div class="pf-card"><div class="k" data-i18n="cTrades">거래 수</div><div class="v" id="cTrades">-</div></div>
       <div class="pf-card"><div class="k" data-i18n="cWin">승률</div><div class="v" id="cWin">-</div></div>
-      <div class="pf-card"><div class="k" data-i18n="cPnl">누적 손익</div><div class="v" id="cPnl">-</div></div>
+      <div class="pf-card"><div class="k" data-i18n="cAvg">거래당 평균 손익</div><div class="v" id="cAvg">-</div></div>
       <div class="pf-card"><div class="k" data-i18n="cRatio">손익비</div><div class="v" id="cRatio">-</div></div>
     </div>
 
@@ -193,14 +193,14 @@
   };
   /* 손익비 카드 문구 */
   var METRIC={
-    ko:{cRatio:'손익비',ratioNt:'평균 수익 {w}\n평균 손실 {l}'},
-    en:{cRatio:'Profit/loss ratio',ratioNt:'Avg win {w}\nAvg loss {l}'},
-    de:{cRatio:'Gewinn-Verlust-Verhältnis',ratioNt:'Ø Gewinn {w}\nØ Verlust {l}'},
-    ja:{cRatio:'損益比',ratioNt:'平均利益 {w}\n平均損失 {l}'},
-    zh:{cRatio:'盈亏比',ratioNt:'平均盈利 {w}\n平均亏损 {l}'},
-    fr:{cRatio:'Ratio gain/perte',ratioNt:'Gain moy. {w}\nPerte moy. {l}'},
-    es:{cRatio:'Ratio beneficio/pérdida',ratioNt:'Ganancia media {w}\nPérdida media {l}'},
-    ru:{cRatio:'Прибыль/убыток',ratioNt:'Ср. прибыль {w}\nСр. убыток {l}'}
+    ko:{cAvg:'거래당 평균 손익',avgNt:'{n}건 평균\n{d}부터',cRatio:'손익비',ratioNt:'평균 수익 {w}\n평균 손실 {l}'},
+    en:{cAvg:'Avg P&L per trade',avgNt:'Avg of {n} trades\nSince {d}',cRatio:'Profit/loss ratio',ratioNt:'Avg win {w}\nAvg loss {l}'},
+    de:{cAvg:'Ø G/V pro Trade',avgNt:'Ø aus {n} Trades\nSeit {d}',cRatio:'Gewinn-Verlust-Verhältnis',ratioNt:'Ø Gewinn {w}\nØ Verlust {l}'},
+    ja:{cAvg:'1取引あたり平均損益',avgNt:'{n}件の平均\n{d}から',cRatio:'損益比',ratioNt:'平均利益 {w}\n平均損失 {l}'},
+    zh:{cAvg:'每笔平均盈亏',avgNt:'{n}笔平均\n自{d}起',cRatio:'盈亏比',ratioNt:'平均盈利 {w}\n平均亏损 {l}'},
+    fr:{cAvg:'P&L moyen par transaction',avgNt:'Moyenne de {n} transactions\nDepuis le {d}',cRatio:'Ratio gain/perte',ratioNt:'Gain moy. {w}\nPerte moy. {l}'},
+    es:{cAvg:'P&L medio por operación',avgNt:'Media de {n} operaciones\nDesde {d}',cRatio:'Ratio beneficio/pérdida',ratioNt:'Ganancia media {w}\nPérdida media {l}'},
+    ru:{cAvg:'Средний P&L на сделку',avgNt:'Среднее по {n} сделкам\nС {d}',cRatio:'Прибыль/убыток',ratioNt:'Ср. прибыль {w}\nСр. убыток {l}'}
   };
   var T={ko:KO,en:EN};
   var DE={"title": "Bisherige Ergebnisse", "h": "Startseite", "p": "Service", "f": "Häufige Fragen (FAQ)", "perf": "Performance", "c": "Kontakt", "j": "Telegram-Anfrage", "k": "KakaoTalk-Anfrage", "risk": "Risikohinweis", "pt": "Bisherige Ergebnisse", "sub": "Sehen Sie die Ergebnisse veröffentlichter Handelssignale ein, Verluste eingeschlossen.", "fSym": "Kontrakt", "all": "Alle", "fFrom": "Von", "fTo": "Bis", "fRange": "Schnellauswahl", "rAll": "Gesamter Zeitraum", "r20": "Letzte 20 Handelstage", "rM1": "Dieser Monat", "rM3": "Letzte 3 Monate", "rY1": "Letzte 12 Monate", "cTrades": "Trades", "cWin": "Trefferquote", "cPnl": "Kumulierter G/V", "cWorst": "Größter Verlust", "cBasis": "1 Kontrakt · kumuliert seit {d}", "lK200": "KOSPI200", "lFutSum": "Auslandsfutures gesamt", "lFut": "Auslandsfutures", "hMonth": "Monatsübersicht", "hTrades": "Trade-Historie", "tMonth": "Monat", "tTrades": "Trades", "tWin": "Trefferquote", "tPnl": "G/V", "tMPnl": "G/V (Auslandsfutures / Korea-Futures)", "tDate": "Datum", "tSym": "Kontrakt", "tSide": "Richtung", "tEntry": "Einstieg", "tExit": "Ausstieg", "tMin": "Tagestief G/V", "tClose": "Schluss-G/V", "long": "Long", "short": "Short", "prev": "Zurück", "next": "Weiter", "emptyLive": "Es wurden noch keine Signaldaten veröffentlicht.", "emptyFilter": "Keine Einträge für diese Filter.", "loading": "Wird geladen…", "svcT": "So erhalten Sie diese Signale", "svcS": "Beide Pläne 300 $ oder 500.000 KRW pro 20 Handelstage · 10 Handelstage kostenlos testen", "svcA": "Foket Daily Signal", "svcAd": "Täglich 1 ausgewählter Auslandsfuture + 1 koreanischer Future", "svcB": "Foket Select Signal", "svcBd": "Einen beliebigen ausländischen oder koreanischen Future wählen (jederzeit wechselbar)", "svcC": "Kostenlos testen", "note": "Signaldaten sind Ergebnisse der Signale des automatisierten Foket-Systems, berechnet für einen Kontrakt. Gebühren und Slippage können zu Abweichungen von tatsächlichen Kontoergebnissen führen. Vergangene Ergebnisse garantieren keine zukünftigen Gewinne. Beim Futures-Handel können Verluste über das eingesetzte Kapital hinaus entstehen."};
@@ -302,10 +302,15 @@
     var wins=rows.filter(function(r){return r.pnl>0;}).length;
     document.getElementById('cTrades').textContent=rows.length?rows.length.toLocaleString('en-US'):'-';
     document.getElementById('cWin').textContent=rows.length?(wins/rows.length*100).toFixed(1)+'%':'-';
-    var tot=sumByCur(rows), cp=document.getElementById('cPnl');
+    var tot=sumByCur(rows);
     var since={}; rows.forEach(function(r){if(!since[r.cur]||r.date<since[r.cur])since[r.cur]=r.date;});
-    cardLines(cp,rows.length?tot:{},true,since);
-    var ks=Object.keys(tot); cp.className='v';
+    var ks=Object.keys(tot);
+    /* 거래당 평균 손익 = 시장(통화)별 손익 합계 ÷ 거래 수 */
+    var cnt={}; rows.forEach(function(r){cnt[r.cur]=(cnt[r.cur]||0)+1;});
+    metricLines(document.getElementById('cAvg'),ks,function(c){
+      var a=tot[c]/cnt[c];
+      return {v:fmtMoney(Math.round(a),c),c:cls(a),nt:t.avgNt.replace('{n}',cnt[c].toLocaleString('en-US')).replace('{d}',since[c])};
+    });
     /* 손익비 = 평균 수익 ÷ 평균 손실(절댓값). 통화가 다르면 금액을 섞을 수 없어 시장(통화)별로 따로 낸다 */
     var st={}; ks.forEach(function(c){st[c]={w:0,wn:0,l:0,ln:0};});
     rows.forEach(function(r){var o=st[r.cur];if(r.pnl>0){o.w+=r.pnl;o.wn++;}else if(r.pnl<0){o.l+=r.pnl;o.ln++;}});
