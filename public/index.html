@@ -2442,6 +2442,7 @@
       }
     }
   .fi{width:18px;height:13px;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.15);vertical-align:-2px}</style>
+  <link rel="stylesheet" href="css/ai-console.css">
 </head>
 
 <body>
@@ -2516,6 +2517,11 @@
         style="margin:8px 16px 0;background:#FEE500;color:#3A1D1D;"><i class="fas fa-comment-dots"></i> <span data-i18n="nav.kakao_consult">카카오톡 문의</span></a>
     </div>
   </nav>
+
+  <!-- ── Foket AI 관제판 (애니메이션) ── -->
+  <section class="aic-sec" aria-label="Foket AI">
+    <div class="aic" id="aiConsole"></div>
+  </section>
 
   <!-- ── Foket 수익율 현황 ── -->
   <section class="best10-sec">
@@ -4247,6 +4253,7 @@
   </script>
 <script>(function(){var raf=0;function h(){raf=0;var n=document.querySelector('.navbar'),b=n?n.getBoundingClientRect().bottom:0;document.documentElement.style.setProperty('--nav-h',Math.max(0,Math.round(b))+'px');}function q(){if(!raf)raf=requestAnimationFrame(h);}h();addEventListener('resize',q);addEventListener('scroll',q,{passive:true});addEventListener('load',h);})();</script>
 <script src="js/i18n-common.js"></script>
+<script src="js/ai-console.js" defer></script>
 </body>
 
 </html>
