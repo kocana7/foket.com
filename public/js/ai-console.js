@@ -6,48 +6,52 @@
   var root = document.getElementById('aiConsole');
   if (!root) return;
 
-  var SYMS = ['KOSPI', 'NQ', 'ES', 'GC', 'CL', 'NG', 'SIL', 'NKD', 'UB', 'ZW', '6E', '6J', '6B', '6A', '6N', '6M'];
-  var LABEL = { KOSPI: 'KOSPI200' };
+  /* 안쪽 고리: 실적 기록이 있는 16종목. 바깥 고리: 만기·거래량 루틴으로 매일 추적하는 나머지 16종목 */
+  var CORE = ['KOSPI', 'NQ', 'ES', 'GC', 'CL', 'NG', 'SIL', 'NKD', 'UB', 'ZW', '6E', '6J', '6B', '6A', '6N', '6M'];
+  var EXTRA = ['MKOSPI', 'HSI', 'HHI', 'CN', 'TW', 'NIY', 'FDAX', 'FESX', 'VX', 'HG', 'SI', 'ZC', 'ZS', '6C', '6S', '6L'];
+  var SYMS = CORE.concat(EXTRA), NSYM = SYMS.length;
+  var LABEL = { KOSPI: 'KOSPI200', MKOSPI: 'MINI K200', HHI: 'HSCEI', CN: 'A50', TW: 'TAIWAN', FDAX: 'DAX', FESX: 'STOXX50', VX: 'VIX' };
+  var SHORT = { KOSPI: 'K200', MKOSPI: 'MK200', HHI: 'HSCEI', CN: 'A50', TW: 'TWN', FDAX: 'DAX', FESX: 'SX5E', VX: 'VIX' };
   function lab(s) { return LABEL[s] || s; }
 
   var T = {
-    ko: { h: 'Foket <em>AI</em> 트레이딩 엔진', s: '16개 종목을 실시간으로 분석해 시그널을 만듭니다', live: '분석 중',
-      code: 'engine.py', codeR: 'python · 실행 중', graph: '종목 네트워크', graphR: '16 종목 · 2.8억 로직', scan: '종목 스캔', kpi: '실적 요약', kpiR: '실제 기록 기준',
+    ko: { h: 'Foket <em>AI</em> 트레이딩 엔진', s: '32개 종목을 실시간으로 분석해 시그널을 만듭니다', live: '분석 중',
+      code: 'engine.py', codeR: 'python · 실행 중', graph: '종목 네트워크', graphR: '32 종목 · 2.8억 로직', scan: '종목 스캔', kpi: '실적 요약', kpiR: '실제 기록 기준',
       log: '시그널 로그', logR: 'foket · live', win: '승률', ratio: '손익비 (해외)', recs: '검증 기록', logic: '학습 로직', logicV: '2.8', logicU: '억',
       scanL: '{s} 패턴 스캔 · 점수 {n}', match: '{s} 로직 일치 {n}건', cand: '{s} 시그널 후보 평가', closed: '{d} {s} 청산', wait: '{s} 조건 대기',
       note: '화면은 분석 과정을 표현한 연출이며, 수치는 홈페이지에 게시된 실적 기록으로 계산합니다.', more: '실적 조회 →', won: '원', recU: '건' },
-    en: { h: 'Foket <em>AI</em> Trading Engine', s: 'Analyzing 16 instruments in real time to generate signals', live: 'Analyzing',
-      code: 'engine.py', codeR: 'python · running', graph: 'Instrument network', graphR: '16 symbols · 280M logics', scan: 'Symbol scan', kpi: 'Track record', kpiR: 'from real records',
+    en: { h: 'Foket <em>AI</em> Trading Engine', s: 'Analyzing 32 instruments in real time to generate signals', live: 'Analyzing',
+      code: 'engine.py', codeR: 'python · running', graph: 'Instrument network', graphR: '32 symbols · 280M logics', scan: 'Symbol scan', kpi: 'Track record', kpiR: 'from real records',
       log: 'Signal log', logR: 'foket · live', win: 'Win rate', ratio: 'Payoff (overseas)', recs: 'Verified trades', logic: 'Trained logics', logicV: '280', logicU: 'M',
       scanL: '{s} pattern scan · score {n}', match: '{s} logic matches {n}', cand: '{s} signal candidate check', closed: '{d} {s} closed', wait: '{s} waiting for setup',
       note: 'This screen visualizes the analysis process; figures are calculated from the track record published on this site.', more: 'View performance →', won: '', recU: '' },
-    de: { h: 'Foket <em>KI</em>-Trading-Engine', s: 'Analysiert 16 Kontrakte in Echtzeit und erzeugt Signale', live: 'Analyse läuft',
-      code: 'engine.py', codeR: 'python · läuft', graph: 'Kontrakt-Netzwerk', graphR: '16 Kontrakte · 280 Mio. Logiken', scan: 'Kontrakt-Scan', kpi: 'Ergebnisse', kpiR: 'echte Daten',
+    de: { h: 'Foket <em>KI</em>-Trading-Engine', s: 'Analysiert 32 Kontrakte in Echtzeit und erzeugt Signale', live: 'Analyse läuft',
+      code: 'engine.py', codeR: 'python · läuft', graph: 'Kontrakt-Netzwerk', graphR: '32 Kontrakte · 280 Mio. Logiken', scan: 'Kontrakt-Scan', kpi: 'Ergebnisse', kpiR: 'echte Daten',
       log: 'Signal-Log', logR: 'foket · live', win: 'Trefferquote', ratio: 'Gewinn/Verlust (Ausland)', recs: 'Geprüfte Trades', logic: 'Trainierte Logiken', logicV: '280', logicU: ' Mio.',
       scanL: '{s} Musterscan · Wert {n}', match: '{s} Logik-Treffer {n}', cand: '{s} Signalkandidat prüfen', closed: '{d} {s} geschlossen', wait: '{s} wartet auf Setup',
       note: 'Die Animation veranschaulicht den Analyseprozess; die Zahlen stammen aus den auf dieser Website veröffentlichten Ergebnissen.', more: 'Ergebnisse →', won: '', recU: '' },
-    ja: { h: 'Foket <em>AI</em> トレーディングエンジン', s: '16銘柄をリアルタイムで分析し、シグナルを生成します', live: '分析中',
-      code: 'engine.py', codeR: 'python · 実行中', graph: '銘柄ネットワーク', graphR: '16銘柄 · 2.8億ロジック', scan: '銘柄スキャン', kpi: '実績サマリー', kpiR: '実際の記録に基づく',
+    ja: { h: 'Foket <em>AI</em> トレーディングエンジン', s: '32銘柄をリアルタイムで分析し、シグナルを生成します', live: '分析中',
+      code: 'engine.py', codeR: 'python · 実行中', graph: '銘柄ネットワーク', graphR: '32銘柄 · 2.8億ロジック', scan: '銘柄スキャン', kpi: '実績サマリー', kpiR: '実際の記録に基づく',
       log: 'シグナルログ', logR: 'foket · live', win: '勝率', ratio: '損益比 (海外)', recs: '検証済み取引', logic: '学習ロジック', logicV: '2.8', logicU: '億',
       scanL: '{s} パターンスキャン · スコア {n}', match: '{s} ロジック一致 {n}件', cand: '{s} シグナル候補を評価', closed: '{d} {s} 決済', wait: '{s} 条件待ち',
       note: '画面は分析過程を表現した演出であり、数値は当サイトに掲載した実績記録から計算しています。', more: '実績を見る →', won: '', recU: '件' },
-    zh: { h: 'Foket <em>AI</em> 交易引擎', s: '实时分析16个品种并生成信号', live: '分析中',
-      code: 'engine.py', codeR: 'python · 运行中', graph: '品种网络', graphR: '16个品种 · 2.8亿逻辑', scan: '品种扫描', kpi: '业绩摘要', kpiR: '基于真实记录',
+    zh: { h: 'Foket <em>AI</em> 交易引擎', s: '实时分析32个品种并生成信号', live: '分析中',
+      code: 'engine.py', codeR: 'python · 运行中', graph: '品种网络', graphR: '32个品种 · 2.8亿逻辑', scan: '品种扫描', kpi: '业绩摘要', kpiR: '基于真实记录',
       log: '信号日志', logR: 'foket · live', win: '胜率', ratio: '盈亏比 (海外)', recs: '已验证交易', logic: '学习逻辑', logicV: '2.8', logicU: '亿',
       scanL: '{s} 形态扫描 · 评分 {n}', match: '{s} 逻辑匹配 {n}条', cand: '{s} 信号候选评估', closed: '{d} {s} 平仓', wait: '{s} 等待条件',
       note: '画面为分析过程的演示，数据根据本网站公布的业绩记录计算。', more: '查看业绩 →', won: '', recU: '笔' },
-    fr: { h: 'Moteur de trading <em>IA</em> Foket', s: 'Analyse 16 contrats en temps réel pour générer des signaux', live: 'Analyse',
-      code: 'engine.py', codeR: 'python · actif', graph: 'Réseau des contrats', graphR: '16 contrats · 280 M de logiques', scan: 'Scan des contrats', kpi: 'Résultats', kpiR: 'données réelles',
+    fr: { h: 'Moteur de trading <em>IA</em> Foket', s: 'Analyse 32 contrats en temps réel pour générer des signaux', live: 'Analyse',
+      code: 'engine.py', codeR: 'python · actif', graph: 'Réseau des contrats', graphR: '32 contrats · 280 M de logiques', scan: 'Scan des contrats', kpi: 'Résultats', kpiR: 'données réelles',
       log: 'Journal des signaux', logR: 'foket · live', win: 'Taux de réussite', ratio: 'Ratio gain/perte (étranger)', recs: 'Trades vérifiés', logic: 'Logiques entraînées', logicV: '280', logicU: ' M',
       scanL: '{s} scan de motifs · score {n}', match: '{s} logiques concordantes {n}', cand: '{s} évaluation du signal', closed: '{d} {s} clôturé', wait: '{s} en attente',
       note: 'Cet écran illustre le processus d’analyse ; les chiffres proviennent des résultats publiés sur ce site.', more: 'Voir les résultats →', won: '', recU: '' },
-    es: { h: 'Motor de trading <em>IA</em> Foket', s: 'Analiza 16 instrumentos en tiempo real para generar señales', live: 'Analizando',
-      code: 'engine.py', codeR: 'python · activo', graph: 'Red de instrumentos', graphR: '16 instrumentos · 280 M de lógicas', scan: 'Escaneo', kpi: 'Resultados', kpiR: 'datos reales',
+    es: { h: 'Motor de trading <em>IA</em> Foket', s: 'Analiza 32 instrumentos en tiempo real para generar señales', live: 'Analizando',
+      code: 'engine.py', codeR: 'python · activo', graph: 'Red de instrumentos', graphR: '32 instrumentos · 280 M de lógicas', scan: 'Escaneo', kpi: 'Resultados', kpiR: 'datos reales',
       log: 'Registro de señales', logR: 'foket · live', win: 'Tasa de acierto', ratio: 'Ganancia/pérdida (ext.)', recs: 'Operaciones verificadas', logic: 'Lógicas entrenadas', logicV: '280', logicU: ' M',
       scanL: '{s} escaneo de patrones · puntuación {n}', match: '{s} lógicas coincidentes {n}', cand: '{s} evaluación de señal', closed: '{d} {s} cerrado', wait: '{s} esperando condiciones',
       note: 'Esta pantalla ilustra el proceso de análisis; las cifras se calculan con los resultados publicados en este sitio.', more: 'Ver resultados →', won: '', recU: '' },
-    ru: { h: 'Торговый <em>ИИ</em>-движок Foket', s: 'Анализирует 16 инструментов в реальном времени и формирует сигналы', live: 'Анализ',
-      code: 'engine.py', codeR: 'python · работает', graph: 'Сеть инструментов', graphR: '16 инструментов · 280 млн логик', scan: 'Сканирование', kpi: 'Результаты', kpiR: 'по реальным данным',
+    ru: { h: 'Торговый <em>ИИ</em>-движок Foket', s: 'Анализирует 32 инструментов в реальном времени и формирует сигналы', live: 'Анализ',
+      code: 'engine.py', codeR: 'python · работает', graph: 'Сеть инструментов', graphR: '32 инструментов · 280 млн логик', scan: 'Сканирование', kpi: 'Результаты', kpiR: 'по реальным данным',
       log: 'Журнал сигналов', logR: 'foket · live', win: 'Доля прибыльных', ratio: 'Прибыль/убыток (зарубеж.)', recs: 'Проверенных сделок', logic: 'Обученных логик', logicV: '280', logicU: ' млн',
       scanL: '{s} поиск паттернов · оценка {n}', match: '{s} совпадений логик {n}', cand: '{s} оценка кандидата', closed: '{d} {s} закрыта', wait: '{s} ожидание условий',
       note: 'Экран иллюстрирует процесс анализа; цифры рассчитаны по результатам, опубликованным на сайте.', more: 'Результаты →', won: '', recU: '' }
@@ -71,8 +75,8 @@
       '<div class="aic-p aic-code"><div class="aic-ph"><span data-k="code"></span><span data-k="codeR"></span></div><div class="aic-pb" id="aicCode"></div>' +
         '<div class="aic-ft"><span>py3.12 · foket sdk</span><span id="aicTok">0 ops/s</span></div></div>' +
       '<div class="aic-p aic-graph"><div class="aic-ph"><span data-k="graph"></span><span data-k="graphR"></span></div><div class="aic-pb"><canvas id="aicCv" aria-hidden="true"></canvas>' +
-        '<div class="aic-gl">nodes 16 · edges <span id="aicEdges">0</span> · core FOKET-AI</div></div></div>' +
-      '<div class="aic-p aic-scan"><div class="aic-ph"><span data-k="scan"></span><span id="aicScanN">0 / 16</span></div><div class="aic-pb"><div class="aic-mx" id="aicMx"></div><div class="aic-bars" id="aicBars"></div></div></div>' +
+        '<div class="aic-gl">nodes ' + NSYM + ' · edges <span id="aicEdges">0</span> · core FOKET-AI</div></div></div>' +
+      '<div class="aic-p aic-scan"><div class="aic-ph"><span data-k="scan"></span><span id="aicScanN">0 / ' + NSYM + '</span></div><div class="aic-pb"><div class="aic-mx" id="aicMx"></div><div class="aic-bars" id="aicBars"></div></div></div>' +
       '<div class="aic-p"><div class="aic-ph"><span data-k="kpi"></span><span data-k="kpiR"></span></div><div class="aic-pb"><div class="aic-kpi">' +
         '<div><div class="aic-kv" id="aicWin">—</div><div class="aic-kl" data-k="win"></div></div>' +
         '<div><div class="aic-kv" id="aicRatio">—</div><div class="aic-kl" data-k="ratio"></div></div>' +
@@ -98,7 +102,7 @@
   SYMS.forEach(function (s) {
     var c = document.createElement('div');
     c.className = 'aic-cell';
-    c.innerHTML = '<b>' + lab(s) + '</b><span>--</span>';
+    c.innerHTML = '<b>' + (SHORT[s] || s) + '</b>';
     mx.appendChild(c); cells[s] = c;
   });
   var bars = $('aicBars'), barRows = [];
@@ -118,7 +122,7 @@
       r.children[1].firstChild.style.width = Math.round(scoreOf(s)) + '%';
       r.children[2].textContent = scoreOf(s) ? (scoreOf(s) / 100).toFixed(2) : '--';
     });
-    $('aicScanN').textContent = Object.keys(scanned).length + ' / 16';
+    $('aicScanN').textContent = Object.keys(scanned).length + ' / ' + NSYM;
   }
 
   /* ── 실적 요약 (실제 기록) ── */
@@ -213,7 +217,7 @@
   /* ── 엔진 코드 ── */
   var CODE = [
     ['k', 'from'], ['f', ' foket '], ['k', 'import'], ['f', ' engine, market'], null,
-    ['f', 'SYMBOLS = market.watchlist()'], ['c', '            # 16'], null,
+    ['f', 'SYMBOLS = market.watchlist()'], ['c', '            # 32'], null,
     ['k', 'def'], ['f', ' score(bars):'], null,
     ['f', '    s  = engine.trend(bars) * '], ['n', '0.40'], null,
     ['f', '    s += engine.volatility(bars) * '], ['n', '0.25'], null,
@@ -247,7 +251,7 @@
   function stepCode() {
     if (codeLine >= codeLines.length) { codeLine = 0; codeHtml = []; }
     codeHtml.push(lineHtml(codeLine++));
-    var vis = 20;
+    var vis = Math.max(12, Math.floor((codeEl.clientHeight - 16) / 17));
     var shown = codeHtml.slice(-vis);
     codeEl.innerHTML = shown.join('\n') + ' <span class="aic-cur"></span>';
   }
@@ -262,22 +266,26 @@
     W = Math.max(1, r.width); H = Math.max(1, r.height);
     cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    var cx = W / 2, cy = H / 2 + 6, rx = W * 0.42, ry = H * 0.39;
+    var cx = W / 2, cy = H / 2 + 4, small = W < 520;
+    var ox = W * (small ? 0.41 : 0.44), oy = H * 0.43, ix = W * (small ? 0.25 : 0.27), iy = H * 0.27;
     nodes = SYMS.map(function (s, i) {
-      var a = -Math.PI / 2 + i / SYMS.length * Math.PI * 2;
-      return { s: s, bx: cx + Math.cos(a) * rx, by: cy + Math.sin(a) * ry, ph: Math.random() * 6.28, glow: 0 };
+      var outer = i >= CORE.length, k = outer ? i - CORE.length + 0.5 : i;
+      var a = -Math.PI / 2 + k / CORE.length * Math.PI * 2;
+      return { s: s, outer: outer, ang: k / CORE.length, bx: cx + Math.cos(a) * (outer ? ox : ix), by: cy + Math.sin(a) * (outer ? oy : iy), ph: Math.random() * 6.28, glow: 0 };
     });
     hubs = [];
     for (var i = 0; i < 10; i++) {
       var a = i / 10 * Math.PI * 2 + 0.3;
-      hubs.push({ bx: cx + Math.cos(a) * rx * 0.48, by: cy + Math.sin(a) * ry * 0.5, ph: Math.random() * 6.28 });
+      hubs.push({ bx: cx + Math.cos(a) * ix * 0.5, by: cy + Math.sin(a) * iy * 0.55, ph: Math.random() * 6.28 });
     }
+    root._small = small;
     root._core = { x: cx, y: cy };
-    edges = nodes.length * 2 + hubs.length;
+    edges = CORE.length * 2 + EXTRA.length * 3 + hubs.length;
     $('aicEdges').textContent = edges;
   }
+  function innerOf(i) { var k = i - CORE.length; return [k, (k + 1) % CORE.length]; }
   function pos(o, t) { return { x: o.bx + Math.sin(t * 0.0006 + o.ph) * 4, y: o.by + Math.cos(t * 0.0005 + o.ph) * 3 }; }
-  function nearHubs(i) { var k = Math.round(i / SYMS.length * hubs.length) % hubs.length; return [k, (k + 1) % hubs.length]; }
+  function nearHubs(i) { var k = Math.round(nodes[i].ang * hubs.length) % hubs.length; return [k, (k + 1) % hubs.length]; }
   function draw(t) {
     ctx.clearRect(0, 0, W, H);
     var core = root._core;
@@ -287,8 +295,16 @@
     var hp = hubs.map(function (h) { return pos(h, t); });
     /* 선 */
     ctx.lineWidth = 0.6;
+    var np = nodes.map(function (nd) { return pos(nd, t); });
     nodes.forEach(function (nd, i) {
-      var p = pos(nd, t);
+      var p = np[i];
+      if (nd.outer) {
+        innerOf(i).forEach(function (k) {
+          ctx.strokeStyle = 'rgba(80,150,255,' + (0.12 + nd.glow * 0.5) + ')';
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(np[k].x, np[k].y); ctx.stroke();
+        });
+        return;
+      }
       nearHubs(i).forEach(function (k) {
         ctx.strokeStyle = 'rgba(80,150,255,' + (0.16 + nd.glow * 0.5) + ')';
         ctx.beginPath(); ctx.moveTo(p.x, p.y);
@@ -306,10 +322,10 @@
     }
     /* 펄스 */
     pulses.forEach(function (pl) {
-      var k = Math.min(1, (t - pl.t0) / pl.dur), from, to, q;
-      var p0 = pos(nodes[pl.i], t), p1 = hp[pl.h];
-      if (k < 0.55) { q = k / 0.55; from = p0; to = p1; } else { q = (k - 0.55) / 0.45; from = p1; to = core; }
-      var x = from.x + (to.x - from.x) * q, y = from.y + (to.y - from.y) * q;
+      var k = Math.min(1, (t - pl.t0) / pl.dur);
+      var pts = pl.path.map(function (id) { return id === 'c' ? core : id[0] === 'h' ? hp[id[1]] : np[id[1]]; });
+      var seg = k * (pts.length - 1), si = Math.min(pts.length - 2, Math.floor(seg)), q = seg - si;
+      var x = pts[si].x + (pts[si + 1].x - pts[si].x) * q, y = pts[si].y + (pts[si + 1].y - pts[si].y) * q;
       var g = ctx.createRadialGradient(x, y, 0, x, y, 7);
       g.addColorStop(0, pl.hit ? 'rgba(0,230,150,1)' : 'rgba(140,200,255,1)');
       g.addColorStop(1, 'rgba(0,120,255,0)');
@@ -328,15 +344,15 @@
     ctx.fillStyle = '#fff'; ctx.font = '700 11px Inter,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText('FOKET', core.x, core.y - 5); ctx.font = '600 9px Inter,sans-serif'; ctx.fillStyle = '#cfe4ff'; ctx.fillText('AI CORE', core.x, core.y + 7);
     /* 종목 노드 */
-    nodes.forEach(function (nd) {
-      var p = pos(nd, t), w = Math.max(30, nd.s.length * 6.4 + 12), hh = 16;
-      var label = lab(nd.s); w = label.length * 6.2 + 12;
-      ctx.fillStyle = nd.glow > 0.05 ? 'rgba(21,101,224,' + (0.55 + nd.glow * 0.45) + ')' : 'rgba(8,18,36,.95)';
-      ctx.strokeStyle = nd.glow > 0.05 ? 'rgba(120,190,255,.95)' : 'rgba(47,123,255,.55)';
+    var sm = root._small, fs = sm ? 8.5 : 10, cw = sm ? 5.3 : 6.2, hh = sm ? 13 : 16;
+    ctx.font = '600 ' + fs + 'px "JetBrains Mono",Consolas,monospace';
+    nodes.forEach(function (nd, i) {
+      var p = np[i], label = sm ? (SHORT[nd.s] || nd.s) : lab(nd.s), w = label.length * cw + (sm ? 8 : 12), on = nd.glow > 0.05;
+      ctx.fillStyle = on ? 'rgba(21,101,224,' + (0.55 + nd.glow * 0.45) + ')' : 'rgba(8,18,36,.95)';
+      ctx.strokeStyle = on ? 'rgba(120,190,255,.95)' : nd.outer ? 'rgba(47,123,255,.3)' : 'rgba(47,123,255,.6)';
       ctx.lineWidth = 1;
       ctx.fillRect(p.x - w / 2, p.y - hh / 2, w, hh); ctx.strokeRect(p.x - w / 2 + 0.5, p.y - hh / 2 + 0.5, w - 1, hh - 1);
-      ctx.fillStyle = nd.glow > 0.05 ? '#fff' : '#a9c3e6';
-      ctx.font = '600 10px "JetBrains Mono",Consolas,monospace';
+      ctx.fillStyle = on ? '#fff' : nd.outer ? '#6f88ad' : '#b3cbec';
       ctx.fillText(label, p.x, p.y + 0.5);
       nd.glow *= 0.965;
     });
@@ -349,16 +365,17 @@
     var i = Math.floor(Math.random() * SYMS.length), s = SYMS[i];
     var hit = Math.random() < 0.18;
     nodes[i].glow = 1;
-    var hs = nearHubs(i);
-    pulses.push({ i: i, h: hs[Math.random() < 0.5 ? 0 : 1], t0: t, dur: 1300 + Math.random() * 500, hit: hit, s: s });
-    var c = cells[s]; c.classList.add('on'); c.lastChild.textContent = '...';
+    var path = [['n', i]], via = i;
+    if (nodes[i].outer) { via = innerOf(i)[Math.random() < 0.5 ? 0 : 1]; path.push(['n', via]); }
+    path.push(['h', nearHubs(via)[Math.random() < 0.5 ? 0 : 1]], 'c');
+    pulses.push({ i: i, path: path, t0: t, dur: (nodes[i].outer ? 1800 : 1300) + Math.random() * 500, hit: hit, s: s });
+    cells[s].classList.add('on');
   }
   function arrive(pl) {
     var s = pl.s, sc = 38 + Math.random() * 58;
     scores[s] = sc; scanned[s] = 1; flash = 1;
     var c = cells[s];
     c.classList.remove('on');
-    c.lastChild.textContent = (sc / 100).toFixed(2);
     var r = Math.random();
     if (pl.hit) {
       c.classList.add('hit'); setTimeout(function () { c.classList.remove('hit'); }, 2600);
@@ -384,7 +401,7 @@
   function stop() { running = false; }
 
   function staticFrame() {
-    SYMS.forEach(function (s, i) { scores[s] = 40 + ((i * 37) % 55); scanned[s] = 1; cells[s].lastChild.textContent = (scores[s] / 100).toFixed(2); });
+    SYMS.forEach(function (s, i) { scores[s] = 40 + ((i * 37) % 55); scanned[s] = 1; });
     updateBars(); fullCode(); $('aicClk').textContent = kst(); draw(0);
   }
 
