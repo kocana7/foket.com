@@ -74,6 +74,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// 확장자 없는 법적 고지 주소 (Google OAuth 브랜딩 등록용): /privacy, /terms
+app.get('/privacy', (req, res) => res.sendFile(path.join(__dirname, 'public', 'privacy.html')));
+app.get('/terms', (req, res) => res.sendFile(path.join(__dirname, 'public', 'terms.html')));
+app.get(['/privacy/', '/terms/'], (req, res) => res.redirect(301, req.path.replace(/\/$/, '')));
+
 // Session
 app.use(session({
   secret: process.env.SESSION_SECRET || 'foket-secret-key-2024',
